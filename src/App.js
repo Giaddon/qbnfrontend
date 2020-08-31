@@ -1,57 +1,55 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+/** The primary app component.
+ * Will no doubt make sense to move engine logic into a child component at some point.
+ * Displays qualities, available storylets, and content 
+ * of the current story in columns from left to right.
+ */
 
+import React, { useEffect }  from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import styled from 'styled-components';
+
+import QualityList from './qualities/QualityList';
+import StoryletList from './storylets/StoryletList';
+import Content from './content/Content';
+
+import { selectQualities } from './qualities/qualitySlice';
+import { setStorylets, selectStorylets } from './storylets/storyletSlice';
+import { clearContent, selectContent } from './content/contentSlice';
+import StoriesAPI from './utilities/StoriesAPI';
+
+const GameWindow = styled.div`
+  display: flex;
+  max-width: 960px;
+  margin: 0 auto;
+  background-color: #fff;
+  min-height: 100vh;
+`
 function App() {
+  const dispatch = useDispatch();
+  const storylets = useSelector(selectStorylets);
+  const qualities = useSelector(selectQualities);
+  const content = useSelector(selectContent);
+
+  // When page loads or qualities change, compare all storylets against our
+  // qualities to see what we are eligible for.
+  useEffect(() => {
+    const allStorylets = StoriesAPI.getAll();
+    const avilableStorylets = Object.values(allStorylets).filter(
+      ({reqs}) => Object.entries(reqs).every(
+        ([key, value]) => qualities[key]?.value === value
+      )
+    ); 
+    dispatch(setStorylets(avilableStorylets) || null);
+    dispatch(clearContent());
+
+  }, [dispatch, qualities]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
+    <GameWindow>
+      <QualityList qualities={qualities} />
+      <StoryletList storylets={storylets} />
+      <Content text={content?.text || ""} choices={content?.choices || []} />  
+    </GameWindow>
   );
 }
 
