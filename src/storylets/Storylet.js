@@ -12,6 +12,7 @@ const StoryletDiv = styled.div`
   border-radius: 4px;
   border: 1px solid #000;
   padding: 5px;
+  cursor: pointer;
 `
 
 function Storylet({ id="Unknown Id", name="Unidentified Storylet", text="Unknown text" }) {

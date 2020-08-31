@@ -11,6 +11,7 @@ const ChoiceDiv = styled.div`
   border-radius: 4px;
   border: 1px solid #000;
   padding: 5px;
+  cursor: pointer;
 `
 
 function Choice({ text, results }) {
