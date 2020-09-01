@@ -6,7 +6,7 @@ const stories = {
     name: "Earning Glory",
     description: "You want glory, don't you?",
     reqs: {
-      glory:0,
+      glory:1,
     },
     content: {
       text: "You reach to grasp glory from the luminious glow of the universe itself!",
@@ -25,16 +25,23 @@ const stories = {
     name: "Earning Even More Glory",
     description: "You're a greedy one, aren't you?",
     reqs: {
-      glory:1,
+      glory:2,
     },
     content: {
-      text: "Unable to resist, you reach out again, ripping more glory from creation and absorbing it into yourself.",
+      text: "Eager for more, you reach out again, ready to rip more glory from creation and absorb it into yourself.",
     },
     choices: [
       {
         text: "Nom nom nom.",
         results: {
-          glory: 9998,
+          glory: 9997,
+        },
+      },
+      {
+        text: "Summon the will to turn away.",
+        results: {
+          restraint: 10,
+          glory: -2,
         },
       },
     ]

@@ -14,7 +14,6 @@ const StoryletListDiv = styled.div`
   flex: 0 1 auto;
   width: 320px;
   padding: 10px;
-  min-height: 100vh;
   border-right: 1px solid #000;
 `
 

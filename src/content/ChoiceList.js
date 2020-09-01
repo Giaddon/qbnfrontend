@@ -9,7 +9,9 @@ const ChoiceListDiv = styled.div`
   display: flex
   width: 320px;
   padding: 10px;
-  min-height: 100vh;
+  div:not(:first-child) {
+    margin-top: 10px; 
+  }
 `
 
 function ChoiceList({ choices=null }) {

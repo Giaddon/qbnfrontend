@@ -12,10 +12,12 @@ import QualityList from './qualities/QualityList';
 import StoryletList from './storylets/StoryletList';
 import Content from './content/Content';
 
-import { selectQualities } from './qualities/qualitySlice';
+import { selectQualities, addQuality } from './qualities/qualitySlice';
 import { setStorylets, selectStorylets } from './storylets/storyletSlice';
 import { clearContent, selectContent } from './content/contentSlice';
 import StoriesAPI from './utilities/StoriesAPI';
+import QualitiesAPI from './utilities/QualitiesAPI';
+import Tooltip from './tooltip/Tooltip';
 
 const GameWindow = styled.div`
   display: flex;
@@ -29,6 +31,13 @@ function App() {
   const storylets = useSelector(selectStorylets);
   const qualities = useSelector(selectQualities);
   const content = useSelector(selectContent);
+
+  useEffect(() => {
+    const startingQualites = QualitiesAPI.getStarting();
+    startingQualites.forEach(quality => {
+      dispatch(addQuality(quality));
+    }); 
+  }, [dispatch]);
 
   // When page loads or qualities change, compare all storylets against our
   // qualities to see what we are eligible for.
@@ -48,7 +57,8 @@ function App() {
     <GameWindow>
       <QualityList qualities={qualities} />
       <StoryletList storylets={storylets} />
-      <Content text={content?.text || ""} choices={content?.choices || []} />  
+      <Content text={content?.text || ""} choices={content?.choices || []} />
+      <Tooltip />
     </GameWindow>
   );
 }
