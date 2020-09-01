@@ -15,6 +15,7 @@ const StoryletListDiv = styled.div`
   width: 320px;
   padding: 10px;
   border-right: 1px solid #000;
+  font-size: 1.4em;
 `
 
 function StoryletList({ storylets }) {

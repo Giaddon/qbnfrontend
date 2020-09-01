@@ -1,37 +1,52 @@
 /** Displays list of qualities */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-import Quality from './Quality.js';
+import QualityBlock from './QualityBlock';
 
 const QualityListDiv = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-around;
-  align-content: flex-start;
   flex: 0 1 auto;
-  width: 320px;  
+  width: 280px;  
   border-right: 1px solid #000;
   padding: 10px;
-  div:not(:first-child) {
-    margin-top:6px;
-  }
 `
 
 function QualityList({ qualities }) {  
+  const [blocks, setBlocks] = useState([]);  
+  
+  useEffect(() => {
+    if (qualities) {
+      let displayBlocks = makeReactBlocks(Object.values(qualities));
+      setBlocks(displayBlocks);
+    }
+  }, [qualities])
+
+
+  function makeReactBlocks(qualitiesArray) {
+    let blocks = {};
+    for (let quality of qualitiesArray) {
+      let block = quality.block;  
+      if (blocks[block]) {
+        blocks[block].push(quality);
+      } else {
+        blocks[block] = [quality];
+      }
+    }
+
+    let reactBlocks = [];
+    for (let [key, value] of Object.entries(blocks)) {
+      reactBlocks.push(<QualityBlock key={key} name={key} qualities={value} />)
+    }
+
+    return reactBlocks;
+  }
+
   return (
     <QualityListDiv>
-      {Object.values(qualities).map(
-          ({id, name, value, description, tooltip}) => 
-          <Quality 
-            key={id} 
-            id={id} 
-            description={description}
-            tooltip={tooltip}
-            name={name} 
-            value={value} 
-          />)
+      {blocks.length > 0
+        ? blocks
+        : <p>You are a person without qualities.</p>
       }
     </QualityListDiv>
   );

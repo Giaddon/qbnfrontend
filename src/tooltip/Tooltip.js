@@ -8,13 +8,14 @@ const TooltipDiv = styled.div.attrs(props => ({
     top: props.y || "0px",
   },
 }))` 
-  position: absolute;  
+  position: absolute;
+  font-size: 1.2em;
+  font-weight: 300;  
   background-color: #fff;
   max-width: 125px;
-  padding: 5px;
-  border-radius: 4px;
-  box-shadow: 0px 0px 25px 0px grey;
+  padding: .5em;
   pointer-events:none;
+  border: 4px double #000;
 `;
 
 function Tooltip({text, visible, x, y }) {

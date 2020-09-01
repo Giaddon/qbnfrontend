@@ -10,6 +10,7 @@ const ContentDiv = styled.div`
   width: 320px;
   padding: 10px;
   min-height: 100vh;
+  font-size: 1.3em;
 `
 
 function Content({text="Unknown content", choices=null}) {
