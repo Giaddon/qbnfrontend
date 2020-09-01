@@ -18,7 +18,7 @@ const QualityDiv = styled.div`
   }
   p {
     font-size: 1.3em;
-    font-weight: 200;
+    font-weight: 300;
     margin-top: 0.1em;
   }
 `
@@ -33,7 +33,7 @@ function Quality({
 
   return (
     <QualityDiv 
-      onMouseMove={(e) => dispatch(showTooltip({text:tooltip, x: e.pageX, y: e.pageY}))}
+      onMouseMove={(e) => dispatch(showTooltip({text:`${name} - ${value}. ${tooltip}`, x: e.pageX, y: e.pageY}))}
       onMouseLeave={() => dispatch(hideTooltip())}
     >
         <h3>{name} &bull; {value}</h3>

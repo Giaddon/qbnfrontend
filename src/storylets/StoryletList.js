@@ -19,10 +19,16 @@ const StoryletListDiv = styled.div`
 `
 
 function StoryletList({ storylets }) {
+  function newGame() {
+    localStorage.clear();
+    window.location.reload();
+  }
+  
   if ( !storylets || storylets.length < 1) {
     return (
       <StoryletListDiv>
         <p>No storylets available. I guess you won...?</p>
+        <button onClick={newGame}>Clear data.</button>
       </StoryletListDiv>
     ) ;
   }

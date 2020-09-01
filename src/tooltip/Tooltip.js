@@ -12,7 +12,7 @@ const TooltipDiv = styled.div.attrs(props => ({
   font-size: 1.2em;
   font-weight: 300;  
   background-color: #fff;
-  max-width: 125px;
+  max-width: 150px;
   padding: .5em;
   pointer-events:none;
   border: 4px double #000;

@@ -27,6 +27,15 @@ const qualities = {
     tooltip: "The greatest expression of control is over oneself.",
     block: "Virtues",
   },
+  spire: {
+    id: "spire",
+    name: "The Angel's Spire",
+    description: "Near enough to touch, now.",
+    visible: true,
+    tooltip: "You've never heard of anyone who came back from the spire. It's probably fine.",
+    value: "Top of the spire",
+    block: "Location",
+  },
 }
 
 export { qualities };

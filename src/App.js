@@ -32,11 +32,20 @@ function App() {
   const qualities = useSelector(selectQualities);
   const content = useSelector(selectContent);
 
+  //Get qualities from API (new game) or local storage (continued game)
   useEffect(() => {
-    const startingQualites = QualitiesAPI.getStarting();
-    startingQualites.forEach(quality => {
-      dispatch(addQuality(quality));
-    }); 
+    const savedGame = localStorage.getItem('qbnengine');
+    if (savedGame) {
+      const loadedGame = JSON.parse(savedGame);
+      Object.values(loadedGame).forEach(quality => {
+        dispatch(addQuality(quality));
+      });
+    } else {
+      const startingQualites = QualitiesAPI.getStarting();
+      startingQualites.forEach(quality => {
+        dispatch(addQuality(quality));
+      });
+    } 
   }, [dispatch]);
 
   // When page loads or qualities change, compare all storylets against our
@@ -50,6 +59,7 @@ function App() {
     ); 
     dispatch(setStorylets(avilableStorylets) || null);
     dispatch(clearContent());
+    localStorage.setItem('qbnengine', JSON.stringify(qualities));
 
   }, [dispatch, qualities]);
 
