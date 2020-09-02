@@ -2,12 +2,13 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { setContent } from '../content/contentSlice';
 import StoriesAPI from '../utilities/StoriesAPI';
 import { Subtitle, Text } from '../typography/typography';
 import { showTooltip, hideTooltip } from '../tooltip/tooltipSlice';
+import { selectStorylets } from '../storylets/storyletSlice';
 
 const StoryletDiv = styled.div`
   border-top: 1px solid #000;
@@ -26,11 +27,14 @@ function Storylet({
   text="Unknown text", 
   tooltip="Unknown tooltip."}) {
   const dispatch = useDispatch();
+  const storylets = useSelector(selectStorylets);
 
   function selectStorylet() {
-    const selectedStory = StoriesAPI.getById(id);
-    const newConent = {text: selectedStory.content.text, choices: selectedStory.choices};
-    dispatch(setContent(newConent) || null);
+    if (storylets.available.some(storylet => storylet.id === id)) {
+      const selectedStory = StoriesAPI.getById(id);
+      const newConent = {text: selectedStory.content.text, choices: selectedStory.choices};
+      dispatch(setContent(newConent) || null);
+    }
   }
   
   return (
