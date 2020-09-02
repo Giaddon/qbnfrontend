@@ -4,13 +4,13 @@ import React from 'react';
 import styled from 'styled-components';
 
 import ChoiceList from './ChoiceList';
+import { Text } from '../typography/typography';
 
 const ContentDiv = styled.div`
   flex: 0 1 auto;
   width: 320px;
   padding: 10px;
   min-height: 100vh;
-  font-size: 1.3em;
 `
 
 function Content({text="Unknown content", choices=null}) {
@@ -18,14 +18,14 @@ function Content({text="Unknown content", choices=null}) {
   if (!choices || choices.length < 1) {
     return (
       <ContentDiv>
-        <p>No story active.</p>
+        <Text>No story active.</Text>
       </ContentDiv>
     ); 
   }
 
   return (
     <ContentDiv>
-      <p>{text}</p>
+      <Text>{text}</Text>
       <ChoiceList choices={choices} />
     </ContentDiv>
   );

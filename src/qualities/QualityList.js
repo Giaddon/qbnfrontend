@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import QualityBlock from './QualityBlock';
+import { Text } from '../typography/typography';
 
 const QualityListDiv = styled.div`
   flex: 0 1 auto;
@@ -46,7 +47,7 @@ function QualityList({ qualities }) {
     <QualityListDiv>
       {blocks.length > 0
         ? blocks
-        : <p>You are a person without qualities.</p>
+        : <Text>You are a person without qualities.</Text>
       }
     </QualityListDiv>
   );

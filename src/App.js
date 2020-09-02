@@ -64,13 +64,16 @@ function App() {
         let unlockedTooltip = "Unlocked with\n";
         for (let [quality, value] of reqs) {
           unlockedTooltip += `${quality} of  '${value}'\n`
-          
-          // unlockedTooltip + quality + " of " + value + "\n"
         }
         let tooltipedStorylet = {...storylet, tooltip: unlockedTooltip};
         availableStorylets.push(tooltipedStorylet);
       } else {
-        unavailableStorylets.push(storylet);
+        let lockedTooltip = "Requires\n";
+        for (let [quality, value] of reqs) {
+          lockedTooltip += `${quality} of  '${value}'\n`
+        }
+        let tooltipedStorylet = {...storylet, tooltip: lockedTooltip};
+        unavailableStorylets.push(tooltipedStorylet);
       }
     }
     dispatch(setAvailableStorylets(availableStorylets));

@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import StoryletBlock from './StoryletBlock';
+import { Text } from '../typography/typography';
 
 const StoryletListDiv = styled.div`
   flex: 0 1 auto;
@@ -23,7 +24,7 @@ function StoryletList({ available, unavailable }) {
   if ( !available || available.length < 1) {
     return (
       <StoryletListDiv>
-        <p>No storylets available. I guess you won...?</p>
+        <Text>No storylets available. I guess you won...?</Text>
         <button onClick={newGame}>Clear data.</button>
       </StoryletListDiv>
     ) ;
