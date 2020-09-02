@@ -213,7 +213,7 @@ const stories = {
   domission: {
     id: "domission",
     name: "Do a mission.",
-    description: "Mechs in the club are always looking for help with missions.",
+    description: "Blow up the bad guys, get some cash. Easy.",
     reqs: [
       {
         id: "location",

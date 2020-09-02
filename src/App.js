@@ -28,7 +28,7 @@ const GameWindow = styled.div`
   justify-conent: space-around;
   align-items: stretch;
   align-content: space-around;
-  max-width: 1100px;
+  max-width: 90%;
   margin: 0 auto;
   background-color: #fff;
   min-height: 100vh;
