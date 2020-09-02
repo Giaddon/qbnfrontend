@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 import { showTooltip, hideTooltip } from '../tooltip/tooltipSlice';
+import { Subtitle, Text } from '../typography/typography';
 
 const QualityDiv = styled.div`
   flex: 1 0 100%;
@@ -12,13 +13,7 @@ const QualityDiv = styled.div`
   border-bottom: 1px solid #000;
   padding: 0.3em 0.5em;
   margin: 0.5em 0;
-  h3 {
-    font-size: 1.5em;
-    font-weight: 400;
-  }
-  p {
-    font-size: 1.3em;
-    font-weight: 300;
+  p:nth-child(2) {
     margin-top: 0.1em;
   }
 `
@@ -33,11 +28,11 @@ function Quality({
 
   return (
     <QualityDiv 
-      onMouseMove={(e) => dispatch(showTooltip({text:`${name} - ${value}. ${tooltip}`, x: e.pageX, y: e.pageY}))}
+      onMouseMove={(e) => dispatch(showTooltip({text:`${name} - ${value}.\n${tooltip}`, x: e.pageX, y: e.pageY}))}
       onMouseLeave={() => dispatch(hideTooltip())}
     >
-        <h3>{name} &bull; {value}</h3>
-        <p>{description}</p>
+        <Subtitle>{name} &bull; {value}</Subtitle>
+        <Text>{description}</Text>
     </QualityDiv>
   );
 }

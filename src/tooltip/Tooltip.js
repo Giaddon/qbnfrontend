@@ -2,27 +2,28 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
+import { TooltipText } from '../typography/typography';
+
 const TooltipDiv = styled.div.attrs(props => ({
   style: {
     left: props.x || "0px",
     top: props.y || "0px",
   },
 }))` 
-  position: absolute;
-  font-size: 1.2em;
-  font-weight: 300;  
+  position: absolute; 
   background-color: #fff;
   max-width: 150px;
   padding: .5em;
   pointer-events:none;
   border: 4px double #000;
+  white-space: pre-wrap;
 `;
 
 function Tooltip({text, visible, x, y }) {
   if (visible) {
     return (
       <TooltipDiv x={x} y={y}>
-        <p>{text}</p>
+        <TooltipText>{text}</TooltipText>
       </TooltipDiv>
     ) 
   } else return null;

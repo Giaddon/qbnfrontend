@@ -13,7 +13,10 @@ import StoryletList from './storylets/StoryletList';
 import Content from './content/Content';
 
 import { selectQualities, addQuality } from './qualities/qualitySlice';
-import { setStorylets, selectStorylets } from './storylets/storyletSlice';
+import { 
+  setAvailableStorylets, 
+  setUnavailableStorylets, 
+  selectStorylets } from './storylets/storyletSlice';
 import { clearContent, selectContent } from './content/contentSlice';
 import StoriesAPI from './utilities/StoriesAPI';
 import QualitiesAPI from './utilities/QualitiesAPI';
@@ -49,15 +52,29 @@ function App() {
   }, [dispatch]);
 
   // When page loads or qualities change, compare all storylets against our
-  // qualities to see what we are eligible for.
+  // qualities to see what we are eligible for. Also, save qualities to local storage.
   useEffect(() => {
     const allStorylets = StoriesAPI.getAll();
-    const avilableStorylets = Object.values(allStorylets).filter(
-      ({reqs}) => Object.entries(reqs).every(
-        ([key, value]) => qualities[key]?.value === value
-      )
-    ); 
-    dispatch(setStorylets(avilableStorylets) || null);
+    const availableStorylets = [];
+    const unavailableStorylets = [];
+
+    for (let storylet of Object.values(allStorylets)) {
+      let reqs = Object.entries(storylet.reqs);
+      if (reqs.every(([quality, value]) => qualities[quality]?.value === value)){
+        let unlockedTooltip = "Unlocked with\n";
+        for (let [quality, value] of reqs) {
+          unlockedTooltip += `${quality} of  '${value}'\n`
+          
+          // unlockedTooltip + quality + " of " + value + "\n"
+        }
+        let tooltipedStorylet = {...storylet, tooltip: unlockedTooltip};
+        availableStorylets.push(tooltipedStorylet);
+      } else {
+        unavailableStorylets.push(storylet);
+      }
+    }
+    dispatch(setAvailableStorylets(availableStorylets));
+    dispatch(setUnavailableStorylets(unavailableStorylets));
     dispatch(clearContent());
     localStorage.setItem('qbnengine', JSON.stringify(qualities));
 

@@ -1,0 +1,9 @@
+@font-face {
+  font-family: 'Alata';
+  src: local('Alata'), url(./assets/fonts/Alata.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'EBGaramond';
+  src: local('EBGaramond'), url(./assets/fonts/EBGaramond-Variable.ttf) format('truetype');
+}

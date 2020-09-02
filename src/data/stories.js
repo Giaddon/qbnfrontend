@@ -7,6 +7,7 @@ const stories = {
     description: "You want glory, don't you?",
     reqs: {
       glory:1,
+      lugubriousness:5,
     },
     content: {
       text: "You reach to grasp glory from the luminious glow of the universe itself!",

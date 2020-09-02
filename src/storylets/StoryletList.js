@@ -3,28 +3,24 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 
-import Storylet from './Storylet';
+import StoryletBlock from './StoryletBlock';
 
 const StoryletListDiv = styled.div`
-  display: flex;
-  flex-flow: column no-wrap;
-  align-items: flex-start;
-  align-content: flex-start;
   flex: 0 1 auto;
   width: 320px;
   padding: 10px;
   border-right: 1px solid #000;
-  font-size: 1.4em;
 `
 
-function StoryletList({ storylets }) {
+function StoryletList({ available, unavailable }) {
   function newGame() {
     localStorage.clear();
     window.location.reload();
   }
   
-  if ( !storylets || storylets.length < 1) {
+  if ( !available || available.length < 1) {
     return (
       <StoryletListDiv>
         <p>No storylets available. I guess you won...?</p>
@@ -35,11 +31,18 @@ function StoryletList({ storylets }) {
   
   return (
     <StoryletListDiv>
-      {Object.values(storylets).map(
-          ({id, name, description}) => <Storylet key={id} id={id} name={name} text={description} />)
-      }
+      <StoryletBlock title="Available" storylets={available} />
+      <StoryletBlock title="Unavailable" storylets={unavailable} />
     </StoryletListDiv>
   );
 }
 
-export default StoryletList;
+function mapStateToProps(state) {
+  const { available, unavailable } = state.storylets;
+  return { 
+    available,
+    unavailable,
+  }
+}
+
+export default connect(mapStateToProps)(StoryletList);

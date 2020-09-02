@@ -6,25 +6,25 @@ import { useDispatch } from 'react-redux';
 
 import { setContent } from '../content/contentSlice';
 import StoriesAPI from '../utilities/StoriesAPI';
+import { Subtitle, Text } from '../typography/typography';
+import { showTooltip, hideTooltip } from '../tooltip/tooltipSlice';
 
 const StoryletDiv = styled.div`
-  flex: 1 1 auto;
-  border-radius: 4px;
-  border: 1px solid #000;
-  padding: 5px;
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+  padding: 0.5em 0.5em;
+  margin: 0.5em 0;
   cursor: pointer;
-  h3 {
-    font-size: 1.3em;
-    font-weight: 400;
-  }
-  p {
-    font-size: 1em;
-    font-weight: 300;
+  p:nth-child(2) {
     margin-top: 0.3em;
   }
 `
 
-function Storylet({ id="Unknown Id", name="Unidentified Storylet", text="Unknown text" }) {
+function Storylet({ 
+  id="Unknown Id", 
+  name="Unidentified Storylet", 
+  text="Unknown text", 
+  tooltip="Unknown tooltip."}) {
   const dispatch = useDispatch();
 
   function selectStorylet() {
@@ -34,9 +34,13 @@ function Storylet({ id="Unknown Id", name="Unidentified Storylet", text="Unknown
   }
   
   return (
-    <StoryletDiv onClick={selectStorylet}>
-      <h3>{name}</h3>
-      <p>{text}</p>
+    <StoryletDiv 
+      onClick={selectStorylet}
+      onMouseMove={(e) => dispatch(showTooltip({text:tooltip, x: e.pageX, y: e.pageY}))}
+      onMouseLeave={() => dispatch(hideTooltip())}
+    >
+      <Subtitle>{name}</Subtitle>
+      <Text>{text}</Text>
     </StoryletDiv>
   );
 }

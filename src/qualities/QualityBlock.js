@@ -4,13 +4,13 @@ import styled from 'styled-components';
 import Quality from './Quality';
 
 const QualityBlockDiv = styled.div`
-  flex: 1 0 100%;
   & ~ & {
     margin-top: 2em;
   }
 `
 const QualityBlockTitle = styled.p`
-  font-size: 1.6em;
+  font-family: "Alata", sans-serif;
+  font-size: 2.5em;
   font-weight: 400;
 `
 
