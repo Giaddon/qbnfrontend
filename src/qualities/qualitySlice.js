@@ -8,7 +8,7 @@ export const qualitySlice = createSlice({
   name: 'qualities',
   initialState: {},
   reducers: {
-    adjustByAmount: (state, action) => {
+    adjustQualityByValue: (state, action) => {
       const { quality, value } = action.payload;
       if (state[quality]) {
         state[quality].value += value;
@@ -18,13 +18,18 @@ export const qualitySlice = createSlice({
         state[quality].value = 0 + value;
       }
     },
+    setQualityToValue: (state, action) => {
+      const { quality, value } = action.payload;
+      state[quality].value = value;
+    },
     addQuality: (state, action) => {
       state[action.payload.id] = action.payload;
-    }
+    },
+    setQualities: (state, action) => action.payload,
   },
 });
 
-export const { addQuality, adjustByAmount } = qualitySlice.actions;
+export const { addQuality, adjustQualityByValue, setQualityToValue, setQualities } = qualitySlice.actions;
 
 export const selectQualities = state => state.qualities;
 

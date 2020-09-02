@@ -19,10 +19,11 @@ const QualityDiv = styled.div`
 `
 
 function Quality({ 
+  id="noidfound",
   name="Unidentified Quality",
   description="Quality not found.", 
-  value=0, 
-  tooltip="Unkown quality." 
+  value=1, 
+  tooltip="" 
 }) {
   const dispatch = useDispatch();
 

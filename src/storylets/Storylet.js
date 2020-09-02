@@ -14,7 +14,7 @@ const StoryletDiv = styled.div`
   border-top: 1px solid #000;
   border-bottom: 1px solid #000;
   padding: 0.5em 0.5em;
-  margin: 0.5em 0;
+  margin: 1.0em 0;
   cursor: pointer;
   p:nth-child(2) {
     margin-top: 0.3em;

@@ -4,7 +4,8 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
-import { adjustByAmount } from '../qualities/qualitySlice';
+import { adjustQualityByValue, setQualityToValue } from '../qualities/qualitySlice';
+import { Text } from '../typography/typography';
 
 const ChoiceDiv = styled.div`
   flex: 1 1 auto;
@@ -18,14 +19,18 @@ function Choice({ text, results }) {
   const dispatch = useDispatch();
 
   function selectChoice() {
-    Object.entries(results).forEach(([quality, value]) => {
-      dispatch(adjustByAmount({quality, value}) || null);
+   results.forEach(({quality, value, type}) => {
+      if (type === "adjust") {
+        dispatch(adjustQualityByValue({quality, value}) || null);
+      } else if (type === "set") {
+        dispatch(setQualityToValue({quality, value}));
+      }
     });
   }
   
   return (
     <ChoiceDiv onClick={selectChoice}>
-      <p>{text}</p>
+      <Text>{text}</Text>
     </ChoiceDiv>
   );
 }

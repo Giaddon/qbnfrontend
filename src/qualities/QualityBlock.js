@@ -1,34 +1,66 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import Quality from './Quality';
+import { Title } from '../typography/typography';
+import { getLowestValueFromMap } from '../utilities/utilityFunctions';
 
 const QualityBlockDiv = styled.div`
   & ~ & {
     margin-top: 2em;
   }
 `
-const QualityBlockTitle = styled.p`
-  font-family: "Alata", sans-serif;
-  font-size: 2.5em;
-  font-weight: 400;
-`
 
 function QualityBlock({ name, qualities }) {
+  const [ myQualities, setMyQualities ] = useState([]);
+
+  useEffect(()=>{
+    function makeReactQualities(qualities) {
+      let displayedQualities = [];
+      for (let base of qualities) {
+        const quality = {...base};
+        if (quality.invisible) {
+          // do nothing, quality marked as invisible.
+        } else {
+          if (quality.descriptions) { // prepare one of several descriptions for display, based on value.
+            let descMap = new Map();
+            for (let [key, value] of quality.descriptions) {
+              descMap.set(key, value);
+            }
+            quality.description = getLowestValueFromMap(descMap, quality.value);
+          } // finished with descriptions prep
+          if (quality.alt) { // prepare string display for value
+            let altMap = new Map(quality.alt);
+            quality.value = getLowestValueFromMap(altMap, quality.value);
+          } // finished with alt prep
+          
+          displayedQualities.push(
+            <Quality 
+              key={quality.id} 
+              id={quality.id} 
+              name={quality.name}
+              description={quality.description}
+              tooltip={quality.tooltip}
+              value={quality.value}
+            />)
+        }
+      }
+      return displayedQualities;
+    }
+
+    if (qualities) {
+      let displayedQualities = makeReactQualities(qualities);
+      setMyQualities(displayedQualities);
+    }
+
+  }, [qualities])
+  
+  
+  
   return (
     <QualityBlockDiv>
-      <QualityBlockTitle>{name}</QualityBlockTitle>
-      {Object.values(qualities).map(
-        ({id, name, value, description, tooltip}) => 
-        <Quality 
-          key={id} 
-          id={id} 
-          description={description}
-          tooltip={tooltip}
-          name={name} 
-          value={value} 
-        />)
-      }
+      <Title>{name}</Title>
+      {myQualities}
     </QualityBlockDiv>
   );
 }

@@ -9,8 +9,7 @@ import StoryletBlock from './StoryletBlock';
 import { Text } from '../typography/typography';
 
 const StoryletListDiv = styled.div`
-  flex: 0 1 auto;
-  width: 320px;
+  flex: 0 1 33%;
   padding: 10px;
   border-right: 1px solid #000;
 `

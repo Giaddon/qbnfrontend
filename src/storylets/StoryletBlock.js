@@ -6,7 +6,7 @@ import { Title } from '../typography/typography';
 
 const StoryletBlockDiv = styled.div`
 & ~ & {
-  margin-top: 2em;
+  margin-top: 3em;
 }
 `;
 

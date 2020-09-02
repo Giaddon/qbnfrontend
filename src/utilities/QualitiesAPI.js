@@ -8,8 +8,11 @@ class QualitiesAPI {
   }
   
   static getStarting() {
-    return Object.values(qualities).filter(quality => quality.value);
-    
+    let startingQualities = {};
+    Object.values(qualities).forEach(quality => {
+      if (quality.value) startingQualities[quality.id] = quality;
+    })
+    return startingQualities;     
   }
 
   static getById(id) {

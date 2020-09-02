@@ -7,8 +7,7 @@ import ChoiceList from './ChoiceList';
 import { Text } from '../typography/typography';
 
 const ContentDiv = styled.div`
-  flex: 0 1 auto;
-  width: 320px;
+  flex: 0 1 33%;
   padding: 10px;
   min-height: 100vh;
 `
