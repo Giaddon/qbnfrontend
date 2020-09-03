@@ -3,46 +3,66 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import StoryletBlock from './StoryletBlock';
+import Storylet from "./Storylet";
+import { selectStorylets } from './storyletSlice';
 import { Text } from '../typography/typography';
 
 const StoryletListDiv = styled.div`
-  flex: 0 1 33%;
+  flex: 0 1 auto;
   padding: 10px;
-  border-right: 1px solid #000;
 `
 
-function StoryletList({ available, unavailable }) {
+function StoryletList() {
+  const storylets = useSelector(selectStorylets);
   function newGame() {
     localStorage.clear();
     window.location.reload();
   }
   
-  if ( !available || available.length < 1) {
+  if ( !storylets.available || storylets.available.length < 1) {
     return (
       <StoryletListDiv>
         <Text>No storylets available. I guess you won...?</Text>
         <button onClick={newGame}>Clear data.</button>
       </StoryletListDiv>
-    ) ;
+    );
   }
   
   return (
     <StoryletListDiv>
-      <StoryletBlock title="Available" storylets={available} />
-      <StoryletBlock title="Unavailable" storylets={unavailable} />
+      {storylets.available.map(
+          ({id, title, description, tooltip, results}) =>
+            <Storylet 
+              key={id} 
+              id={id} 
+              title={title} 
+              text={description} 
+              tooltip={tooltip}
+              results={results} 
+            />)
+      }
+      {storylets.unavailable && storylets.unavailable.length > 0
+        ? <div>
+          {storylets.unavailable.map(
+          ({id, title, description, tooltip, results}) =>
+            <Storylet 
+              key={id} 
+              id={id} 
+              title={title} 
+              text={description} 
+              tooltip={tooltip}
+              results={results}
+              disabled
+            />)
+      }
+        </div>
+        : null
+      }
+      
     </StoryletListDiv>
   );
 }
 
-function mapStateToProps(state) {
-  const { available, unavailable } = state.storylets;
-  return { 
-    available,
-    unavailable,
-  }
-}
-
-export default connect(mapStateToProps)(StoryletList);
+export default StoryletList;

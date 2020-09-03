@@ -1,20 +1,22 @@
 /** Displays list of qualities */
 
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import QualityBlock from './QualityBlock';
-import { Text } from '../typography/typography';
+import { SidebarText } from '../typography/typography';
+import { selectQualities } from './qualitySlice';
 
 const QualityListDiv = styled.div`
-  flex: 0 1 33%;
-  border-right: 1px solid #000;
-  padding: 10px;
+
 `
 
-function QualityList({ qualities }) {  
+function QualityList() {  
   const [blocks, setBlocks] = useState([]);  
-  
+  const qualities = useSelector(selectQualities);
+
+
   useEffect(() => {
     function makeReactBlocks(qualitiesArray) {
       let blocks = {};
@@ -45,7 +47,7 @@ function QualityList({ qualities }) {
     <QualityListDiv>
       {blocks.length > 0
         ? blocks
-        : <Text>You are a person without qualities.</Text>
+        : <SidebarText>You are a person without qualities.</SidebarText>
       }
     </QualityListDiv>
   );

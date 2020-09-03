@@ -2,20 +2,22 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
-import { setContent } from '../content/contentSlice';
-import StoriesAPI from '../utilities/StoriesAPI';
+import DomainsAPI from "../utilities/DomainsAPI"; 
+import QualitiesAPI from "../utilities/QualitiesAPI";
 import { Subtitle, Text } from '../typography/typography';
 import { showTooltip, hideTooltip } from '../tooltip/tooltipSlice';
-import { selectStorylets } from '../storylets/storyletSlice';
+import { adjustQualityByValue, setQualityToValue } from '../qualities/qualitySlice';
+import { setDomain } from '../domain/domainSlice';
 
 const StoryletDiv = styled.div`
+  opacity: ${props => props.disabled ? "0.4" : "1"};
   border-top: 1px solid #000;
   border-bottom: 1px solid #000;
-  padding: 0.5em 0.5em;
+  padding: 1.0em 0.5em;
   margin: 1.0em 0;
-  cursor: pointer;
+  cursor: ${props => props.disabled ? "default" : "pointer"};
   p:nth-child(2) {
     margin-top: 0.3em;
   }
@@ -23,27 +25,37 @@ const StoryletDiv = styled.div`
 
 function Storylet({ 
   id="Unknown Id", 
-  name="Unidentified Storylet", 
+  title="Unidentified Storylet", 
   text="Unknown text", 
-  tooltip="Unknown tooltip."}) {
+  tooltip="Unknown tooltip.",
+  disabled=false,
+  results=null}) {
   const dispatch = useDispatch();
-  const storylets = useSelector(selectStorylets);
 
   function selectStorylet() {
-    if (storylets.available.some(storylet => storylet.id === id)) {
-      const selectedStory = StoriesAPI.getById(id);
-      const newConent = {text: selectedStory.content.text, choices: selectedStory.choices};
-      dispatch(setContent(newConent) || null);
+    if (!disabled) {
+      results.qualities.forEach(({id, value, type}) => {
+        const response = QualitiesAPI.getById(id);
+        const quality = {...response};
+        if (type === "adjust") {
+          dispatch(adjustQualityByValue({id, quality, value}) || null);
+        } else if (type === "set") {
+          dispatch(setQualityToValue({id, quality, value}));
+        }
+      });
+      const newDomain = DomainsAPI.getDomainById(results.domain);
+      dispatch(setDomain(newDomain));
     }
+    
   }
   
   return (
-    <StoryletDiv 
+    <StoryletDiv disabled={disabled} 
       onClick={selectStorylet}
       onMouseMove={(e) => dispatch(showTooltip({text:tooltip, x: e.pageX, y: e.pageY}))}
       onMouseLeave={() => dispatch(hideTooltip())}
     >
-      <Subtitle>{name}</Subtitle>
+      <Subtitle>{title}</Subtitle>
       <Text>{text}</Text>
     </StoryletDiv>
   );

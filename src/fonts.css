@@ -4,6 +4,6 @@
 }
 
 @font-face {
-  font-family: 'EBGaramond';
-  src: local('EBGaramond'), url(./assets/fonts/EBGaramond-Variable.ttf) format('truetype');
+  font-family: 'IBMPlexSerif';
+  src: local('IBMPlexSerif'), url(./assets/fonts/IBMPlexSerif-Regular.ttf) format('truetype');
 }

@@ -5,14 +5,16 @@
 import { configureStore } from '@reduxjs/toolkit';
 import qualityReducer from '../qualities/qualitySlice';
 import storyletReducer from '../storylets/storyletSlice';
-import contentReducer from '../content/contentSlice';
 import tooltipReducer from '../tooltip/tooltipSlice';
+import interfaceReducer from '../interface/interfaceSlice';
+import domainReducer from '../domain/domainSlice';
 
 export default configureStore({
   reducer: {
     qualities: qualityReducer,
     storylets: storyletReducer,
-    content: contentReducer,
     tooltip: tooltipReducer,
+    domain: domainReducer,
+    interface: interfaceReducer,
   },
 });

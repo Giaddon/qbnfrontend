@@ -2,25 +2,27 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 
-import QualitiesAPI from '../utilities/QualitiesAPI';
-
 export const qualitySlice = createSlice({
   name: 'qualities',
   initialState: {},
   reducers: {
     adjustQualityByValue: (state, action) => {
-      const { quality, value } = action.payload;
-      if (state[quality]) {
-        state[quality].value += value;
+      const { id, quality, value } = action.payload;
+      if (state[id]) {
+        state[id].value += value;
       } else {
-        const newQuality = QualitiesAPI.getById(quality);
-        state[quality] = newQuality;
-        state[quality].value = 0 + value;
+        state[id] = quality;
+        state[id].value = 0 + value;
       }
     },
     setQualityToValue: (state, action) => {
-      const { quality, value } = action.payload;
-      state[quality].value = value;
+      const { id, quality, value } = action.payload;
+      if (state[id]) {
+        state[id].value = value;
+      } else {
+        state[id] = quality;
+        state[id].value = value;
+      }
     },
     addQuality: (state, action) => {
       state[action.payload.id] = action.payload;

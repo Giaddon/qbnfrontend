@@ -7,8 +7,8 @@ class StoriesAPI {
     return stories;
   }
   
-  static getById(id) {
-    return stories[id];
+  static getByDomain(domain) {
+    return stories[domain];
   }
 }
 

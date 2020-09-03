@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import Quality from './Quality';
-import { Title } from '../typography/typography';
+import { SidebarTitle } from '../typography/typography';
 import { getLowestValueFromMap } from '../utilities/utilityFunctions';
 
 const QualityBlockDiv = styled.div`
@@ -59,7 +59,7 @@ function QualityBlock({ name, qualities }) {
   
   return (
     <QualityBlockDiv>
-      <Title>{name}</Title>
+      <SidebarTitle>{name}</SidebarTitle>
       {myQualities}
     </QualityBlockDiv>
   );
