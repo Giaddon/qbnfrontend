@@ -5,6 +5,13 @@ const domains = {
     description: "Something is starting...",
   },
 
+  shut: {
+    id: "shut",
+    title: "Change is bad.",
+    description: "The light is bright, and strange, and new. Surely it's better to stay here in the dark?",
+    canleave: true,
+  },
+
   beginning2: {
     id: "beginning2",
     title: "Your body.",

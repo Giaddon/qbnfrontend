@@ -9,7 +9,7 @@ import QualitiesAPI from "../utilities/QualitiesAPI";
 import { Subtitle, Text } from '../typography/typography';
 import { showTooltip, hideTooltip } from '../tooltip/tooltipSlice';
 import { adjustQualityByValue, setQualityToValue } from '../qualities/qualitySlice';
-import { setDomain } from '../domain/domainSlice';
+import { setActiveDomain, setPreviousDomain } from '../domain/domainSlice';
 
 const StoryletDiv = styled.div`
   opacity: ${props => props.disabled ? "0.4" : "1"};
@@ -20,6 +20,11 @@ const StoryletDiv = styled.div`
   cursor: ${props => props.disabled ? "default" : "pointer"};
   p:nth-child(2) {
     margin-top: 0.3em;
+  }
+  transition: border .2s ease;
+  &:hover {
+    border-top: 1px solid gold;
+    border-bottom: 1px solid gold;
   }
 `
 
@@ -34,17 +39,20 @@ function Storylet({
 
   function selectStorylet() {
     if (!disabled) {
-      results.qualities.forEach(({id, value, type}) => {
-        const response = QualitiesAPI.getById(id);
-        const quality = {...response};
-        if (type === "adjust") {
-          dispatch(adjustQualityByValue({id, quality, value}) || null);
-        } else if (type === "set") {
-          dispatch(setQualityToValue({id, quality, value}));
-        }
-      });
+        if(results.qualities) {
+        results.qualities.forEach(({id, value, type}) => {
+          const response = QualitiesAPI.getById(id);
+          const quality = {...response};
+          if (type === "adjust") {
+            dispatch(adjustQualityByValue({id, quality, value}) || null);
+          } else if (type === "set") {
+            dispatch(setQualityToValue({id, quality, value}));
+          }
+        });
+      }
       const newDomain = DomainsAPI.getDomainById(results.domain);
-      dispatch(setDomain(newDomain));
+      if (newDomain.canleave) dispatch(setPreviousDomain());
+      dispatch(setActiveDomain(newDomain));
     }
     
   }

@@ -7,11 +7,10 @@ import QualityList from '../qualities/QualityList';
 
 const SidebarDiv = styled.div`
   flex: 0 1 40%;
-  background-color: inherit;
+  background-color: white;
   padding: 10px;
   display: ${props => props.visible ? "block" : "none"};
-  border-right: 1px solid #000;
-  margin-right: 5px;
+  border-right: 1px solid #eee;
 `;
 
 function Sidebar() {

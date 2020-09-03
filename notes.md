@@ -20,14 +20,13 @@ quality: {
       [1, "Quality"],
       [2, "Different quality."]
      ] // Array of arrays with integer:string pairs. The value displayed to the user is the one the integer value is equal to or the first one lower than.
-    description: "Description." String. Displayed alongside the quality name and value for additional context.  
+    description: "Description." // String. Displayed alongside the quality name and value for additional context.  
     descriptions: [
       [1, "Description."],
       [10, "Different description."]  
     ], // Array of arrays with integer:string pairs. The displayed description is the one the integer value is equal to or the first one lower than. Displayed alongside the quality name and value for additional context.
     invisible: true, // Boolean. If true, the quality is still tracked by the game but not displayed to the player.  
     tooltip: "Tooltip", // String. Text that is displayed when the player hovers their mouse over the quality. Tooltips always display name and value.
-    prime: true, // Boolean. A game can have one prime quality that has a limiting effect on what storylets are available to the player (location is a common example).
 
 
   ## Storylets
@@ -35,9 +34,9 @@ quality: {
 
    storylet: {
     id: "storylet", // unique lowercase string. 
-    name: "Storylet", // String. Displayed to the player. 
+    title: "Storylet", // String. Displayed to the player. 
     description: "Description", // String. Displayed to the player to provide context.
-    reqs: [ //An array of objects.
+    reqs: [ //An array of objects. The quality requierments for selecting this storylet. 
       {
         id: "quality", // String. The id of the quality being checked.
         range: { // Object. Used if the quality value must be between a specific range.
@@ -50,15 +49,14 @@ quality: {
         }
       } 
     ],
-    content: {
-      text: "You reach to grasp glory from the luminious glow of the universe itself!",
-    },
-    choices: [
-      {
-        text: "Nice.",
-        results: {
-          glory: 1
-        },
+    results: { // Object. What happens when storylet is selected.
+        domain: "domain", // String. The domain id to load.
+        qualities: [ // Array of objects. Each object describes how a quality is changed.
+          {
+            id: "id", // String. Id of quality.
+            value: 1, // Integer. Value to change by.
+            type: "set" // String. How to change the quality. "set" sets quality to that value exactly. "adjust" adds the value to the current value (starting from 0, if the player does not yet have the value).
+          },
+        ],
       },
-    ]
   }, 

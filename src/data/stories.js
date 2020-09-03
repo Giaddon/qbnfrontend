@@ -28,6 +28,24 @@ const stories = {
     },
 
     {
+      id: "shut",
+      title: "No! I'm not ready.",
+      description: "You struggle to keep your eyes shut.",
+      results: {
+        domain: "shut",
+      },
+      reqs: [
+        {
+          id: "forming",
+          comparison: {
+            value: 1,
+            type: "equal",
+          }
+        },
+      ],
+    },
+
+    {
       id: "prodigy",
       title: "A prodigy!",
       description: "You emerge fully formed!",

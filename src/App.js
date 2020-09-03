@@ -16,20 +16,22 @@ import QualitiesAPI from './utilities/QualitiesAPI';
 import DomainsAPI from './utilities/DomainsAPI'; 
 import Game from './game/Game';
 import Sidebar from './interface/Sidebar';
-import { setDomain, selectDomain } from './domain/domainSlice';
+import { setActiveDomain, selectDomain } from './domain/domainSlice';
 import Tooltip from './tooltip/Tooltip';
 import { hideTooltip } from './tooltip/tooltipSlice';
+import background from './assets/backgrounds/ripples.png';
 
 const AppDiv = styled.div`
   display: flex;  
   flex-flow: row nowrap;
   align-items: stretch;
-  width: 85%;
-  max-width: 960px;
+  width: 90%;
+  max-width: 1100px;
   margin: 0 auto;
   background-color: #fff;
   min-height: 100vh;
   padding: 30px 20px 60px 20px;
+  background: url(${background});
 `
 function App() {
   const dispatch = useDispatch();
@@ -47,7 +49,7 @@ function App() {
       const startingQualites = QualitiesAPI.getStarting();
       const startingDomain = DomainsAPI.getStarting();
       dispatch(setQualities(startingQualites));
-      dispatch(setDomain(startingDomain));
+      dispatch(setActiveDomain(startingDomain));
       setLoaded(true);
     //} 
   }, [dispatch]);
@@ -56,7 +58,7 @@ function App() {
   // qualities to see what we are eligible for. Also, save qualities to local storage.
   useEffect(() => {     
     if (loaded) {
-      const allStorylets = StoriesAPI.getByDomain(domain.id);
+      const allStorylets = StoriesAPI.getByDomain(domain.active.id);
       let availableStorylets = [];
       let unavailableStorylets = [];
       if (allStorylets) {

@@ -1,11 +1,19 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
+
 import { Title, Text } from '../typography/typography';
+import { selectDomain } from '../domain/domainSlice';
+import StoryletList from '../storylets/StoryletList';
+import BackButton from './BackButton';
 
 const DomainDiv = styled.div`
   padding: 15px;
   width:100%;
+  background-color: white;
+`
+const HeaderDiv = styled.div`
+  padding: 15px;
   min-height: 100px;
   border: 1px solid #000;
   background-color: inherit;
@@ -14,23 +22,22 @@ const DomainDiv = styled.div`
   }
 `
 
-function Domain({ title, description, stories }) {
+function Domain() {
+  const domain = useSelector(selectDomain);
 
   return (
     <DomainDiv>
-      <Title>{title}</Title>
-      <Text>{description}</Text>
+      <HeaderDiv>
+        <Title>{domain.active.title}</Title>
+        <Text>{domain.active.description}</Text>
+      </HeaderDiv>
+      <StoryletList />
+      {domain.active.canleave
+        ? <BackButton />
+        : null
+      }
     </DomainDiv>
   )
 }
 
-export default connect(mapStateToProps)(Domain);
-
-function mapStateToProps(state) {
-  const { title, description, stories } = state.domain;
-  return { 
-    title,
-    description,
-    stories,
-  }
-}
+export default Domain;

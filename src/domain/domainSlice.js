@@ -4,14 +4,16 @@ import { createSlice } from '@reduxjs/toolkit';
 
 export const domainSlice = createSlice({
   name: 'domain',
-  initialState: null,
+  initialState: {},
   reducers: {
-    setDomain: (state, action) => action.payload,
-    clearDomain: state => null,
+    setActiveDomain: (state, action) => {state.active = action.payload;},
+    setPreviousDomain: (state) => {state.previous = state.active},
+    leaveDomain: (state) => {state.active = state.previous},
+    clearActiveDomain: (state) => {state.active = null},
   },
 });
 
-export const { setDomain, clearDomain } = domainSlice.actions;
+export const { setActiveDomain, setPreviousDomain, clearDomain, leaveDomain } = domainSlice.actions;
 
 export const selectDomain = state => state.domain;
 
