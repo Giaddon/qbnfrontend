@@ -14,6 +14,9 @@ const qualities = {
     name: "Strength",
     block: "Attributes",
     description: "Your physical might.",
+    pyramid: true,
+    value: 10,
+    change: 0,
   },
 
   tentacles: {

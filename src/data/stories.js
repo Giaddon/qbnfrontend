@@ -86,8 +86,8 @@ const stories = {
           },
           {
             id: "strength",
-            value: 5,
-            type: "set"
+            value: 15,
+            type: "adjust"
           },
         ],
       },

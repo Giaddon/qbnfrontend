@@ -60,3 +60,16 @@ quality: {
         ],
       },
   }, 
+
+
+
+  Qualities with "Change Points"
+Some Qualities need to grow by "change points" and not just directly. The way StoryNexus did this was - qualities were either Additive (like the ones we've got here now) or Pyramid. With Pyramid-type qualities, you have a value that represents the number of "change points" you've accumulated, and then there's another value which is your actual "level" of the Quality - used when you want to check the math on things, and what's most commonly reported to the player.
+
+The StoryNexus Formula said:
+This formula gives the total cost to reach a given level in a Pyramid quality, where n is that level: (n²+n)/2.
+
+In Excel this is (POWER(A1+1,2)-(A1+1))/2.
+
+Actually, above 50 it's =((POWER(MIN(50,B3)+1,2)-(MIN(50,B3)+1))/2)+(MAX(0,B3-50)*50), because the most points needed to increase one level is 50.
+The naive way might be to have a quality tied to another quality, but that adds a whole lot of data entry for what one would expect to be a really common function. I would just think Pyramid-type Qualities need to take two variables - one for the actual level, one for the change points, and have a formula govern their relationship. (To keep things uniform, Additive-type Qualities might as well also take two variables - but there, the formula for the relationship between change points and level is 1:1 instead of the more complicated Pyramid-type formula.)

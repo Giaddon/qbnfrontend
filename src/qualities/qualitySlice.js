@@ -8,11 +8,37 @@ export const qualitySlice = createSlice({
   reducers: {
     adjustQualityByValue: (state, action) => {
       const { id, quality, value } = action.payload;
-      if (state[id]) {
-        state[id].value += value;
-      } else {
+      if (state[id]) { //if player already has the quality.
+        if (quality.pyramid) { //if this quality is the pyramid type.
+          let target = state[id].value < 50 ? state[id].value + 1 : 50;
+          let totalChange = state[id].change + value;
+          
+          while (totalChange >= target) {
+            totalChange -= target;
+            state[id].value += 1;
+            if (target < 50 ) target += 1;
+          }
+            state[id].change = totalChange;
+
+        } else { //end pyramid type, now standard type
+          state[id].value += value;
+        }
+      } else { // player doesn't have ability
         state[id] = quality;
-        state[id].value = 0 + value;
+        state[id].value = 0;
+        if (quality.pyramid) { //if this quality is the pyramid type.
+          let target = state[id].value < 50 ? state[id].value + 1 : 50;
+          let totalChange = state[id].change + value;
+          
+          while (totalChange >= target) {
+            totalChange -= target;
+            state[id].value += 1;
+            if (target < 50 ) target += 1;
+          }
+            state[id].change = totalChange;
+        } else { // end pyramid type, now standard type.
+          state[id].value += value;
+        }
       }
     },
     setQualityToValue: (state, action) => {

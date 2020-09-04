@@ -9,8 +9,8 @@ const NavBarDiv = styled.div`
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 85%;
-  max-width: 960px;
+  width: 90%;
+  max-width: 1100px;
   height: 50px;
   background-color: purple;
   cursor: pointer;

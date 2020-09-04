@@ -1,10 +1,10 @@
 /** Displays a quality name and value. */
 
 import React from 'react';
-//import { useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
-//import { showTooltip, hideTooltip } from '../tooltip/tooltipSlice';
+import { showTooltip, hideTooltip } from '../tooltip/tooltipSlice';
 import { SidebarSubtitle, SidebarText } from '../typography/typography';
 
 const QualityDiv = styled.div`
@@ -22,15 +22,16 @@ function Quality({
   id="noidfound",
   name="Unidentified Quality",
   description="Quality not found.", 
-  value=1, 
+  value=1,
+  change=null, 
   tooltip="" 
 }) {
-  //const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   return (
     <QualityDiv 
-      //onMouseMove={(e) => dispatch(showTooltip({text:`${name} - ${value}.\n${tooltip}`, x: e.pageX, y: e.pageY}))}
-      //onMouseLeave={() => dispatch(hideTooltip())}
+      onMouseMove={(e) => dispatch(showTooltip({text:`${name} | ${value}.${change || change===0 ? `\n${change} change points. ${value < 50 ? (value + 1) - change : 50 - change} needed for level ${(value + 1)}.` : ""}`, x: e.pageX, y: e.pageY}))}
+      onMouseLeave={() => dispatch(hideTooltip())}
     >
         <SidebarSubtitle>{name} &bull; {value}</SidebarSubtitle>
         <SidebarText>{description}</SidebarText>

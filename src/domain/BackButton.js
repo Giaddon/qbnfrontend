@@ -8,7 +8,7 @@ import { selectDomain, leaveDomain } from '../domain/domainSlice';
 const BackButtonDiv = styled.div`
   background-color: tomato;
   color: white;
-  width: 70px;
+  width: 100px; 
   text-align: center;
   padding: 2px;
   cursor: pointer;
@@ -24,7 +24,7 @@ function BackButton() {
 
   return (
     <BackButtonDiv onClick={clickBack}>
-      <SidebarTitle>Back</SidebarTitle>
+      <SidebarTitle>&#8612; Back</SidebarTitle>
     </BackButtonDiv>
   )
 }

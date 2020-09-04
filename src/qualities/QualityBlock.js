@@ -42,6 +42,7 @@ function QualityBlock({ name, qualities }) {
               description={quality.description}
               tooltip={quality.tooltip}
               value={quality.value}
+              change={quality.change}
             />)
         }
       }

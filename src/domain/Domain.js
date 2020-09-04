@@ -6,6 +6,7 @@ import { Title, Text } from '../typography/typography';
 import { selectDomain } from '../domain/domainSlice';
 import StoryletList from '../storylets/StoryletList';
 import BackButton from './BackButton';
+import OutcomesList from './OutcomesList';
 
 const DomainDiv = styled.div`
   padding: 15px;
@@ -31,6 +32,7 @@ function Domain() {
         <Title>{domain.active.title}</Title>
         <Text>{domain.active.description}</Text>
       </HeaderDiv>
+      <OutcomesList />
       <StoryletList />
       {domain.active.canleave
         ? <BackButton />

@@ -9,7 +9,7 @@ import QualitiesAPI from "../utilities/QualitiesAPI";
 import { Subtitle, Text } from '../typography/typography';
 import { showTooltip, hideTooltip } from '../tooltip/tooltipSlice';
 import { adjustQualityByValue, setQualityToValue } from '../qualities/qualitySlice';
-import { setActiveDomain, setPreviousDomain } from '../domain/domainSlice';
+import { setActiveDomain, setPreviousDomain, setOutcomes } from '../domain/domainSlice';
 
 const StoryletDiv = styled.div`
   opacity: ${props => props.disabled ? "0.4" : "1"};
@@ -39,22 +39,25 @@ function Storylet({
 
   function selectStorylet() {
     if (!disabled) {
-        if(results.qualities) {
+      let outcomes = [];
+      if(results.qualities) {
         results.qualities.forEach(({id, value, type}) => {
           const response = QualitiesAPI.getById(id);
           const quality = {...response};
           if (type === "adjust") {
             dispatch(adjustQualityByValue({id, quality, value}) || null);
+            outcomes.push(`${quality.name} ${value > 0 ? "increased" : "decreased"} by ${value}${quality.pyramid ? " change points" : ""}.`)
           } else if (type === "set") {
             dispatch(setQualityToValue({id, quality, value}));
+            outcomes.push(`${quality.name} now ${value}.`);
           }
-        });
+       });
       }
       const newDomain = DomainsAPI.getDomainById(results.domain);
       if (newDomain.canleave) dispatch(setPreviousDomain());
+      dispatch(setOutcomes(outcomes));
       dispatch(setActiveDomain(newDomain));
-    }
-    
+    }  
   }
   
   return (

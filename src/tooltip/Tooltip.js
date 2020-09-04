@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { TooltipText } from '../typography/typography';
+import { green, darkgreen } from '../typography/colors';
+
 
 const TooltipDiv = styled.div.attrs(props => ({
   style: {
@@ -10,12 +12,13 @@ const TooltipDiv = styled.div.attrs(props => ({
     top: props.y || "0px",
   },
 }))` 
-  position: absolute; 
-  background-color: #fff;
+  position: absolute;
+  border: 1px solid ${darkgreen}; 
+  background-color: ${green};
+  color: #fff;
   max-width: 200px;
   padding: .5em;
   pointer-events:none;
-  border: 4px double #000;
   white-space: pre-wrap;
 `;
 
