@@ -5,23 +5,26 @@ import { createSlice } from '@reduxjs/toolkit';
 export const domainSlice = createSlice({
   name: 'domain',
   initialState: {
-    outcomes: [],
+    activeDomain: null,
+    activeStorylet: null,
+    activeReport: null,
   },
   reducers: {
-    setActiveDomain: (state, action) => {state.active = action.payload;},
-    setPreviousDomain: (state) => {state.previous = state.active},
-    leaveDomain: (state) => {state.active = state.previous},
-    clearActiveDomain: (state) => {state.active = null},
-    setOutcomes: (state, action) => {state.outcomes = action.payload;}
+    setActiveDomain: (state, action) => {state.activeDomain = action.payload;},
+    setActiveStorylet: (state, action) => {state.activeStorylet = action.payload},
+    setActiveReport: (state, action) => {state.activeReport = action.payload},
+    clearActiveStorylet: (state) => {state.activeStorylet = null},
+    clearActiveReport: (state) => {state.activeReport = null},
   },
 });
 
 export const {
   setActiveDomain,
-  setPreviousDomain,
-  clearDomain,
-  leaveDomain,
-  setOutcomes, } = domainSlice.actions;
+  setActiveStorylet,
+  clearActiveStorylet,
+  setActiveReport,
+  clearActiveReport,
+} = domainSlice.actions;
 
 export const selectDomain = state => state.domain;
 

@@ -1,9 +1,9 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 import {SidebarTitle } from '../typography/typography';
-import { selectDomain, leaveDomain } from '../domain/domainSlice';
+import { clearActiveStorylet } from '../domain/domainSlice';
 
 const BackButtonDiv = styled.div`
   background-color: tomato;
@@ -16,10 +16,9 @@ const BackButtonDiv = styled.div`
 
 function BackButton() {
   const dispatch = useDispatch();
-  const domain = useSelector(selectDomain);
-
+  
   function clickBack() {
-    dispatch(leaveDomain(domain.previous));
+    dispatch(clearActiveStorylet());
   }
 
   return (

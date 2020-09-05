@@ -18,17 +18,14 @@ const OutcomesListDiv = styled.div`
 function OutcomesList() {
   const domain = useSelector(selectDomain);
   
-  if (domain.outcomes.length > 0) {
-    return (
-      <OutcomesListDiv>
-        {domain.outcomes.map(
-          outcome => <Outcome key={outcome} text={outcome} />
-        )}
-      </OutcomesListDiv>
-    )
-  }
-    
-  return null;
+  return (
+    <OutcomesListDiv>
+      {domain.activeReport.outcomes.map(
+        outcome => <Outcome key={outcome} text={outcome} />
+      )}
+    </OutcomesListDiv>
+  )
 }
+
 
 export default OutcomesList;

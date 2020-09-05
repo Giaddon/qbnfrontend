@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 export const interfaceSlice = createSlice({
   name: 'interface',
-  initialState: {sidebar: false},
+  initialState: {sidebar: true},
   reducers: {
     toggleSidebar: (state) => {
       state.sidebar = !state.sidebar

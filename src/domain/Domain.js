@@ -1,11 +1,14 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 import { Title, Text } from '../typography/typography';
-import { selectDomain } from '../domain/domainSlice';
-import StoryletList from '../storylets/StoryletList';
+import { setActiveDomain, selectDomain } from './domainSlice';
+import { selectQualities } from '../qualities/qualitySlice';
+import DomainsAPI from '../utilities/DomainsAPI'; 
+import ActionList from '../actions/ActionsList';
 import BackButton from './BackButton';
+import ContinueButton from './ContinueButton';
 import OutcomesList from './OutcomesList';
 
 const DomainDiv = styled.div`
@@ -24,22 +27,55 @@ const HeaderDiv = styled.div`
 `
 
 function Domain() {
+  const dispatch = useDispatch();
   const domain = useSelector(selectDomain);
+  const qualities = useSelector(selectQualities);
 
-  return (
-    <DomainDiv>
-      <HeaderDiv>
-        <Title>{domain.active.title}</Title>
-        <Text>{domain.active.description}</Text>
-      </HeaderDiv>
-      <OutcomesList />
-      <StoryletList />
-      {domain.active.canleave
-        ? <BackButton />
-        : null
-      }
-    </DomainDiv>
-  )
+  useEffect(() => {
+    const currentDomainId = qualities.domain.value;
+    const selectedDomain = DomainsAPI.getDomainById(currentDomainId);
+    dispatch(setActiveDomain(selectedDomain));
+  },[qualities, dispatch])
+
+  if (domain.activeReport) {
+    return (
+      <DomainDiv>
+        <HeaderDiv>
+          <Title>{domain.activeReport.title}</Title>
+          <Text>{domain.activeReport.description}</Text>
+        </HeaderDiv>
+        <OutcomesList />
+        <ContinueButton />
+      </DomainDiv>
+    )
+  }
+
+  if (domain.activeStorylet) {
+    return (
+      <DomainDiv>
+        <HeaderDiv>
+          <Title>{domain.activeStorylet.title}</Title>
+          <Text>{domain.activeStorylet.description}</Text>
+        </HeaderDiv>
+        <ActionList />
+        <BackButton />
+      </DomainDiv>
+    )
+  }
+
+  if (domain.activeDomain) {
+    return (
+      <DomainDiv>
+        <HeaderDiv>
+          <Title>{domain.activeDomain.title}</Title>
+          <Text>{domain.activeDomain.description}</Text>
+        </HeaderDiv>
+        <ActionList />
+      </DomainDiv>
+    )
+  }
+
+  return "Loading."
 }
 
 export default Domain;
