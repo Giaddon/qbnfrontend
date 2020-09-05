@@ -1,6 +1,6 @@
 /** Utility class for the faux API. Will be overhauled when we have a real backend. */
 
-import { qualities } from '../data/qualities.js';
+import { qualities } from '../gamedata/qualities.js';
 
 class QualitiesAPI {
   static getAll() {
@@ -8,11 +8,11 @@ class QualitiesAPI {
   }
   
   static getStarting() {
-    let startingQualities = {};
-    Object.values(qualities).forEach(quality => {
-      if (quality.value) startingQualities[quality.id] = quality;
-    })
-    return startingQualities;     
+        let startingQualities = {};
+        Object.values(qualities).forEach(quality => {
+          if (quality.value) startingQualities[quality.id] = quality;
+        })
+        return startingQualities;  
   }
 
   static getById(id) {

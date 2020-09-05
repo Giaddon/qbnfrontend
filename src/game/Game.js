@@ -32,8 +32,11 @@ function Game() {
     //const gameData = GameAPI.loadGame();
     //if (gameData) dispatch(setQualities(gameData));
     //else {
-    const startingQualites = QualitiesAPI.getStarting();
-    dispatch(setQualities(startingQualites));
+    
+    
+    
+    const startingQualities = QualitiesAPI.getStarting();
+    dispatch(setQualities(startingQualities));
     setLoaded(true);
   }, [dispatch]);
 

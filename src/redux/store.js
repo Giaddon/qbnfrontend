@@ -7,6 +7,7 @@ import qualityReducer from '../qualities/qualitySlice';
 import tooltipReducer from '../tooltip/tooltipSlice';
 import interfaceReducer from '../interface/interfaceSlice';
 import domainReducer from '../domain/domainSlice';
+import createReducer from '../create/createToolsSlice';
 
 export default configureStore({
   reducer: {
@@ -14,5 +15,6 @@ export default configureStore({
     tooltip: tooltipReducer,
     domain: domainReducer,
     interface: interfaceReducer,
+    create: createReducer,
   }, 
 });

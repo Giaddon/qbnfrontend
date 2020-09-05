@@ -1,4 +1,4 @@
-/** Configuration file for app state regarding domain (i.e., what determines the available storylets) */
+/** Configuration file for app state regarding the interface (i.e., is the sidebar showing) */
 
 import { createSlice } from '@reduxjs/toolkit';
 
