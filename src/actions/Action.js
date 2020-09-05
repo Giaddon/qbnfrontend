@@ -61,7 +61,7 @@ function Action({
           const finalReport = {...results.report, outcomes};
           dispatch(setActiveReport(finalReport));
         }
-        dispatch(clearActiveStorylet());
+        if (!results.remain) dispatch(clearActiveStorylet());
      });
     }
     
