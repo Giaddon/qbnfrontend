@@ -18,7 +18,7 @@ function Item({ data=null, select }) {
   if (data) {
     return (
       <ItemDiv onClick={clickItem}>
-        <p>{data.name}</p>
+        <p>{data.name ? data.name : data.title}</p>
       </ItemDiv>
     )
   }

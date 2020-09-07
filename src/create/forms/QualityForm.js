@@ -5,45 +5,8 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 
 import { green } from '../../typography/colors';
 import { addQualityToCreate } from '../createToolsSlice';
+import { CreateFormDiv } from './formStyles';
 
-const QualityFormDiv = styled.div`
-  flex: 0 1 80%;
-  border: 1px solid #111;
-  padding: 10px;
-  
-  label {
-    font-family: "Alata", sans-serif;
-    margin-top: 5px;
-  }
-
-  input {
-    padding: 5px;
-    width: 200px;
-    font-family: "IBMPlexSerif", serif
-  }
-  textarea{ 
-    padding: 5px;
-    width: 200px;
-    height: 100px;
-    font-family: "IBMPlexSerif", serif
-  }
-
-  button {
-    font-family: "Alata", sans-serif;
-    font-size: 1.2em;
-    margin: 5px 0px;
-    background-color: white;
-    padding: 5px 25px;
-    border: 1px solid #000;
-    border-radius:3px;
-    cursor: pointer;
-    transition: background .2s ease;
-  }
-  button:hover {
-    background-color: ${green};
-    color: white;
-  }
-`;
 
 const FormDeleteButton = styled.div`
   position: relative;
@@ -89,7 +52,7 @@ function QualityForm({ data, deleteItem }) {
   if (!data) return null;
   
   return(
-    <QualityFormDiv>
+    <CreateFormDiv>
       <p>ID: {data.id}</p>
       <Formik
         initialValues={{
@@ -123,7 +86,7 @@ function QualityForm({ data, deleteItem }) {
             <ErrorMessage name="qbnCreateQualityName" component="div" />
             <label htmlFor="qbnCreateQualityValue" style={{ display: "block" }}>
               Starting Value</label>
-            <Field type="number" name="qbnCreateQualityValue" />
+            <Field type="number" name="qbnCreateQualityValue" min='0' />
             <ErrorMessage name="qbnCreateQualityValue" component="div" />
             <label htmlFor="qbnCreateQualityDescription" style={{ display: "block" }}>
               Description</label>
@@ -148,7 +111,7 @@ function QualityForm({ data, deleteItem }) {
         )}
       </Formik>
         {data.id === "domain" ? null : <FormDeleteButton onClick={deleteQuality}><p>Delete Quality</p></FormDeleteButton>}   
-    </QualityFormDiv>
+    </CreateFormDiv>
   )
 }
 

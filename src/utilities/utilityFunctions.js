@@ -73,7 +73,7 @@ function challengeRequirementsMet(reqs, qualities, qualityNames) {
   } else {
     odds = 50;
     let attempts = qualityValue;
-    let difference = 25;
+    let difference = 20;
     while (attempts !== difficulty) {
       odds += difference;
       difference = Math.floor(difference/2);

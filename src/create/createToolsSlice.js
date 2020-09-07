@@ -19,10 +19,45 @@ export const createToolsSlice = createSlice({
       const id = action.payload;
       delete state.qualities[id];
     },
+    addDomainToCreate: (state, action) => {
+      const { id } = action.payload;
+      state.domains[id] = action.payload;
+    },
+    deleteDomainFromCreate: (state, action) => {
+      const id = action.payload;
+      delete state.domains[id];
+    },
+    addActionToCreate: (state, action) => {
+      const { id } = action.payload;
+      state.actions[id] = action.payload;
+    },
+    addStoryletToCreate: (state, action) => {
+      const { id } = action.payload;
+      state.storylets[id] = action.payload;
+    },
+    deleteActionFromCreate: (state, action) => {
+      const id = action.payload;
+      delete state.actions[id];
+    },
+    deleteSomethingFromCreate: (state, action) => {
+      const { id, type } = action.payload;
+      delete state[type][id];
+    },
+    setAllCreate: (state, action) => action.payload,
   },
 });
 
-export const { addQualityToCreate, deleteQualityFromCreate } = createToolsSlice.actions;
+export const { 
+  addQualityToCreate, 
+  deleteQualityFromCreate,
+  addDomainToCreate,
+  deleteDomainFromCreate,
+  addActionToCreate,
+  deleteActionFromCreate,
+  deleteSomethingFromCreate,
+  setAllCreate,
+  addStoryletToCreate
+ } = createToolsSlice.actions;
 
 export const selectCreate = state => state.create;
 

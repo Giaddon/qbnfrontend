@@ -45,7 +45,7 @@ function Action({
   function selectAction() {
     function applyResults(results) {
       let outcomes = [];
-      results.qualities.forEach(({id, value, type}) => {
+      results.changes.forEach(({id, value, type}) => {
         const response = QualitiesAPI.getById(id);
         const quality = {...response};
         if (type === "adjust") {
@@ -69,7 +69,7 @@ function Action({
       if(type==="modify") { // Modify actions
         applyResults(results);
       } else if (type==="storylet") { // Storylet actions
-        const storylet = StoriesAPI.getByDomainId(domainId, results.storylet);
+        const storylet = StoriesAPI.getById(results.storylet);
         dispatch(setActiveStorylet(storylet));
       } else if (type==="challenge") { // Challenge actions
           const outcome = Math.floor(Math.random() * 101);

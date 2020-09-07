@@ -36,7 +36,11 @@ const SidebarText = styled.p`
   font-size: 1.4em;
   font-weight: 400;
 `
+const CreateTitle = styled.p`
+  font-family:'Alata', serif;
+  font-size: 1.8em;
+  font-weight: 400;
+`
 
 
-
-export { Title, Subtitle, Text, TooltipText, SidebarTitle, SidebarSubtitle, SidebarText }
+export { Title, Subtitle, Text, TooltipText, CreateTitle, SidebarTitle, SidebarSubtitle, SidebarText }

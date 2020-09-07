@@ -5,18 +5,35 @@ import { v4 as uuidv4 } from 'uuid';
 
 import Item from './Item';
 import QualityForm from './forms/QualityForm';
+import DomainForm from './forms/DomainForm';
+import ActionForm from './forms/ActionForm';
+import StoryletForm from './forms/StoryletForm';
 import { green } from  '../typography/colors';
-import { addQualityToCreate, deleteQualityFromCreate } from './createToolsSlice';
+import {
+  addQualityToCreate, 
+  deleteSomethingFromCreate, 
+  addDomainToCreate, 
+  addActionToCreate 
+} from './createToolsSlice';
+import { CreateTitle } from '../typography/typography';
 
 const ItemListDiv = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
   background-color: white;
   color: black;
   padding: 15px;
   border-radius: 3px;
   font-size: 1.2em;
+  flex: 1 1 auto;
+  & ~ & {
+  margin-left: 10px;
+  }
 `
+
+const ItemsContainer = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+`
+
 const ItemsDiv = styled.div`
   flex: 0 1 20%;
   margin-right: 20px;
@@ -45,7 +62,7 @@ const NewItemButton = styled.div`
   }
 `
 
-function ItemList({ items=null }) {
+function ItemList({ items=null, type, title }) {
   const dispatch = useDispatch();
   const [selectedItem, setSelectedItem] = useState(null);
   const [filteredItems, setFilteredItems] = useState([]);
@@ -57,42 +74,83 @@ function ItemList({ items=null }) {
   }
 
   function deleteItem(itemId) {
-    dispatch(deleteQualityFromCreate(itemId))
+    dispatch(deleteSomethingFromCreate({id: itemId, type}));
     setSelectedItem(null);
   }
   
   function liveFilter(evt) {
     setFilterField(evt.target.value);
-    const filterResults = items.filter(item => item.name.toLowerCase().includes(filterField.toLowerCase()))
+    let filterResults = [];
+
+    if (type==="qualities"){
+      filterResults = items.filter(item => item.name.toLowerCase().includes(filterField.toLowerCase()))
+    }
+    else if (type==="domains" || type==="actions") {
+      filterResults = items.filter(item => item.title.toLowerCase().includes(filterField.toLowerCase()))
+    }
     setFilteredItems(filterResults)
   }
 
   function addNew() {
-    const newItem = {
-      id: uuidv4(),
-      name: 'New Item',
-      description: '',
-      block: '',
+    let newItem;
+    if (type==="qualities") {
+      newItem = {
+        id: uuidv4(),
+        name: 'New Quality',
+        description: '',
+        block: '',
+      }
+      dispatch(addQualityToCreate(newItem));
+    } else if (type==='domains') {
+      let nextId = 2;
+      items.forEach(domain => {
+        if (domain.id >= nextId) nextId = domain.id + 1;
+      })
+      newItem = {
+        id: nextId,
+        title: 'New Domain',
+        description: '',
+        actions: [],
+        locked: false,
+      }
+      dispatch(addDomainToCreate(newItem));
+    } else if (type==='actions') {
+      newItem = {
+        id: uuidv4(),
+        title: 'New Action',
+        description: '',
+        type: "modify",
+        results: [],
+        reqs: [],
+      }
+      dispatch(addActionToCreate(newItem));
     }
-
-    dispatch(addQualityToCreate(newItem));
+    
     setSelectedItem(newItem);
   }
 
-  const displayedItems = filterField.length > 2 ? filteredItems.map(item => <Item key={item.id} data={item} select={selectItem} />) : items.map(item => <Item key={item.id} data={item} select={selectItem} />)
+  const displayedItems = filterField.length > 2 ? filteredItems.map(item => <Item key={item.id} data={item} type={type} select={selectItem} />) : items.map(item => <Item key={item.id} data={item} select={selectItem} type={type} />)
+  let activeForm;
+  if (type === "qualities") activeForm =  <QualityForm data={selectedItem} deleteItem={deleteItem} />
+  else if (type === "domains") activeForm =  <DomainForm data={selectedItem} deleteItem={deleteItem} />
+  else if (type === "actions") activeForm =  <ActionForm data={selectedItem} deleteItem={deleteItem} />
+  else if (type === "storylets") activeForm =  <StoryletForm data={selectedItem} deleteItem={deleteItem} />
 
   if (items) {
     return (
       <ItemListDiv>
-        <ItemsDiv>
-          <form autoComplete="off">
-            <label htmlFor="filter">Filter:
-            <input type="text" name="filter" onChange={liveFilter} value={filterField} /></label>
-          </form>
-          {displayedItems}
-          <NewItemButton onClick={addNew}><p>+ Add New</p></NewItemButton>
-        </ItemsDiv>
-        <QualityForm data={selectedItem} deleteItem={deleteItem} />
+        <CreateTitle>{title}</CreateTitle>
+        <ItemsContainer> 
+          <ItemsDiv>
+            <form autoComplete="off">
+              <label htmlFor="filter">Filter:
+              <input type="text" name="filter" onChange={liveFilter} value={filterField} /></label>
+            </form>
+            {displayedItems}
+            <NewItemButton onClick={addNew}><p>+ Add New</p></NewItemButton>
+          </ItemsDiv>
+         {activeForm}
+        </ItemsContainer> 
       </ItemListDiv>
     )
   }
