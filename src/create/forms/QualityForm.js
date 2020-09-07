@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 
-import { green } from '../../typography/colors';
 import { addQualityToCreate } from '../createToolsSlice';
 import { CreateFormDiv } from './formStyles';
 
