@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
-import { setQualities } from '../qualities/qualitySlice';
 import { setAllQualities } from '../player/playerSlice';
 import QualitiesAPI from '../utilities/QualitiesAPI';
 //import GameAPI from '../utilities/GameAPI';

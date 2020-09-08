@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 import Quality from './Quality';
 import { SidebarTitle } from '../typography/typography';
-import { getLowestValueFromMap } from '../utilities/utilityFunctions';
 
 const QualityBlockDiv = styled.div`
   & ~ & {

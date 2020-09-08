@@ -4,12 +4,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 
-import QualitiesAPI from "../utilities/QualitiesAPI";
 import { Subtitle, ActionText } from '../typography/typography';
 import { showTooltip, hideTooltip } from '../tooltip/tooltipSlice';
-import { adjustQualityByValue, setQualityToValue } from '../qualities/qualitySlice';
-import { setActiveStorylet, setActiveReport, clearActiveStorylet } from '../domain/domainSlice';
-import StoriesAPI from '../utilities/StoriesAPI';
 import background from '../assets/backgrounds/spiration-light.png'
 
 const ActionDiv = styled.div`

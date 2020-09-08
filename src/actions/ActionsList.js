@@ -1,17 +1,12 @@
 /** Holds individual actions or a message indicating no actions are available.
  */
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { useSelector, useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 
 import Action from "./Action";
-import { requirementsMet, challengeRequirementsMet } from '../utilities/utilityFunctions';
-import { selectQualities } from '../qualities/qualitySlice';
-import { selectDomain } from '../domain/domainSlice';
-import { SidebarTitle, Text } from '../typography/typography';
-import QualitiesAPI from '../utilities/QualitiesAPI';
+import { SidebarTitle } from '../typography/typography';
 import ActionSlot from './ActionSlot';
 
 const ActionListDiv = styled.div`
@@ -28,26 +23,11 @@ function ActionList({
   selectAction,
   possibleActionsCount=0,
 }) {
-  const dispatch = useDispatch();
-
-  function newGame() {
-    localStorage.clear();
-    window.location.reload();
-  }
   
   let displayedSlots = [];
   for (let i = 0; i < slots; i++) {
     displayedSlots.push(<ActionSlot key={uuidv4()} selectSlot={selectSlot} />)
   }
-
-  // if ( availableActions.length < 1) {
-  //   return (
-  //     <ActionListDiv>
-  //       <Text>No actions available. I guess you won...?</Text>
-  //       <button onClick={newGame}>Clear data.</button>
-  //     </ActionListDiv>
-  //   );
-  // }
   
   return (
     <ActionListDiv>
