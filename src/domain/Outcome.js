@@ -5,8 +5,9 @@ import { SidebarText } from '../typography/typography';
 
 const OutcomeDiv = styled.div`
   &~& {
-    margin-top: 6px;
+    margin-top: 6px
   }
+
 `;
 
 function Outcome({ text }) {

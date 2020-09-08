@@ -6,7 +6,7 @@ const Title = styled.p`
 `
 const Subtitle = styled.p`
   font-family:'IBMPlexSerif', serif;
-  font-size: 2.2em;
+  font-size: 1.8em;
   font-weight: 400;
 `
 
@@ -15,6 +15,13 @@ const Text = styled.p`
   font-size: 1.7em;
   font-weight: 400;
 `
+
+const ActionText = styled.p`
+  font-family:'IBMPlexSerif', serif;
+  font-size: 1.4em;
+  font-weight: 400;
+`;
+
 const TooltipText = styled.p`
   font-family:'IBMPlexSerif', serif;
   font-size: 1.4em;
@@ -24,6 +31,7 @@ const TooltipText = styled.p`
 const SidebarTitle = styled.p`
   font-family: 'Alata', sans-serif;
   font-size: 2.2em;
+  text-align: center;
 `
 const SidebarSubtitle = styled.p`
   font-family:'IBMPlexSerif', serif;
@@ -33,7 +41,7 @@ const SidebarSubtitle = styled.p`
 
 const SidebarText = styled.p`
   font-family:'IBMPlexSerif', serif;
-  font-size: 1.4em;
+  font-size: 1.3em;
   font-weight: 400;
 `
 const CreateTitle = styled.p`
@@ -43,4 +51,14 @@ const CreateTitle = styled.p`
 `
 
 
-export { Title, Subtitle, Text, TooltipText, CreateTitle, SidebarTitle, SidebarSubtitle, SidebarText }
+export {
+  Title, 
+  Subtitle, 
+  Text, 
+  TooltipText,
+  ActionText, 
+  CreateTitle, 
+  SidebarTitle, 
+  SidebarSubtitle, 
+  SidebarText, 
+}

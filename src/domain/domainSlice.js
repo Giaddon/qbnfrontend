@@ -6,24 +6,30 @@ export const domainSlice = createSlice({
   name: 'domain',
   initialState: {
     activeDomain: null,
-    activeStorylet: null,
+    activeContext: null,
     activeReport: null,
   },
   reducers: {
     setActiveDomain: (state, action) => {state.activeDomain = action.payload;},
-    setActiveStorylet: (state, action) => {state.activeStorylet = action.payload},
+    setActiveContext: (state, action) => {state.activeContext = action.payload},
     setActiveReport: (state, action) => {state.activeReport = action.payload},
-    clearActiveStorylet: (state) => {state.activeStorylet = null},
+    clearActiveContext: (state) => {state.activeContext = null},
     clearActiveReport: (state) => {state.activeReport = null},
+    possibleActionDiscovered: (state, action) => {
+      const { remainingPossibleActions, newDiscoveredActions } = action.payload;
+      state.activeDomain.discoveredActions = newDiscoveredActions;
+      state.activeDomain.possibleActions = remainingPossibleActions;
+    }
   },
 });
 
 export const {
   setActiveDomain,
-  setActiveStorylet,
-  clearActiveStorylet,
+  setActiveContext,
+  clearActiveContext,
   setActiveReport,
   clearActiveReport,
+  possibleActionDiscovered,
 } = domainSlice.actions;
 
 export const selectDomain = state => state.domain;

@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 import {SidebarTitle } from '../typography/typography';
-import { clearActiveStorylet } from '../domain/domainSlice';
+import { clearActiveContext } from '../domain/domainSlice';
 
 const BackButtonDiv = styled.div`
   background-color: tomato;
@@ -18,7 +18,11 @@ function BackButton() {
   const dispatch = useDispatch();
   
   function clickBack() {
-    dispatch(clearActiveStorylet());
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+    dispatch(clearActiveContext());
   }
 
   return (

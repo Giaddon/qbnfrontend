@@ -1,22 +1,27 @@
-/** Utility class for the faux API. Will be overhauled when we have a real backend. */
+/** Utility class for the faux API. Will be overhauled if we have a real backend. */
 
-import { qualities } from '../data/world.js';
+import { qualities } from '../data/qualities.js';
+import QualityData from '../dataclasses/QualityData';
 
 class QualitiesAPI {
+
   static getAll() {
     return qualities;
   }
-  
+
   static getStarting() {
-        let startingQualities = {};
-        Object.values(qualities).forEach(quality => {
-          if (quality.value > 0) startingQualities[quality.id] = quality;
-        })
-        return startingQualities;  
+    let startingQualities = {};
+    Object.values(qualities).forEach(quality => {
+      if (quality.value > 0) {
+        let newQuality = QualityData.processAltText(quality);
+        startingQualities[newQuality.id] = newQuality;
+      }
+    })
+    return startingQualities;
   }
 
-  static getById(id) {
-    return qualities[id];
+  static getQualityById(id) {
+    return {...qualities[id]};
   }
 }
 

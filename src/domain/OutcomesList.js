@@ -18,13 +18,17 @@ const OutcomesListDiv = styled.div`
 function OutcomesList() {
   const domain = useSelector(selectDomain);
   
-  return (
-    <OutcomesListDiv>
-      {domain.activeReport.outcomes.map(
-        outcome => <Outcome key={outcome} text={outcome} />
-      )}
-    </OutcomesListDiv>
-  )
+  if(domain.activeReport?.outcomes?.length > 0) {
+
+    return (
+      <OutcomesListDiv>
+        {domain.activeReport.outcomes.map(
+          outcome => <Outcome key={outcome} text={outcome} />
+        )}
+      </OutcomesListDiv>
+    )
+  } else return null;
+
 }
 
 

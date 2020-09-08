@@ -21,7 +21,7 @@ const QualityDiv = styled.div`
 function Quality({ 
   id="noidfound",
   name="Unidentified Quality",
-  description="Quality not found.", 
+  description="", 
   value=1,
   change=null, 
   tooltip="" 

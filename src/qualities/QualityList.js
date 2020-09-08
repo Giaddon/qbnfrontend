@@ -5,33 +5,32 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import QualityBlock from './QualityBlock';
-import { SidebarText } from '../typography/typography';
-import { selectQualities } from './qualitySlice';
+import { SidebarText, SidebarTitle } from '../typography/typography';
+import { selectQualities } from '../player/playerSlice';
 
 const QualityListDiv = styled.div`
-
+  
 `
 
 function QualityList() {  
-  const [blocks, setBlocks] = useState([]);  
+  const [categories, setCategories] = useState([]);  
   const qualities = useSelector(selectQualities);
-
 
   useEffect(() => {
     function makeReactBlocks(qualitiesArray) {
-      let blocks = {};
+      let categories = {};
       for (let quality of qualitiesArray) {
         if(!quality.invisible) {
-          let block = quality.block;   
-          if (blocks[block]) {
-            blocks[block].push(quality);
+          let category = quality.category || '';   
+          if (categories[category]) {
+            categories[category].push(quality);
           } else {
-            blocks[block] = [quality];
+            categories[category] = [quality];
           }
         }
       }
       let reactBlocks = [];
-      for (let [key, value] of Object.entries(blocks)) {
+      for (let [key, value] of Object.entries(categories)) {
         reactBlocks.push(<QualityBlock key={key} name={key} qualities={value} />)
       }
 
@@ -40,14 +39,15 @@ function QualityList() {
       
     if (qualities) {
       let displayBlocks = makeReactBlocks(Object.values(qualities));
-      setBlocks(displayBlocks);
+      setCategories(displayBlocks);
     }
   }, [qualities])
   
   return (
     <QualityListDiv>
-      {blocks.length > 0
-        ? blocks
+      <SidebarTitle>Qualities</SidebarTitle>
+      {categories.length > 0
+        ? categories
         : <SidebarText>You are a person without qualities.</SidebarText>
       }
     </QualityListDiv>

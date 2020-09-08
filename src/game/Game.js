@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 import { setQualities } from '../qualities/qualitySlice';
+import { setAllQualities } from '../player/playerSlice';
 import QualitiesAPI from '../utilities/QualitiesAPI';
 //import GameAPI from '../utilities/GameAPI';
 import Sidebar from '../interface/Sidebar';
@@ -32,21 +33,19 @@ function Game() {
     //const gameData = GameAPI.loadGame();
     //if (gameData) dispatch(setQualities(gameData));
     //else {
-    
-    
-    
     const startingQualities = QualitiesAPI.getStarting();
-    dispatch(setQualities(startingQualities));
+    dispatch(setAllQualities(startingQualities));
+    
     setLoaded(true);
   }, [dispatch]);
 
   if(loaded) {
     return (
       <GameDiv>
-        <NavBar />
         <Sidebar />
         <Domain />
-        <Tooltip />
+        <NavBar />
+        <Tooltip /> 
       </GameDiv>
     )
   }

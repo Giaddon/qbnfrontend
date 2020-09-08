@@ -14,6 +14,7 @@ const ContinueButtonDiv = styled.div`
   text-align: center;
   padding: 2px;
   cursor: pointer;
+  margin-top: 10px;
 `;
 
 function ContinueButton() {
