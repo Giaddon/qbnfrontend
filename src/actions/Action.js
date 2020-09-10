@@ -45,7 +45,9 @@ function Action({
   const dispatch = useDispatch();
 
   function clickAction() {
+    if (!disabled) {
     selectAction(id)
+  }
   }
 
   return (

@@ -32,7 +32,7 @@ function NewActionForm({ data, createData }) {
     successText: data.results?.success?.report?.text || "Success text.",
     failureTitle: data.results?.failure?.report?.title || "Report Title",
     failureText: data.results?.failure?.report?.text || "Failure text.",
-    luck: data.results?.luck || false,
+    luck: data.challenge?.luck || false,
     reqs: data.reqs || [],
   }
 
@@ -67,11 +67,11 @@ function NewActionForm({ data, createData }) {
         break;
       
       case "challenge":
-        newAction.results.luck = values.luck;
         newAction.results.remain = values.remain;
         newAction.challenge = {
           qualityId: values.challengeQuality, 
           difficulty: values.challengeDifficulty, 
+          luck: values.luck,
         };
         newAction.results.success = {
           remain: values.remain,
@@ -147,7 +147,7 @@ function NewActionForm({ data, createData }) {
                         <Field name={`changes.${index}.type`} as="select">
                           <option value="adjust">Adjust</option>
                           <option value="set">Set</option>
-                          <option value="precent">Percentage</option>
+                          <option value="percent">Percentage</option>
                           <option value="range">Range</option>
                         </Field>
                         
@@ -168,7 +168,7 @@ function NewActionForm({ data, createData }) {
                       </FormArrayElementDiv>
                     ))}
                   </FormArrayDiv>
-                  <button type="button" onClick={() => push({ id: '', type: 'adjust', value: 0, max: 1 })}>
+                  <button type="button" onClick={() => push({ id: 'domain', type: 'adjust', value: 0, max: 1 })}>
                     Add a Change
                   </button>
                 </FormDividerDiv>
@@ -237,7 +237,7 @@ function NewActionForm({ data, createData }) {
                         <Field name={`successChanges.${index}.type`} as="select">
                           <option value="adjust">Adjust</option>
                           <option value="set">Set</option>
-                          <option value="precent">Percentage</option>
+                          <option value="percent">Percentage</option>
                           <option value="range">Range</option>
                         </Field>
                         
@@ -258,7 +258,7 @@ function NewActionForm({ data, createData }) {
                       </FormArrayElementDiv>
                     ))}
                   </FormArrayDiv>
-                  <button type="button" onClick={() => push({ id: '', type: 'adjust', value: 0, max: 1 })}>
+                  <button type="button" onClick={() => push({ id: 'domain', type: 'adjust', value: 0, max: 1 })}>
                     Add a Change
                   </button>
                 </FormDividerDiv>
@@ -292,7 +292,7 @@ function NewActionForm({ data, createData }) {
                         <Field name={`failureChanges.${index}.type`} as="select">
                           <option value="adjust">Adjust</option>
                           <option value="set">Set</option>
-                          <option value="precent">Percentage</option>
+                          <option value="percent">Percentage</option>
                           <option value="range">Range</option>
                         </Field>
                         
@@ -313,7 +313,7 @@ function NewActionForm({ data, createData }) {
                       </FormArrayElementDiv>
                     ))}
                   </FormArrayDiv>
-                  <button type="button" onClick={() => push({ id: '', type: 'adjust', value: 0, max: 1 })}>
+                  <button type="button" onClick={() => push({ id: 'domain', type: 'adjust', value: 0, max: 1 })}>
                     Add a Change
                   </button>
                 </FormDividerDiv>
@@ -338,8 +338,8 @@ function NewActionForm({ data, createData }) {
                   <FormArrayDiv>
                     {values.reqs.map((req, index) => (
                       <FormArrayElementDiv key={index}>  
-                        <label htmlFor={`reqs.${index}.id`}>Quality</label>
-                        <Field name={`reqs.${index}.id`} as="select">
+                        <label htmlFor={`reqs.${index}.qualityId`}>Quality</label>
+                        <Field name={`reqs.${index}.qualityId`} as="select">
                         {Object.values(createData.qualities).map(quality =>
                           <option key={quality.id} value={quality.id}>{quality.name}</option>
                         )}
@@ -357,7 +357,7 @@ function NewActionForm({ data, createData }) {
                     </FormArrayElementDiv>  
                   ))}
                   </FormArrayDiv>
-                  <button type="button" onClick={() => push({ id: '', min: 0, max: 0 })}>
+                  <button type="button" onClick={() => push({ qualityId:'domain', min: 0, max: null })}>
                     Add a Requirement
                   </button>
                 </FormDividerDiv>

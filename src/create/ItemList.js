@@ -51,7 +51,7 @@ const NewItemButton = styled.div`
   height: 30px;
   color: white;
   background-color: ${green};
-  margin-top:10px;
+  margin: 10px 0px;
   cursor:pointer;
   border-radius: 3px;
   p {
@@ -160,7 +160,7 @@ function ItemList({ items=null, type, title }) {
         reqs: [],
       }
       dispatch(addActionToCreate(newItem));
-    } else if (type==='context') {
+    } else if (type==='contexts') {
     newItem = {
       id: uuidv4(),
       title: 'New Context',
@@ -192,8 +192,8 @@ function ItemList({ items=null, type, title }) {
               <label htmlFor="filter">Filter:
               <input type="text" name="filter" onChange={liveFilter} value={filterField} /></label>
             </form>
-            {displayedItems}
             <NewItemButton onClick={addNew}><p>+ Add New</p></NewItemButton>
+            {displayedItems}
           </ItemsDiv>
          {activeForm}
         </ItemsContainer> 

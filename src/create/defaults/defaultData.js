@@ -101,10 +101,11 @@ const defaultActions = {
     reveal: {
       type: "always"
     },
-    reqs: [
+    challenge: [
       {
         qualityId: 1,
-        difficulty: 2
+        difficulty: 2,
+        luck: false,
       },
     ],
     results: {

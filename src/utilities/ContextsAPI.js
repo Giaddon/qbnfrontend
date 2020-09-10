@@ -8,13 +8,15 @@ class ContextsAPI {
   }
   static getContextById(contextId) {
     let data = localStorage.getItem("data");
-    if (data) data = JSON.parse(data);
-    if (data.source==="storage") {
-      console.log("searching for context ", contextId);
-      const stringContexts = localStorage.getItem("playcontexts");
-      const parsedContexts = JSON.parse(stringContexts);
-      return {...parsedContexts[contextId]}
-    } else {
+    if (data) { 
+      data = JSON.parse(data);
+      if (data.source==="storage") {
+        console.log("searching for context ", contextId);
+        const stringContexts = localStorage.getItem("playcontexts");
+        const parsedContexts = JSON.parse(stringContexts);
+        return {...parsedContexts[contextId]}
+      }
+      } else {
       return {...contexts[contextId]};
     }
   }

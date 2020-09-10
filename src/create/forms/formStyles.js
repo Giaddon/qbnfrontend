@@ -19,7 +19,7 @@ const CreateFormDiv = styled.div`
     font-family: "IBMPlexSerif", serif
   }
   input[type=number] {
-    width: 50px;
+    width: 70px;
   }
 
   textarea{ 

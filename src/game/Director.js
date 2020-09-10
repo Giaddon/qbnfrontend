@@ -75,7 +75,7 @@ function Director() {
       setQualitiesChanged(false);
     }
 
-  }, [qualities, domain.activeContext, domain.activeDomain, qualitiesChanged, dispatch]);
+  }, [qualities, domain.activeContext, domain.activeDomain, qualitiesChanged, discoveredActions, dispatch]);
 
   return <Domain />
 }

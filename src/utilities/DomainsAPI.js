@@ -9,11 +9,13 @@ class DomainsAPI {
   
   static getDomainById(id) {
     let data = localStorage.getItem("data");
-    if (data) data = JSON.parse(data);
-    if (data.source === "storage") {
-      const stringDomains = localStorage.getItem("playdomains");
-      const parsedDomains = JSON.parse(stringDomains);
-      return {...parsedDomains[id]};
+    if (data) {
+      data = JSON.parse(data);
+      if (data.source === "storage") {
+        const stringDomains = localStorage.getItem("playdomains");
+        const parsedDomains = JSON.parse(stringDomains);
+        return {...parsedDomains[id]};
+      }
     } else {
       return {...domains[id]};
     }

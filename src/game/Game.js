@@ -4,10 +4,8 @@ import styled from 'styled-components';
 
 import { setAllQualities } from '../player/playerSlice';
 import QualitiesAPI from '../utilities/QualitiesAPI';
-//import GameAPI from '../utilities/GameAPI';
 import Sidebar from '../interface/Sidebar';
 import NavBar from '../interface/NavBar';
-import Domain from '../domain/Domain';
 import Tooltip from '../tooltip/Tooltip';
 import background from '../assets/backgrounds/ripples.png';
 import Director from './Director';

@@ -14,13 +14,12 @@ class DirectorFunctions {
     const quality = QualitiesAPI.getQualityById(qualityId);
     
     let qualityValue = qualities[qualityId]?.value || 0;
-    
-    
-    
-    if (qualityValue < difficulty) {
+    if (originalAction.challenge.luck) {
+      odds = difficulty;
+      oddsDescription = `\n\nThis challenge is pure luck. There is a ${difficulty}% chance it will go in your favor.`
+    } else if (qualityValue < difficulty) {
       passed = false;
       oddsDescription = `\n\nThis is a ${quality.name} challenge.\nYour ${quality.name} is too low to make an attempt.`
-      console.log("got below odds description update")
     } else {
       odds = 50;
       let attempts = qualityValue;
@@ -36,6 +35,8 @@ class DirectorFunctions {
   
     tooltip = `You need ${quality.name} of at least ${difficulty} to attempt this challenge. (You have ${qualityValue}).`;
     
+    if (originalAction.challenge.luck) tooltip = `This is a challenge of pure luck. There is a ${difficulty}% chance it will go in your favor.`;
+
     action.odds = odds;
     action.tooltip = tooltip;
     action.text += oddsDescription;

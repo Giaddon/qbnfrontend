@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 import { Title, Text } from '../typography/typography';
 import {
-  setActiveDomain, 
   selectDomain, 
   possibleActionDiscovered,
   setActiveContext, 
@@ -20,7 +19,6 @@ import {
   selectDiscoveredActions,
 } from '../player/playerSlice';
 import { hideTooltip } from '../tooltip/tooltipSlice';
-import DomainsAPI from '../utilities/DomainsAPI'; 
 import ActionList from '../actions/ActionsList';
 import BackButton from './BackButton';
 import ContinueButton from './ContinueButton';
@@ -69,44 +67,45 @@ function Domain() {
 
   function applyActionResults(results) {
     let outcomes = [];
+
     for (let change of results.changes) {
       const { id, value } = change;
       let copiedQuality = qualities[id] ? {...qualities[id]} : QualitiesAPI.getQualityById(id);
       let outcome = '';
       if(!copiedQuality.value) { 
         copiedQuality.value = 0;
+      } 
+      if (change.type==="adjust") {
         copiedQuality.value += value;
         if (!copiedQuality.invisible) outcome = `${copiedQuality.name} ${value > 0 ? "increased" : "decreased"} by ${value}.`
-      } else {
-        if (change.type==="adjust") {
-          copiedQuality.value += value;
-          if (!copiedQuality.invisible) outcome = `${copiedQuality.name} ${value > 0 ? "increased" : "decreased"} by ${value}.`
-        } 
-        else if (change.type==="set") { 
-          copiedQuality.value = value;
-          if (!copiedQuality.invisible) outcome = `${copiedQuality.name} is now ${value}.`;
-        }
-      }
-
+      } else if (change.type==="set") { 
+        copiedQuality.value = value;
+        if (!copiedQuality.invisible) outcome = `${copiedQuality.name} is now ${value}.`;
+      } else if (change.type==="range") { 
+        const result = Math.floor(Math.random() * (change.max+1 - value) + value);
+        copiedQuality.value = result;
+        if (!copiedQuality.invisible) outcome = `${copiedQuality.name} is now ${result}.`;
+      } else if (change.type==="percent") { 
+        copiedQuality.value = Math.ceil(copiedQuality.value + (copiedQuality.value * (value/100)));
+        if (!copiedQuality.invisible) outcome = `${copiedQuality.name} ${value > 0 ? "increased" : "decreased"} by ${value} percent.`;
+      } 
       if (copiedQuality.value === 0) {
         if (!copiedQuality.invisible) outcome = `You have lost all ${copiedQuality.name}!`;
         dispatch(removeQuality(id));
       } 
-      
+    
       else {
         const quality = QualityData.processAltText(copiedQuality);
         dispatch(setQuality({id, quality}));
       }        
       outcomes.push(outcome);
-    }
-
+    }// end of change loop  
     if(!results.hide) {
       const newReport = { ...results.report, outcomes }
       dispatch(setActiveReport(newReport));
     }
 
     if(!results.remain) {
-      console.log("Got to clear context.", results)
       dispatch(clearActiveContext());
     }
   }
@@ -118,8 +117,7 @@ function Domain() {
     });
     
     let selectedAction;
-    let selectedDynamic = false;
-
+    let selectedDiscovered;
     if (domain.activeContext) selectedAction = domain.activeContext.availableActions.filter(action => action.id === actionId)[0]
     else {
       const inStatic = domain.activeDomain.availableActions.filter(action => action.id === actionId);
@@ -127,15 +125,19 @@ function Domain() {
       else {
         selectedAction = domain.activeDomain.discoveredActions.filter(action => action.id === actionId)[0];
         dispatch(setActiveDynamicToId(selectedAction.id));
-        selectedDynamic = true;
+        selectedDiscovered = selectedAction.id;
       } 
     }
     const results = selectedAction.results;
     
     switch (results.type) {
       case "modify":  
-        if (domain.activeDynamic || selectedDynamic) {
-          const newDiscoveredActions = discoveredActions[domain.activeDomain.id].filter(a => a.id !== (domain.activeDynamic || selectedAction.id));
+        if (domain.activeDynamic) {
+          const newDiscoveredActions = discoveredActions[domain.activeDomain.id].filter(a => a.id !== (domain.activeDynamic));
+          dispatch(setDiscoveredActionsByDomainId({domainId: domain.activeDomain.id, actions: newDiscoveredActions}));
+        }
+        else if (selectedDiscovered) {
+          const newDiscoveredActions = discoveredActions[domain.activeDomain.id].filter(a => a.id !== (selectedDiscovered));
           dispatch(setDiscoveredActionsByDomainId({domainId: domain.activeDomain.id, actions: newDiscoveredActions}));
         }
       
@@ -153,15 +155,17 @@ function Domain() {
         break;
 
       case "challenge":
-        
-        if (domain.activeDynamic || selectedDynamic) {
+        if (domain.activeDynamic) {
           const newDiscoveredActions = discoveredActions[domain.activeDomain.id].filter(a => (a.id !== (domain.activeDynamic || selectedAction.id)));
-          console.log("New discovered actions", newDiscoveredActions);
+          dispatch(setDiscoveredActionsByDomainId({domainId: domain.activeDomain.id, actions: newDiscoveredActions}));
+        }
+        else if (selectedDiscovered) {
+          const newDiscoveredActions = discoveredActions[domain.activeDomain.id].filter(a => a.id !== (selectedDiscovered));
           dispatch(setDiscoveredActionsByDomainId({domainId: domain.activeDomain.id, actions: newDiscoveredActions}));
         }
 
         const outcome = Math.floor(Math.random() * 101); 
-        console.log(`${selectedAction.odds} vs ${outcome}`);
+        console.log(`Challenge: ${selectedAction.odds} vs ${outcome}`);
         if (selectedAction.odds > outcome ) applyActionResults(selectedAction.results.success);
         else applyActionResults(selectedAction.results.failure);
         
@@ -201,7 +205,10 @@ function Domain() {
     )
   }
 
+  
+
   if (domain.activeDomain) {
+    const calculatedSlots = Math.min((domain.activeDomain.possibleActions?.length || 0),(domain.activeDomain.slotsCount - (domain.activeDomain.discoveredActions?.length || 0)));
     return (
       <DomainDiv>
         <HeaderDiv>
@@ -212,7 +219,7 @@ function Domain() {
           availableActions={domain.activeDomain.availableActions} 
           unavailableActions={domain.activeDomain.lockedActions}
           discoveredActions={domain.activeDomain.discoveredActions}
-          slots={Math.min(domain.activeDomain.slotsCount, domain.activeDomain.possibleActions?.length) - (domain.activeDomain.discoveredActions?.length || 0)}
+          slots={calculatedSlots}
           selectSlot={consumeSelectSlot}
           selectAction={consumeSelectAction}
           possibleActionsCount={domain.activeDomain.possibleActions?.length || 0}
