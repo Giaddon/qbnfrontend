@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 import {SidebarTitle } from '../typography/typography';
-import { clearActiveContext } from '../domain/domainSlice';
+import { clearActiveContext, clearActiveDynamic } from '../domain/domainSlice';
 
 const BackButtonDiv = styled.div`
   background-color: tomato;
@@ -22,6 +22,7 @@ function BackButton() {
       top: 0,
       behavior: "smooth"
     });
+    dispatch(clearActiveDynamic());
     dispatch(clearActiveContext());
   }
 

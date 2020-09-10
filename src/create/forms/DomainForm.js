@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form, Field, FieldArray, ErrorMessage } from 'formik';
 
 import { addDomainToCreate, selectCreate } from '../createToolsSlice';
-import { CreateFormDiv, FormDividerDiv } from './formStyles';
+import { CreateFormDiv, FormDividerDiv, FormSectionTitle } from './formStyles';
 
 const FormDeleteButton = styled.div`
   position: relative;
@@ -33,8 +33,10 @@ function DomainForm({ data, deleteItem }) {
     const newDomain = {
       id: data.id,
       title: values.domainTitle,
-      description: values.domainDescription,
-      actions: values.actions,
+      text: values.domainText,
+      staticActions: values.domainStaticActions,
+      dynamicActions: values.domainDynamicActions,
+      slotsCount: values.domainSlots,
       locked: values.domainLocked || false,
     }
     
@@ -54,18 +56,20 @@ function DomainForm({ data, deleteItem }) {
       <Formik
         initialValues={{
           domainTitle: data.title || '', 
-          domainDescription: data.description || '',
+          domainText: data.text || '',
           domainLocked: data.locked || false,
-          actions: data.actions || [
+          domainSlots: data.slotsCount === 0 ? 0 : 2,
+          domainStaticActions: data.staticActions || [
             {id: '1'},
-          ]
+          ],
+          domainDynamicActions: data.dynamicActions?.length > 0 ? data.dynamicActions :   [],
         }}
         validate={null}
         onSubmit={(values, actions) => {
           setTimeout(() => {
             submitForm(values)
             actions.setSubmitting(false);
-          }, 500);
+          }, 400);
         }}
         enableReinitialize={true}
       >
@@ -83,39 +87,72 @@ function DomainForm({ data, deleteItem }) {
             <Field type="text" name="domainTitle" />
             <ErrorMessage name="domainTitle" component="div" />
             
-            <label htmlFor="domainDescription">Description</label>
-            <Field as="textarea" name="domainDescription" />
-            <ErrorMessage name="domainDescription" component="div" />
+            <label htmlFor="domainText">Text</label>
+            <Field as="textarea" name="domainText" />
+            <ErrorMessage name="domainText" component="div" />
             
-            <label htmlFor="domainLocked" style={{ display: "block" }}>
-              Locked</label> 
+            <label htmlFor="domainLocked">Locked</label> 
             <Field type='checkbox' name="domainLocked" />
-            <ErrorMessage name="qbnCreateQualityLocked" component="div" />
+            <ErrorMessage name="domainLocked" component="div" />
             
-            <label htmlFor="actions">Actions</label>
-            <FieldArray name="actions">
-              {({ insert, remove, push }) => (
-                <div>
-                  {values.actions.length > 0 &&
-                    values.actions.map((actions, index) => (
-                      <FormDividerDiv key={index}>
-                        <label htmlFor={`actions.${index}.id`}>Action</label>
-                        <Field name={`actions.${index}.id`} as="select">
-                          {Object.values(createData.actions).map(action =>
-                            <option key={action.id} value={action.id}>{action.title} (id: {action.id})</option>
-                          )}
-                        </Field>
-                        <button type="button" onClick={() => remove(index)}>
-                          Remove Change
-                        </button>
-                      </FormDividerDiv>
-                    ))}
-                  <button type="button" onClick={() => push({ id: ''})}>
-                    Add an Action
-                  </button>
-                </div>
-              )}
-            </FieldArray>
+            <label htmlFor="domainSlots">Available Slots</label> 
+            <Field type='number' min="0" name="domainSlots" />
+            <ErrorMessage name="domainSlots" component="div" />
+
+            <FormDividerDiv>
+              <FormSectionTitle htmlFor="domainStaticActions">Static Actions</FormSectionTitle>
+              <FieldArray name="domainStaticActions">
+                {({ insert, remove, push }) => (
+                  <div>
+                    {values.domainStaticActions.length > 0 &&
+                      values.domainStaticActions.map((actions, index) => (
+                        <div key={index}>
+                          <label htmlFor={`domainStaticActions.${index}.id`}>Action</label>
+                          <Field name={`domainStaticActions.${index}.id`} as="select">
+                            {Object.values(createData.actions).map(action =>
+                              <option key={action.id} value={action.id}>{action.title} (id: {action.id})</option>
+                            )}
+                          </Field>
+                          <button type="button" onClick={() => remove(index)}>
+                            Remove Action
+                          </button>
+                        </div>
+                      ))}
+                    <button type="button" onClick={() => push({id: ''})}>
+                      Add an Action
+                    </button>
+                  </div>
+                )}
+              </FieldArray>
+            </FormDividerDiv>
+
+            <FormDividerDiv>
+              <FormSectionTitle htmlFor="domainDynamicActions">Dynamic Actions</FormSectionTitle>
+              <FieldArray name="domainDynamicActions">
+                {({ insert, remove, push }) => (
+                  <div>
+                    {values.domainDynamicActions.length > 0 &&
+                      values.domainDynamicActions.map((actions, index) => (
+                        <div key={index}>
+                          <label htmlFor={`domainDynamicActions.${index}.id`}>Action</label>
+                          <Field name={`domainDynamicActions.${index}.id`} as="select">
+                            {Object.values(createData.actions).map(action =>
+                              <option key={action.id} value={action.id}>{action.title} (id: {action.id})</option>
+                            )}
+                          </Field>
+                          <button type="button" onClick={() => remove(index)}>
+                            Remove Action
+                          </button>
+                        </div>
+                      ))}
+                    <button type="button" onClick={() => push({ id: ''})}>
+                      Add an Action
+                    </button>
+                  </div>
+                )}
+              </FieldArray>
+            </FormDividerDiv>
+
             <button type="submit" disabled={isSubmitting}>
               Submit
             </button>

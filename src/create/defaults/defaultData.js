@@ -1,125 +1,152 @@
 const defaultQualities = {
   domain: {
-    id: 'domain',
+    id: "domain",
     name: "Domain",
+    category: "Location",
     value: 1,
-    invisible: true,
-    
+    descriptions: [
+      {
+        value: 1,
+        description: "The current domain.",
+      },
+    ],
+    alts: [
+      {
+        value: 1,
+        alt: "The start of the story.",
+      },
+    ],
+    invisibile: true,
   },
 
+  "1": {
+    id: "1",
+    name: "Coins",
+    category: "Money",
+    value: 0,
+    descriptions: [
+      {
+        value: 1,
+        description: "A single, solitary coin. Almost sad.",
+      },
+      {
+        value: 3,
+        description: "Enough to jingle, at least.",
+      },
+      {
+        value: 5,
+        description: "A shining heap!",
+      },
+    ],
+    alts: [],
+    invisibile: false,
+  },
 }
 
 const defaultDomains = {
   1: {
     id: 1,
-    title: "A beginning.",
-    description: "Something is starting.",
-    locked: true,
-    actions: [
-      {id: "2"}
-    ],
-  },
-}
-
-const defaultStorylets = {
-  1: {
-    id: "1",
-    title: "The first storylet",
-    description: "A wild storylet appears!",
-    actions: [
-      {id: "1"}
-    ],
+    title: "Starting Domain",
+    text: "The story begins here.",
+    staticActions: [{id:"1"}],
+    dynamicActions: [{id:"2"}],
+    slotsCount: 1,
+    locked: false,
   }
-
 };
-const defaultActions = {
-  1: {
-    id: "1",
-    type: "modify",
-    title: "A modify action.",
-    description: "I change qualities.",
-    reveal: "always",
-    results: {
-      hide: true,
-      changes: [
-        {
-          id: "domain",
-          value: 2,
-          type: "set"
-        },
-      ],
-    },
-    reqs: [
-      {
-        id: "domain",
-        min: 1,
-        max: 1,
-      },
-    ],
-  },  
 
-  2: {
-    id: "2",
-    type: "storylet",
-    title: "A storylet action.",
-    description: "I begin a storylet.",
-    reveal: "always",
+const defaultActions = {
+  "1": {
+    id: "1",
+    title: "A modify action.",
+    text: "I change some of the player's qualities.",
     results: {
-      hide: true,
-      storylet: "1"
-    },
-    reqs: [
-      {
-        id: "domain",
-        min: 1,
-        max: 1,
+      type: "modify",
+      changes:[{id: 1, type:"adjust", value: 1}],
+      hide: false,
+      report: {
+        title: "A shiny coin!",
+        text: "You don't know whose it was... but it's yours now."
       },
-    ],
+    },
+    reqs: [],
+    reveal: {
+      type: "always",
+    },
   },
 
-  3: {
-    id: "3",
-    type: "challenge",
-    title: "A challenge action.",
-    description: "I begin a challenge.",
-    reveal: "always",
-    remain: false,
-    luck: false,
+  "2": {
+    id: "2",
+    title: "A context action.",
+    text: "I open a new context for the player.",
+    results: {
+      type: "context",
+      context: '1',
+    },
     reqs: [
       {
-        id: "domain",
-        difficulty: 1,
+        qualityId: 1,
+        min: 0,
+      }
+    ],
+    reveal: {
+      type: "always",
+    },
+  },
+
+  "3": {
+    id: "3",
+    title: "A challenge action.",
+    text: "I branch into a success or failure result.",
+    reveal: {
+      type: "always"
+    },
+    reqs: [
+      {
+        qualityId: 1,
+        difficulty: 2
       },
     ],
     results: {
+      type: "challenge",
       success: {
-        changes: [ 
+        changes: [
           {
-            id: "domain",
-            value: 1,
-            type: "set",
+            id: "1",
+            type: "adjust",
+            value: 5,
           },
         ],
         report: {
-          title: "Success!",
-          description: "You passed the challenge.",
-        }
+          title: "A pile of coins!",
+          text: "Wealth becomes you.",
+        },
       },
       failure: {
-        changes: [ 
+        changes: [
           {
-            id: "domain",
-            value: 1,
+            id: "1",
             type: "set",
-          },
+            value: 0,
+          }
         ],
         report: {
-          title: "Failure!",
-          description: "You failed the challenge.",
-        }
-      }
+          title: "You lost it all!",
+          text: "Oh no.",
+        },
+      },
     },
   },
-}
+};
 
-export { defaultQualities, defaultDomains, defaultStorylets, defaultActions };
+const defaultContexts = {
+  "1": {
+    id: "1",
+    title: "Starting context",
+    text: "More actions here.",
+    staticActions: [{id: "3"}],
+    locked: false,
+  }
+};
+
+export { defaultQualities, defaultDomains, defaultActions, defaultContexts };

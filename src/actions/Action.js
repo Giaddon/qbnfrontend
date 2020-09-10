@@ -1,4 +1,4 @@
-/** Displays a storylet's name and description. Click on it to make it the active story. */
+/** Displays an actions's name and description. */
 
 import React from 'react';
 import styled from 'styled-components';
@@ -32,7 +32,6 @@ const ActionDiv = styled.div`
 
 function Action({ 
   id="Unknown Id",
-  type="Unknown Type", 
   title="Unidentified Action", 
   text="Unknown text", 
   tooltip="Unknown tooltip.",
@@ -46,7 +45,7 @@ function Action({
   const dispatch = useDispatch();
 
   function clickAction() {
-    selectAction(id, type)
+    selectAction(id)
   }
 
   return (

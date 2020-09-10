@@ -9,8 +9,8 @@ import {
   addActionToCreate, 
   selectCreate, 
   setAllCreate,
-  addStoryletToCreate } from './createToolsSlice';
-import { defaultQualities, defaultDomains, defaultActions, defaultStorylets } from './defaults/defaultData'; 
+  addContextToCreate } from './createToolsSlice';
+import { defaultQualities, defaultDomains, defaultActions, defaultContexts } from './defaults/defaultData'; 
 import ItemsList from './ItemList';
 import Navbar from './Navbar';
 
@@ -26,7 +26,7 @@ const CreateDiv = styled.div`
 
 const DownloadButton = styled.div`
   font-family: "Alata", sans-serif;
-  font-size: 2.0em;
+  font-size: 1.4em;
   margin: 5px auto;
   color: white;
   max-width: 300px;
@@ -40,7 +40,7 @@ const DownloadButton = styled.div`
 
 const CreateTitle = styled.p`
   font-family: 'Alata', sans-serif;
-  font-size: 6em;
+  font-size: 4em;
   letter-spacing: 0.1em;
 `
 
@@ -55,19 +55,19 @@ function Create() {
   const [activeList, setActiveList] = useState({first: null, second: null});
 
   useEffect(function createCheckforDataOnInitialMount() {
-    const {qualities, domains, actions, storylets } = {
+    const {qualities, domains, actions, contexts } = {
       qualities: localStorage.getItem('createqualities'), 
       domains: localStorage.getItem('createdomains'),
       actions: localStorage.getItem('createactions'),
-      storylets: localStorage.getItem('createstorylets'),
+      contexts: localStorage.getItem('createcontexts'),
     }
 
-    if(qualities && domains && actions && storylets) {
+    if(qualities && domains && actions && contexts) {
       const createState = {
         qualities: JSON.parse(qualities),
         domains: JSON.parse(domains),
         actions: JSON.parse(actions),
-        storylets: JSON.parse(storylets),
+        contexts: JSON.parse(contexts),
       }
       dispatch(setAllCreate(createState));
     } else {
@@ -102,14 +102,14 @@ function Create() {
         })
       }
 
-      if (storylets) {
-        const parsedStorylets = JSON.parse(storylets);
-        Object.values(parsedStorylets).forEach(storylet => {
-          dispatch(addStoryletToCreate(storylet));
+      if (contexts) {
+        const parsedContexts = JSON.parse(contexts);
+        Object.values(parsedContexts).forEach(context => {
+          dispatch(addContextToCreate(context));
         })
       } else {
-        Object.values(defaultStorylets).forEach(storylet => {
-          dispatch(addStoryletToCreate(storylet));
+        Object.values(defaultContexts).forEach(context => {
+          dispatch(addContextToCreate(context));
         })
       }
     }
@@ -132,53 +132,96 @@ function Create() {
       localStorage.setItem('createdomains', stringDomains);
       }
 
-    const stringStorylets = JSON.stringify(createData.storylets);
-    if (stringStorylets) {
-      localStorage.setItem('createstorylets', stringStorylets);
+    const stringContexts = JSON.stringify(createData.contexts);
+    if (stringContexts) {
+      localStorage.setItem('createcontexts', stringContexts);
     }
   }, [createData])
 
-  function clickExport() {
+
+  function prepareData() {
     let domains = Object.values(createData.domains).map(domain => ({ ...domain }));
-    let storylets = Object.values(createData.storylets).map(storylet => ({ ...storylet }))
+    let contexts = Object.values(createData.contexts).map(context => ({ ...context }))
     for (let i = 0; i < domains.length; i++) {
-      domains[i].actions = [...domains[i].actions];
-      for (let j= 0; j < domains[i].actions.length; j++) {  
-        domains[i].actions[j] = createData.actions[domains[i].actions[j].id];
+      domains[i].staticActions = [...domains[i].staticActions];
+      domains[i].dynamicActions = [...domains[i].dynamicActions];
+      for (let j = 0; j < domains[i].staticActions.length; j++) {  
+        domains[i].staticActions[j] = createData.actions[domains[i].staticActions[j].id];
+      }
+      for (let k = 0; k < domains[i].dynamicActions.length; k++) {  
+        domains[i].dynamicActions[k] = createData.actions[domains[i].dynamicActions[k].id];
       }
     }
 
-    for (let i = 0; i < storylets.length; i++) {
-      storylets[i].actions = [...storylets[i].actions];
-      for (let j= 0; j < storylets[i].actions.length; j++) {  
-        storylets[i].actions[j] = createData.actions[storylets[i].actions[j].id];
+    for (let i = 0; i < contexts.length; i++) {
+      contexts[i].staticActions = [...contexts[i].staticActions];
+      for (let j= 0; j < contexts[i].staticActions.length; j++) {  
+        contexts[i].staticActions[j] = createData.actions[contexts[i].staticActions[j].id];
       }
     }
 
     let objectifiedDomains = {};
-    let objectifiedStorylets = {};
+    let objectifiedContexts = {};
+    let objectifiedQualities = {};
 
     domains.forEach(domain => {
       objectifiedDomains[domain.id] = domain;
     }); 
 
-    storylets.forEach(storylet => {
-      objectifiedStorylets[storylet.id] = storylet;
+    contexts.forEach(context => {
+      objectifiedContexts[context.id] = context;
     }); 
 
-    const stringQualities = localStorage.getItem('createqualities');
-    const stringDomains = JSON.stringify(objectifiedDomains);
-    const stringStorylets = JSON.stringify(objectifiedStorylets);
-    
-    const exportedWorld = "const domains = " + stringDomains + "; const qualities = " + stringQualities + "; const storylets = " + stringStorylets + "; export { domains, qualities, storylets }";
-   
-    download(exportedWorld, 'qbnworld.js', 'text/plain')
-    
-    
-    
+    let qualities = Object.values(createData.qualities).map(quality => ({ ...quality }));
 
+    for (let quality of qualities) {
+      let processedDescriptions = {};
+      if (quality.descriptions.length > 0) {
+        quality.descriptions.forEach(d => {
+          processedDescriptions[d.value] = d.description
+        });
+      } else {
+        processedDescriptions = {1: ''};
+      }  
+      let processedAlts = {}
+      if (quality.alts && quality.alts.length > 0) {
+        quality.alts.forEach(a => {
+          processedAlts[a.value] = a.alt;
+        }) 
+      } else {
+        processedAlts = null;
+      }
+      quality.descriptions = processedDescriptions;
+      quality.alts = processedAlts;
+      objectifiedQualities[quality.id] = quality;
+    }
+
+
+    const stringQualities = JSON.stringify(objectifiedQualities);
+    const stringDomains = JSON.stringify(objectifiedDomains);
+    const stringContexts = JSON.stringify(objectifiedContexts);
+
+    return { stringQualities, stringDomains, stringContexts }
+  }
+
+  function clickPlay() {
+    const { stringQualities, stringDomains, stringContexts } = prepareData();
+    const data = '{"source":"storage"}';
     
+    localStorage.setItem('data', data);
+    localStorage.setItem('playqualities', stringQualities );
+    localStorage.setItem('playdomains', stringDomains );
+    localStorage.setItem('playcontexts', stringContexts );
+
+    window.location = '/';
+
+  }
+
+  function clickExport() {
+    const { stringQualities, stringDomains, stringContexts } = prepareData();
+    const exportedWorld = "const domains = " + stringDomains + "; const qualities = " + stringQualities + "; const contexts = " + stringContexts + "; export { domains, qualities, contexts }";
     
+    download(exportedWorld, 'world.js', 'text/plain')
   }
 
   function setList(list){
@@ -197,6 +240,7 @@ function Create() {
       <Navbar setList={setSecondList} reverse={true} />
       <CreateTitle>CREATE</CreateTitle>
       <DownloadButton onClick={clickExport}><p>Download World</p></DownloadButton>
+      <DownloadButton onClick={clickPlay}><p>Play World</p></DownloadButton>
       <CreateInterfaceDiv>
         {activeList.first==="qualities" 
           ? <ItemsList items={Object.values(createData.qualities)} title="Qualities" type="qualities" />  
@@ -210,8 +254,8 @@ function Create() {
           ? <ItemsList items={Object.values(createData.actions)} title="Actions" type="actions" /> 
           : null 
         }
-        {activeList.first==="storylets" && createData.storylets
-          ? <ItemsList items={Object.values(createData.storylets)} title="Storylets" type="storylets" /> 
+        {activeList.first==="contexts" && createData.contexts
+          ? <ItemsList items={Object.values(createData.contexts)} title="Contexts" type="contexts" /> 
           : null 
         }
         {activeList.second==="qualities" 
@@ -226,8 +270,8 @@ function Create() {
           ? <ItemsList items={Object.values(createData.actions)} title="Actions" type="actions" /> 
           : null 
         }
-        {activeList.second==="storylets" && createData.storylets
-          ? <ItemsList items={Object.values(createData.storylets)} title="Storylets" type="storylets" /> 
+        {activeList.second==="contexts" && createData.contexts
+          ? <ItemsList items={Object.values(createData.contexts)} title="Contexts" type="contexts" /> 
           : null 
         }
       </CreateInterfaceDiv>

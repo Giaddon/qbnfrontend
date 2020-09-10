@@ -11,7 +11,6 @@ const SidebarDiv = styled.div`
   padding: 10px;
   display: ${props => props.visible ? "block" : "none"};
   border-right: 1px solid #eee;
-  overflow-y: scroll;
 `;
 
 function Sidebar() {

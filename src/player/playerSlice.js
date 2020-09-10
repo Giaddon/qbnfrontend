@@ -6,6 +6,8 @@ export const playerSlice = createSlice({
   name: 'player',
   initialState: {
     qualities: {},
+    discoveredActions: {},
+    activeDynamic: false,
   },
   reducers: {
     setAllQualities: (state, action) => {
@@ -18,12 +20,22 @@ export const playerSlice = createSlice({
     removeQuality: (state, action) => {
       delete state.qualities[action.payload];
     },
+    setDiscoveredActionsByDomainId: (state, action) => {
+      const { domainId, actions } = action.payload;
+      state.discoveredActions[domainId] = actions;
+    },
   }
 });
 
-export const { setAllQualities, setQuality, removeQuality } = playerSlice.actions;
+export const {
+  setAllQualities,
+  setQuality, 
+  removeQuality, 
+  setDiscoveredActionsByDomainId 
+} = playerSlice.actions;
 
 export const selectPlayer = state => state.player;
 export const selectQualities = state => state.player.qualities;
+export const selectDiscoveredActions = state => state.player.discoveredActions;
 
 export default playerSlice.reducer;

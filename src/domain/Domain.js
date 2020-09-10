@@ -10,17 +10,25 @@ import {
   setActiveContext, 
   setActiveReport,
   clearActiveContext,
+  setActiveDynamicToId,
 } from './domainSlice';
-import { setQuality, selectQualities, removeQuality } from '../player/playerSlice';
+import {
+  setQuality, 
+  selectQualities, 
+  removeQuality, 
+  setDiscoveredActionsByDomainId,
+  selectDiscoveredActions,
+} from '../player/playerSlice';
 import { hideTooltip } from '../tooltip/tooltipSlice';
 import DomainsAPI from '../utilities/DomainsAPI'; 
 import ActionList from '../actions/ActionsList';
 import BackButton from './BackButton';
 import ContinueButton from './ContinueButton';
 import OutcomesList from './OutcomesList';
-import DomainData from '../dataclasses/DomainData';
+import DomainData from '../dataclasses/DirectorFunctions';
 import QualitiesAPI from '../utilities/QualitiesAPI';
 import QualityData from '../dataclasses/QualityData';
+import ContextsAPI from '../utilities/ContextsAPI';
 
 const DomainDiv = styled.div`
   padding: 15px;
@@ -42,24 +50,7 @@ function Domain() {
   const dispatch = useDispatch();
   const domain = useSelector(selectDomain);
   const qualities = useSelector(selectQualities);
-
-  useEffect(function prepareDomainWhenQualitiesChange() {
-    const currentDomainId = qualities.domain.value.toString();
-    let selectedDomain;
-    // if (domain.activeDomain?.id === currentDomainId){
-    //   selectedDomain = {...domain.activeDomain}
-    // } else {
-    selectedDomain = DomainsAPI.getDomainById(currentDomainId);
-    
-    const { availableActions, lockedActions, possibleActions } = 
-      DomainData.selectActions(selectedDomain.actions, qualities);
-
-    selectedDomain.availableActions = availableActions;
-    selectedDomain.lockedActions = lockedActions;
-    selectedDomain.possibleActions = possibleActions;
-    dispatch(setActiveDomain(selectedDomain));
-  
-  },[qualities, dispatch])
+  const discoveredActions = useSelector(selectDiscoveredActions);
 
   function consumeSelectSlot() {
     const possibleActions = [...domain.activeDomain.possibleActions];
@@ -71,79 +62,112 @@ function Domain() {
     const remainingPossibleActions = possibleActions.filter(action => action.id !== revealedAction.id);
     const newDiscoveredActions = [...currentDiscoveredActions, revealedAction]
     
+    dispatch(setDiscoveredActionsByDomainId({domainId: domain.activeDomain.id, actions: newDiscoveredActions}));
     dispatch(possibleActionDiscovered({remainingPossibleActions, newDiscoveredActions}))
+
   }
 
-  function consumeSelectAction(actionId, type="static") {
+  function applyActionResults(results) {
+    let outcomes = [];
+    for (let change of results.changes) {
+      const { id, value } = change;
+      let copiedQuality = qualities[id] ? {...qualities[id]} : QualitiesAPI.getQualityById(id);
+      let outcome = '';
+      if(!copiedQuality.value) { 
+        copiedQuality.value = 0;
+        copiedQuality.value += value;
+        if (!copiedQuality.invisible) outcome = `${copiedQuality.name} ${value > 0 ? "increased" : "decreased"} by ${value}.`
+      } else {
+        if (change.type==="adjust") {
+          copiedQuality.value += value;
+          if (!copiedQuality.invisible) outcome = `${copiedQuality.name} ${value > 0 ? "increased" : "decreased"} by ${value}.`
+        } 
+        else if (change.type==="set") { 
+          copiedQuality.value = value;
+          if (!copiedQuality.invisible) outcome = `${copiedQuality.name} is now ${value}.`;
+        }
+      }
+
+      if (copiedQuality.value === 0) {
+        if (!copiedQuality.invisible) outcome = `You have lost all ${copiedQuality.name}!`;
+        dispatch(removeQuality(id));
+      } 
+      
+      else {
+        const quality = QualityData.processAltText(copiedQuality);
+        dispatch(setQuality({id, quality}));
+      }        
+      outcomes.push(outcome);
+    }
+
+    if(!results.hide) {
+      const newReport = { ...results.report, outcomes }
+      dispatch(setActiveReport(newReport));
+    }
+
+    if(!results.remain) {
+      console.log("Got to clear context.", results)
+      dispatch(clearActiveContext());
+    }
+  }
+
+  function consumeSelectAction(actionId) {
     window.scrollTo({
       top: 0,
       behavior: "smooth"
     });
     
     let selectedAction;
-    let outcomes = [];
-    if (domain.activeContext) selectedAction = domain.activeContext.actions[type].filter(action => action.id === actionId)[0]
-    else selectedAction = domain.activeDomain.actions[type].filter(action => action.id === actionId)[0]
-    
+    let selectedDynamic = false;
+
+    if (domain.activeContext) selectedAction = domain.activeContext.availableActions.filter(action => action.id === actionId)[0]
+    else {
+      const inStatic = domain.activeDomain.availableActions.filter(action => action.id === actionId);
+      if (inStatic.length === 1) selectedAction = inStatic[0];
+      else {
+        selectedAction = domain.activeDomain.discoveredActions.filter(action => action.id === actionId)[0];
+        dispatch(setActiveDynamicToId(selectedAction.id));
+        selectedDynamic = true;
+      } 
+    }
     const results = selectedAction.results;
     
     switch (results.type) {
-      case "modify":
-        for (let change of results.changes) {
-          const { id, value } = change;
-          let copiedQuality = qualities[id] ? {...qualities[id]} : QualitiesAPI.getQualityById(id);
-          let outcome = '';
-          if(!copiedQuality.value) { 
-            copiedQuality.value = 0;
-            copiedQuality.value += value;
-            if (!copiedQuality.invisible) outcome = `${copiedQuality.name} ${value > 0 ? "increased" : "decreased"} by ${value}.`
-          } else {
-            if (change.type==="adjust") {
-              copiedQuality.value += value;
-              if (!copiedQuality.invisible) outcome = `${copiedQuality.name} ${value > 0 ? "increased" : "decreased"} by ${value}.`
-            } 
-            else if (change.type==="set") { 
-              copiedQuality.value = value;
-              if (!copiedQuality.invisible) outcome = `${copiedQuality.name} is now ${value}.`;
-            }
-          }
-
-          if (copiedQuality.value === 0) {
-            if (!copiedQuality.invisible) outcome = `You have lost all ${copiedQuality.name}!`;
-            dispatch(removeQuality(id));
-
-          } 
-          else {
-            const quality = QualityData.processAltText(copiedQuality);
-            dispatch(setQuality({id, quality}));
-          }        
-          outcomes.push(outcome);
+      case "modify":  
+        if (domain.activeDynamic || selectedDynamic) {
+          const newDiscoveredActions = discoveredActions[domain.activeDomain.id].filter(a => a.id !== (domain.activeDynamic || selectedAction.id));
+          dispatch(setDiscoveredActionsByDomainId({domainId: domain.activeDomain.id, actions: newDiscoveredActions}));
         }
-
-        if(!results.hide) {
-          const newReport = { ...results.report, outcomes }
-          dispatch(setActiveReport(newReport));
-        }
-
-        if(!results.remain) {
-          dispatch(clearActiveContext());
-        }
-
+      
+        applyActionResults(selectedAction.results);
         break;
 
       case "context":
-        const selectedContext = {...domain.activeDomain.contexts[results.context]};
+        const selectedContext = ContextsAPI.getContextById(results.context);
         const { availableActions, lockedActions } = 
-          DomainData.selectActions(selectedContext.actions, qualities);
+          DomainData.selectStaticActions(selectedContext.staticActions, qualities);
   
         selectedContext.availableActions = availableActions;
         selectedContext.lockedActions = lockedActions;
         dispatch(setActiveContext(selectedContext));
-
         break;
 
+      case "challenge":
+        
+        if (domain.activeDynamic || selectedDynamic) {
+          const newDiscoveredActions = discoveredActions[domain.activeDomain.id].filter(a => (a.id !== (domain.activeDynamic || selectedAction.id)));
+          console.log("New discovered actions", newDiscoveredActions);
+          dispatch(setDiscoveredActionsByDomainId({domainId: domain.activeDomain.id, actions: newDiscoveredActions}));
+        }
+
+        const outcome = Math.floor(Math.random() * 101); 
+        console.log(`${selectedAction.odds} vs ${outcome}`);
+        if (selectedAction.odds > outcome ) applyActionResults(selectedAction.results.success);
+        else applyActionResults(selectedAction.results.failure);
+        
+        break;
       default:
-        console.log("What?");
+        console.log("Action type unknown.");
     }
     dispatch(hideTooltip());
   }

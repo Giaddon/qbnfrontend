@@ -39,7 +39,7 @@ function Navbar({ setList, reverse=false }) {
     <NavbarDiv reverse={reverse}>
       <div data-listtype="qualities" onClick={selectList}><p>Qualities</p></div>
       <div data-listtype="domains" onClick={selectList}><p>Domains</p></div>
-      <div data-listtype="storylets" onClick={selectList}><p>Storylets</p></div>
+      <div data-listtype="contexts" onClick={selectList}><p>Contexts</p></div>
       <div data-listtype="actions" onClick={selectList}><p>Actions</p></div>
     </NavbarDiv>
   )

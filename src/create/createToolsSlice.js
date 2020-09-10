@@ -7,7 +7,7 @@ export const createToolsSlice = createSlice({
   initialState: {
     qualities: {},
     domains: {},
-    storylets: {},
+    contexts: {},
     actions: {},
   },
   reducers: {
@@ -31,9 +31,9 @@ export const createToolsSlice = createSlice({
       const { id } = action.payload;
       state.actions[id] = action.payload;
     },
-    addStoryletToCreate: (state, action) => {
+    addContextToCreate: (state, action) => {
       const { id } = action.payload;
-      state.storylets[id] = action.payload;
+      state.contexts[id] = action.payload;
     },
     deleteActionFromCreate: (state, action) => {
       const id = action.payload;
@@ -56,7 +56,7 @@ export const {
   deleteActionFromCreate,
   deleteSomethingFromCreate,
   setAllCreate,
-  addStoryletToCreate
+  addContextToCreate
  } = createToolsSlice.actions;
 
 export const selectCreate = state => state.create;

@@ -11,13 +11,15 @@ function ActionModifyForm({ data, createData }) {
   function submitForm(values) {
     const newAction = {
       id: data.id,
-      type: data.type,
       title: values.actionTitle,
-      description: values.actionDescription,
-      reveal: values.actionReveal,
+      text: values.actionText,
+      reveal: {
+        type: values.actionReveal
+      },
       remain: values.actionRemain,
       reqs: values.reqs,
       results: {
+        type: data.type,
         changes: values.changes,
         hide: values.hide,
         report: {
@@ -37,26 +39,26 @@ function ActionModifyForm({ data, createData }) {
     <Formik
       initialValues={{
         actionTitle: data.title || '',
-        actionDescription: data.description || '',
-        actionReveal: data.reveal || 'one',
-        actionRemain: data.remain || false,
+        actionText: data.text || '',
+        actionReveal: data.reveal.type || "one",
+        actionRemain: data.results.remain || false,
         reqs: data.reqs || [
           {
-            id: '1',
+            qualityId: '1',
             min: 0,
             max: 0,
           },
         ],
-        hide: data.results?.hide || false,
-        changes: data.results?.changes || [
+        hide: data.results.hide || false,
+        changes: data.results.changes || [
           {
             id: '1',
             type: 'set',
             value: 0,
           },
         ],
-        reportTitle: data.results?.report?.title || '',
-        reportDescription: data.results?.report?.description || '',
+        reportTitle: data.results.report?.title || '',
+        reportText: data.results.report?.text || '',
       }}
       validate={null}
       onSubmit={(values, actions) => {
@@ -77,18 +79,15 @@ function ActionModifyForm({ data, createData }) {
         isSubmitting,
       }) => (
           <Form>
-            <label htmlFor="actionTitle" style={{ display: "block" }}>
-              Title</label>
+            <label htmlFor="actionTitle">Title</label>
             <Field type="text" name="actionTitle" />
             <ErrorMessage name="actionTitle" component="div" />
 
-            <label htmlFor="actionDescription" style={{ display: "block" }}>
-              Description</label>
-            <Field as="textarea" name="actionDescription" />
-            <ErrorMessage name="actionDescription" component="div" />
+            <label htmlFor="actionText">Text</label>
+            <Field as="textarea" name="actionText" />
+            <ErrorMessage name="actionText" component="div" />
 
-            <label htmlFor="actionReveal">
-              Reveal Type</label>
+            <label htmlFor="actionReveal">Reveal Type</label>
             <Field name="actionReveal" as="select">
               <option value="always">Always</option>
               <option value="all">When all requirements are met</option>
@@ -96,7 +95,7 @@ function ActionModifyForm({ data, createData }) {
             </Field>
 
             <label htmlFor="actionRemain">
-              Remain in storylet?</label>
+              Remain in context?</label>
             <Field type="checkbox" name="actionRemain" />
 
             <label htmlFor="hide">
@@ -111,10 +110,10 @@ function ActionModifyForm({ data, createData }) {
                 <Field type="text" name="reportTitle" />
                 <ErrorMessage name="reportTitle" component="div" />
 
-                <label htmlFor="reportDescription">
+                <label htmlFor="reportText">
                   Report Text</label>
-                <Field as="textarea" name="reportDescription" />
-                <ErrorMessage name="reportDescription" component="div" />
+                <Field as="textarea" name="reportText" />
+                <ErrorMessage name="reportText" component="div" />
               </div>
             }
 
@@ -209,21 +208,23 @@ function ActionModifyForm({ data, createData }) {
   )
 }
 
-function ActionStoryletForm({ data, createData }) {
+function ActionContextForm({ data, createData }) {
   const dispatch = useDispatch();
 
   function submitForm(values) {
     const newAction = {
       id: data.id,
-      type: data.type,
       title: values.actionTitle,
-      description: values.actionDescription,
-      reveal: values.actionReveal,
+      text: values.actionText,
+      reveal: {
+        type: values.actionReveal
+      },
       remain: values.actionRemain,
       reqs: values.reqs,
       results: {
+        type: data.type,
         hide: true,
-        storylet: values.actionStorylet
+        context: values.actionContext
       },
     }
 
@@ -237,9 +238,9 @@ function ActionStoryletForm({ data, createData }) {
     <Formik
       initialValues={{
         actionTitle: data.title || '',
-        actionDescription: data.description || '',
-        actionReveal: data.reveal || 'one',
-        actionRemain: data.remain || false,
+        actionText: data.text || '',
+        actionReveal: data.reveal.type || 'always',
+        actionRemain: data.results.remain || false,
         reqs: data.reqs || [
           {
             id: '1',
@@ -248,7 +249,7 @@ function ActionStoryletForm({ data, createData }) {
           }
         ],
         results: {
-          storylet: data.results?.storylet || ''
+          context: data.results.context || ''
         }
       }}
       validate={null}
@@ -270,33 +271,29 @@ function ActionStoryletForm({ data, createData }) {
         isSubmitting,
       }) => (
           <Form>
-            <label htmlFor="actionTitle">
-              Title</label>
+            <label htmlFor="actionTitle">Title</label>
             <Field type="text" name="actionTitle" />
             <ErrorMessage name="actionTitle" component="div" />
 
-            <label htmlFor="actionDescription">
-              Description</label>
-            <Field as="textarea" name="actionDescription" />
-            <ErrorMessage name="actionDescription" component="div" />
+            <label htmlFor="actionText">Text</label>
+            <Field as="textarea" name="actionText" />
+            <ErrorMessage name="actionText" component="div" />
 
-            <label htmlFor="actionReveal">
-              Reveal Type</label>
+            <label htmlFor="actionReveal">Reveal Type</label>
             <Field name="actionReveal" as="select">
               <option value="always">Always</option>
               <option value="all">When all requirements are met</option>
               <option value="one">When at least one requirement is met</option>
             </Field>
 
-            <label htmlFor="actionStorylet">Open storylet:</label>
-            <Field name="actionStorylet" as="select">
-              {Object.values(createData.storylets).map(storylet => 
-                <option key={storylet.id} value={storylet.id}>{storylet.title} (id: {storylet.id})</option>
+            <label htmlFor="actionContext">Open context:</label>
+            <Field name="actionContext" as="select">
+              {Object.values(createData.contexts).map(context => 
+                <option key={context.id} value={context.id}>{context.title} (id: {context.id})</option>
               )}
             </Field>
 
-            <label htmlFor="actionRemain">
-              Remain in storylet?</label>
+            <label htmlFor="actionRemain">Remain in context?</label>
             <Field type="checkbox" name="actionRemain" />
 
             <label htmlFor="reqs">Requirements</label>
@@ -457,7 +454,7 @@ function ActionChallengeForm({ data, createData }) {
             </Field>
 
             <label htmlFor="actionRemain">
-              Remain in storylet?</label>
+              Remain in context?</label>
             <Field type="checkbox" name="actionRemain" />
 
             <label htmlFor="actionLuck">
@@ -589,4 +586,4 @@ function ActionChallengeForm({ data, createData }) {
   )
 }
 
-export { ActionModifyForm, ActionStoryletForm, ActionChallengeForm };
+export { ActionModifyForm, ActionContextForm, ActionChallengeForm };

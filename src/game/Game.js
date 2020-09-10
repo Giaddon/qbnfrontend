@@ -10,6 +10,7 @@ import NavBar from '../interface/NavBar';
 import Domain from '../domain/Domain';
 import Tooltip from '../tooltip/Tooltip';
 import background from '../assets/backgrounds/ripples.png';
+import Director from './Director';
 
 const GameDiv = styled.div`
   display: flex;
@@ -42,7 +43,7 @@ function Game() {
     return (
       <GameDiv>
         <Sidebar />
-        <Domain />
+        <Director />
         <NavBar />
         <Tooltip /> 
       </GameDiv>

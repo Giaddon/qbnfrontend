@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field, FieldArray, ErrorMessage } from 'formik';
 
 import { addQualityToCreate } from '../createToolsSlice';
-import { CreateFormDiv } from './formStyles';
+import { CreateFormDiv, FormDividerDiv, FormSectionTitle } from './formStyles';
 
 
 const FormDeleteButton = styled.div`
@@ -30,14 +30,18 @@ function QualityForm({ data, deleteItem }) {
   const dispatch = useDispatch();
   
   function submitForm(values) {
+   
+
+
     const newQuality = {
       id: data.id,
-      name: values.qbnCreateQualityName,
-      description: values.qbnCreateQualityDescription,
-      block: values.qbnCreateQualityBlock,
-      value: values.qbnCreateQualityValue || 0,
-      pyramid: values.qbnCreateQualityPyramid || false,
-      invisible: values.qbnCreateQualityInvisible || false,
+      name: values.qualityName || "Unknown Quality",
+      descriptions: values.qualityDescriptions,
+      alts: values.qualityAlts,
+      category: values.qualityCategory || null,
+      value: values.qualityValue || 0,
+      pyramid: values.qualityPyramid || false,
+      invisible: values.qualityInvisible || false,
     }
     
     dispatch(addQualityToCreate(newQuality));
@@ -55,12 +59,18 @@ function QualityForm({ data, deleteItem }) {
       <p>ID: {data.id}</p>
       <Formik
         initialValues={{
-          qbnCreateQualityName: data.name || '', 
-          qbnCreateQualityValue: data.value || 0, 
-          qbnCreateQualityDescription: data.description || '',
-          qbnCreateQualityBlock: data.block || '',
-          qbnCreateQualityPyramid: data.pyramid || false,
-          qbnCreateQualityInvisible: data.invisible || false,
+          qualityName: data.name || '', 
+          qualityValue: data.value || 0, 
+          qualityDescriptions: data.descriptions || [
+            {
+              value: 1,
+              description: "Used to describe the quality at this value or higher."
+            }
+          ],
+          qualityAlts: data.alts || [],
+          qualityCategory: data.category || '',
+          qualityPyramid: data.pyramid || false,
+          qualityInvisible: data.invisible || false,
         }}
         validate={null}
         onSubmit={(values, actions) => {
@@ -79,33 +89,82 @@ function QualityForm({ data, deleteItem }) {
          isSubmitting,
         }) => (
           <Form>
-            <label htmlFor="qbnCreateQualityName" style={{ display: "block" }}>
-              Name</label>
-            <Field type="text" name="qbnCreateQualityName" />
-            <ErrorMessage name="qbnCreateQualityName" component="div" />
-            <label htmlFor="qbnCreateQualityValue" style={{ display: "block" }}>
-              Starting Value</label>
-            <Field type="number" name="qbnCreateQualityValue" min='0' />
-            <ErrorMessage name="qbnCreateQualityValue" component="div" />
-            <label htmlFor="qbnCreateQualityDescription" style={{ display: "block" }}>
-              Description</label>
-            <Field as="textarea" name="qbnCreateQualityDescription" />
-            <ErrorMessage name="qbnCreateQualityDescription" component="div" />
-            <label htmlFor="qbnCreateQualityBlock" style={{ display: "block" }}>
-              Block</label>
-            <Field type="text" name="qbnCreateQualityBlock" />
-            <ErrorMessage name="qbnCreateQualityBlock" component="div" />
-            <label htmlFor="qbnCreateQualityPyramid" style={{ display: "block" }}>
-              Pyramid Type</label> 
-            <Field type='checkbox' name="qbnCreateQualityPyramid" />
-            <ErrorMessage name="qbnCreateQualityPyramid" component="div" />
-            <label htmlFor="qbnCreateQualityInvisible" style={{ display: "block" }}>
-              Invisible</label> 
-            <Field type='checkbox' name="qbnCreateQualityInvisible" />
-            <ErrorMessage name="qbnCreateQualityInvisible" component="div" />
-            <br /><button type="submit" disabled={isSubmitting}>
-              Submit
-            </button>
+            <label htmlFor="qualityName">Name</label>
+            <Field type="text" name="qualityName" />
+            <ErrorMessage name="qualityName" component="div" />
+            
+            <label htmlFor="qualityValue">Starting Value</label>
+            <Field type="number" name="qualityValue" min='0' />
+            <ErrorMessage name="qualityValue" component="div" />
+
+            <FormDividerDiv>
+              <FormSectionTitle htmlFor="qualityDescription">Descriptions</FormSectionTitle>
+              <FieldArray name="qualityDescriptions">
+                {({ insert, remove, push }) => (
+                  <div>
+                    {values.qualityDescriptions.length > 0 &&
+                      values.qualityDescriptions.map((qualityDescriptions, index) => (
+                        <div key={index}>
+                          
+                          <label htmlFor={`qualityDescriptions.${index}.value`}>Value</label>
+                          <Field name={`qualityDescriptions.${index}.value`} type="number" min="1" />
+                          
+                          <label htmlFor={`qualityDescriptions.${index}.description`}>Description</label>
+                          <Field name={`qualityDescriptions.${index}.description`} as="textarea" />
+
+                          <button type="button" onClick={() => remove(index)}>
+                            Remove Description
+                          </button>
+                        </div>
+                      ))}
+                    <button type="button" onClick={() => push({ value: 0, description: "New description"})}> Add a Description
+                    </button>
+                  </div>
+                )}
+              </FieldArray>
+            </FormDividerDiv>
+
+            <FormDividerDiv>          
+              <FormSectionTitle htmlFor="qualityAlts">Alternate Value Labels</FormSectionTitle>
+              <FieldArray name="qualityAlts">
+                {({ insert, remove, push }) => (
+                  <div>
+                    {values.qualityAlts.length > 0 &&
+                      values.qualityAlts.map((qualityAlts, index) => (
+                        <div key={index}>
+                          
+                          <label htmlFor={`qualityAlts.${index}.value`}>Value</label>
+                          <Field name={`qualityAlts.${index}.value`} type="number" min="1" />
+                          
+                          <label htmlFor={`qualityAlts.${index}.alt`}>Label</label>
+                          <Field name={`qualityAlts.${index}.alt`} type="text" />
+
+                          <button type="button" onClick={() => remove(index)}>
+                            Remove Alternate Label
+                          </button>
+                        </div>
+                      ))}
+                    <button type="button" onClick={() => push({ id: ''})}>
+                      Add an Alternate Label
+                    </button>
+                  </div>
+                )}
+              </FieldArray>
+            </FormDividerDiv>     
+
+            <label htmlFor="qualityCategory">Category</label>
+            <Field type="text" name="qualityCategory" />
+            <ErrorMessage name="qualityCategory" component="div" />
+            
+            <label htmlFor="qualityPyramid">Pyramid Type</label> 
+            <Field type='checkbox' name="qualityPyramid" />
+            <ErrorMessage name="qualityPyramid" component="div" />
+            
+            <label htmlFor="qualityInvisible">Invisible</label> 
+            <Field type='checkbox' name="qualityInvisible" />
+            <ErrorMessage name="qualityInvisible" component="div" />
+           
+            <button type="submit" disabled={isSubmitting}>Submit</button>
          </Form>
         )}
       </Formik>

@@ -15,7 +15,7 @@ const CreateFormDiv = styled.div`
 
   input {
     padding: 5px;
-    width: 230px;
+    max-width: 230px;
     font-family: "IBMPlexSerif", serif
   }
   input[type=number] {
@@ -31,7 +31,7 @@ const CreateFormDiv = styled.div`
 
   select {
     padding: 5px;
-    width: 230px;
+    max-width: 230px;
     font-family: "IBMPlexSerif", serif
   }
 
@@ -62,6 +62,23 @@ const FormDividerDiv = styled.div`
     font-size: 0.8em;
   }
 `
+const FormArrayDiv = styled.div` 
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+`;
+
+const FormArrayElementDiv = styled.div` 
+  flex: 0 1 auto;
+  padding: 5px;
+  margin: 5px;
+  border: 1px dashed grey;
+  select {
+    max-width: 150px;
+    font-size: 0.8em;
+  }
+`;
+
 
 const FormDeleteButton = styled.div`
   position: relative;
@@ -82,4 +99,16 @@ const FormDeleteButton = styled.div`
   }
 `
 
-export { CreateFormDiv, FormDividerDiv, FormDeleteButton };
+const FormSectionTitle = styled.label`
+  margin-top: 20px;
+  font-size: 1.4em;
+`
+
+export {
+  CreateFormDiv,
+  FormDividerDiv,
+  FormDeleteButton,
+  FormSectionTitle,
+  FormArrayDiv,
+  FormArrayElementDiv,
+ };

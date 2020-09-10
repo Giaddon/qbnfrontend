@@ -10,10 +10,14 @@ const qualities =
   "blank": {
     "id": "blank",
     "value": 1,
-    "name": "Blank Slate",
     "invisible": true,
   },
-
+  "prepockets": {
+    "id": "prepockets",
+    "value": 1,
+    "invisible": true,
+  },
+  
   "heart": {
     "id": "heart",
     "name": "Heart's Rest",
@@ -27,10 +31,9 @@ const qualities =
 
   "time": {
     "id": "time",
-    "name": "Time",
-    "value": "1",
+    "name": "Hour",
     "descriptions": {
-      "1": "Inexorably marches forward. When this reaches 8, the day is over."  
+      "1": "Inexorably marches forward. When this reaches 6, the day is over."  
     }
   },
 
@@ -47,7 +50,6 @@ const qualities =
       "1": "The surest shield of any thief is their cover."
     },
     "category": "",
-    "value": 5,
   },
   
   "tools": {
@@ -57,7 +59,6 @@ const qualities =
       "1": "An assortment of lockpicks, ropes, pliers... anything you can fit under your coat, really."
     },
     "category": "Inventory",
-    "value": 3,
   },
 
   "tcoins": {
@@ -67,7 +68,6 @@ const qualities =
       "1": "The front is stamped with a stag's head. The back with a raven. Regular merchants won't take them."
     },
     "category": "Valuables",
-    "value": 5,
   },
 
   "kcoins": {
@@ -77,7 +77,6 @@ const qualities =
       "1": "A few coins is hardly worth the bother."
     },
     "category": "Valuables",
-    "value": 5,
   },
 
   "lpicking": {
@@ -105,6 +104,15 @@ const qualities =
     "descriptions": {
       "1": "Sometimes you can just ask your mark to hand their valuables over, and they will."
     }
+  },
+
+  "leblair": {
+    "id": "leblair",
+    "name": "Leblair Estate",
+    "category": "Targets",
+    "descriptions": {
+      "1": "A fancy manor house."
+    },
   }
 
 }

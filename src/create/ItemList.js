@@ -7,13 +7,14 @@ import Item from './Item';
 import QualityForm from './forms/QualityForm';
 import DomainForm from './forms/DomainForm';
 import ActionForm from './forms/ActionForm';
-import StoryletForm from './forms/StoryletForm';
+import ContextForm from './forms/ContextForm';
 import { green } from  '../typography/colors';
 import {
   addQualityToCreate, 
   deleteSomethingFromCreate, 
   addDomainToCreate, 
-  addActionToCreate 
+  addActionToCreate,
+  addContextToCreate, 
 } from './createToolsSlice';
 import { CreateTitle } from '../typography/typography';
 
@@ -23,7 +24,7 @@ const ItemListDiv = styled.div`
   padding: 15px;
   border-radius: 3px;
   font-size: 1.2em;
-  flex: 1 1 auto;
+  flex: 1 1 70%;
   & ~ & {
   margin-left: 10px;
   }
@@ -64,7 +65,7 @@ const NewItemButton = styled.div`
 
 function ItemList({ items=null, type, title }) {
   const dispatch = useDispatch();
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(items[0]);
   const [filteredItems, setFilteredItems] = useState([]);
   const [filterField, setFilterField] = useState('');
 
@@ -97,8 +98,15 @@ function ItemList({ items=null, type, title }) {
       newItem = {
         id: uuidv4(),
         name: 'New Quality',
-        description: '',
-        block: '',
+        descriptions: [
+          {
+            value: 1,
+            description: "Quality description",
+          },
+        ],
+        alts: [],
+        value: 0,
+        category: '',
       }
       dispatch(addQualityToCreate(newItem));
     } else if (type==='domains') {
@@ -109,8 +117,9 @@ function ItemList({ items=null, type, title }) {
       newItem = {
         id: nextId,
         title: 'New Domain',
-        description: '',
-        actions: [],
+        text: 'Domain text.',
+        staticActions: [],
+        dynamicActions: [],
         locked: false,
       }
       dispatch(addDomainToCreate(newItem));
@@ -118,14 +127,51 @@ function ItemList({ items=null, type, title }) {
       newItem = {
         id: uuidv4(),
         title: 'New Action',
-        description: '',
-        type: "modify",
-        results: [],
+        text: 'Action text',
+        results: {
+          remain: false,
+          context: "1",
+          type: "modify",
+          luck: false,
+          hide: false,
+          changes: [],
+          report: {
+            title: "Report Title",
+            text: "Report text."
+          },
+          success: {
+            changes: [],
+            report: {
+              title: "Success Report Title",
+              text: "Success report text."
+            },
+          },
+          failure: {
+            changes: [],
+            report: {
+              title: "Failure Report Title",
+              text: "Failure report text."
+            },
+          },
+        },
+        reveal: {
+          type: "all",
+        },
         reqs: [],
       }
       dispatch(addActionToCreate(newItem));
+    } else if (type==='context') {
+    newItem = {
+      id: uuidv4(),
+      title: 'New Context',
+      text: 'Context text.',
+      staticActions: [],
+      locked: false,
     }
-    
+    dispatch(addContextToCreate(newItem));
+  }
+
+
     setSelectedItem(newItem);
   }
 
@@ -134,7 +180,7 @@ function ItemList({ items=null, type, title }) {
   if (type === "qualities") activeForm =  <QualityForm data={selectedItem} deleteItem={deleteItem} />
   else if (type === "domains") activeForm =  <DomainForm data={selectedItem} deleteItem={deleteItem} />
   else if (type === "actions") activeForm =  <ActionForm data={selectedItem} deleteItem={deleteItem} />
-  else if (type === "storylets") activeForm =  <StoryletForm data={selectedItem} deleteItem={deleteItem} />
+  else if (type === "contexts") activeForm =  <ContextForm data={selectedItem} deleteItem={deleteItem} />
 
   if (items) {
     return (

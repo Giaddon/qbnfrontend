@@ -8,6 +8,7 @@ export const domainSlice = createSlice({
     activeDomain: null,
     activeContext: null,
     activeReport: null,
+    activeDynamic: null,
   },
   reducers: {
     setActiveDomain: (state, action) => {state.activeDomain = action.payload;},
@@ -19,7 +20,9 @@ export const domainSlice = createSlice({
       const { remainingPossibleActions, newDiscoveredActions } = action.payload;
       state.activeDomain.discoveredActions = newDiscoveredActions;
       state.activeDomain.possibleActions = remainingPossibleActions;
-    }
+    },
+    setActiveDynamicToId: (state, action) => {state.activeDynamic = action.payload},
+    clearActiveDynamic: state => {state.activeDynamic = null},
   },
 });
 
@@ -30,6 +33,8 @@ export const {
   setActiveReport,
   clearActiveReport,
   possibleActionDiscovered,
+  setActiveDynamicToId,
+  clearActiveDynamic,
 } = domainSlice.actions;
 
 export const selectDomain = state => state.domain;
