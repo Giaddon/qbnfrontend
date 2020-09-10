@@ -3,7 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form, Field, FieldArray, ErrorMessage } from 'formik';
 
 import { addContextToCreate, selectCreate } from '../createToolsSlice';
-import { CreateFormDiv, FormDividerDiv, FormDeleteButton, FormSectionTitle } from './formStyles';
+import { 
+  CreateFormDiv,
+  FormDividerDiv, 
+  FormDeleteButton,
+  FormSectionTitle,
+  FormArrayDiv,
+  FormArrayElementDiv 
+} from './formStyles';
 
 function ContextForm({ data, deleteItem }) {
   const dispatch = useDispatch();
@@ -70,14 +77,14 @@ function ContextForm({ data, deleteItem }) {
             <Field type='checkbox' name="contextLocked" />
             <ErrorMessage name="qbnCreateQualityLocked" component="div" />
           
-            <FormDividerDiv>
-              <FormSectionTitle htmlFor="contextActions">Actions</FormSectionTitle>
-              <FieldArray name="contextActions">
-                {({ insert, remove, push }) => (
-                  <div>
+           <FormSectionTitle htmlFor="contextActions">Actions</FormSectionTitle>
+            <FieldArray name="contextActions">
+              {({ insert, remove, push }) => (
+                <FormDividerDiv>
+                  <FormArrayDiv>
                     {values.contextActions.length > 0 &&
                       values.contextActions.map((actions, index) => (
-                        <div key={index}>
+                        <FormArrayElementDiv key={index}>
                           <label htmlFor={`contextActions.${index}.id`}>Action</label>
                           <Field name={`contextActions.${index}.id`} as="select">
                             {Object.values(createData.actions).map(action =>
@@ -87,15 +94,15 @@ function ContextForm({ data, deleteItem }) {
                           <button type="button" onClick={() => remove(index)}>
                             Remove Action
                           </button>
-                        </div>
+                        </FormArrayElementDiv>
                       ))}
+                    </FormArrayDiv>
                     <button type="button" onClick={() => push({id: ''})}>
                       Add an Action
                     </button>
-                  </div>
+                  </FormDividerDiv>
                 )}
               </FieldArray>
-            </FormDividerDiv>
             <button type="submit" disabled={isSubmitting}>
               Submit
             </button>
