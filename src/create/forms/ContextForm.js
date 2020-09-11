@@ -43,7 +43,7 @@ function ContextForm({ data, deleteItem }) {
           contextTitle: data.title || 'New Context Title', 
           contextText: data.text || 'New Context Text',
           contextLocked: data.locked || false,
-          contextActions: data.staticActions || [{id: '1'}]
+          contextActions: data.staticActions || [],
         }}
         validate={null}
         onSubmit={(values, actions) => {

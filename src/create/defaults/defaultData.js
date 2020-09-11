@@ -147,6 +147,13 @@ const defaultContexts = {
     text: "More actions here.",
     staticActions: [{id: "3"}],
     locked: false,
+  },
+  "2": {
+    id: "2",
+    title: "Another context.",
+    text: "No actions here.",
+    staticActions: [],
+    locked: false,
   }
 };
 
