@@ -40,8 +40,8 @@ function ContextForm({ data, deleteItem }) {
       <p>ID: {data.id}</p>
       <Formik
         initialValues={{
-          contextTitle: data.title || '', 
-          contextText: data.text || '',
+          contextTitle: data.title || 'New Context Title', 
+          contextText: data.text || 'New Context Text',
           contextLocked: data.locked || false,
           contextActions: data.staticActions || [{id: '1'}]
         }}
@@ -97,7 +97,7 @@ function ContextForm({ data, deleteItem }) {
                         </FormArrayElementDiv>
                       ))}
                     </FormArrayDiv>
-                    <button type="button" onClick={() => push({id: ''})}>
+                    <button type="button" onClick={() => push({id: '1'})}>
                       Add an Action
                     </button>
                   </FormDividerDiv>
