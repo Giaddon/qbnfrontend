@@ -81,7 +81,7 @@ const defaultActions = {
     text: "I open a new context for the player.",
     results: {
       type: "context",
-      context: '1',
+      context: "2",
     },
     reqs: [
       {

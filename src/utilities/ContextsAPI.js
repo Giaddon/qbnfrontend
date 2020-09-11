@@ -11,7 +11,6 @@ class ContextsAPI {
     if (data) { 
       data = JSON.parse(data);
       if (data.source==="storage") {
-        console.log("searching for context ", contextId);
         const stringContexts = localStorage.getItem("playcontexts");
         const parsedContexts = JSON.parse(stringContexts);
         return {...parsedContexts[contextId]}
