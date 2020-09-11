@@ -62,7 +62,7 @@ const defaultActions = {
     text: "I change some of the player's qualities.",
     results: {
       type: "modify",
-      changes:[{id: 1, type:"adjust", value: 1}],
+      changes:[{id: "1", type:"adjust", value: 1}],
       hide: false,
       report: {
         title: "A shiny coin!",
@@ -85,7 +85,7 @@ const defaultActions = {
     },
     reqs: [
       {
-        qualityId: 1,
+        qualityId: "1",
         min: 0,
       }
     ],
@@ -103,7 +103,7 @@ const defaultActions = {
     },
     challenge: [
       {
-        qualityId: 1,
+        qualityId: "1",
         difficulty: 2,
         luck: false,
       },
