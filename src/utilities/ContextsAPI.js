@@ -8,7 +8,7 @@ class ContextsAPI {
     return contexts;
   }
   static getContextById(contextId) {
-    if (GameAPI.gameDataInLocalStorage) {
+    if (GameAPI.gameDataInLocalStorage()) {
       const stringContexts = localStorage.getItem("playcontexts");
       const parsedContexts = JSON.parse(stringContexts);
       return {...parsedContexts[contextId]}
@@ -16,7 +16,7 @@ class ContextsAPI {
       return {...contexts[contextId]};
     }
   }
-  
+
 }
 
 export default ContextsAPI;

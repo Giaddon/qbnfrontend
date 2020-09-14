@@ -13,7 +13,7 @@ class QualitiesAPI {
   static getStarting() {
     let startingQualities = {};
     let selectedQualities = {};
-    if (GameAPI.gameDataInLocalStorage) {
+    if (GameAPI.gameDataInLocalStorage()) {
       const stringQualities = localStorage.getItem("playqualities");
       selectedQualities = JSON.parse(stringQualities);
     } else {
