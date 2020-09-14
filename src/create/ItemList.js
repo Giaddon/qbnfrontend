@@ -7,6 +7,7 @@ import Item from './Item';
 import QualityForm from './forms/QualityForm';
 import DomainForm from './forms/DomainForm';
 import ActionForm from './forms/ActionForm';
+import EventForm from './forms/EventForm';
 import ContextForm from './forms/ContextForm';
 import { green } from  '../style/colors';
 import {
@@ -15,6 +16,7 @@ import {
   addDomainToCreate, 
   addActionToCreate,
   addContextToCreate, 
+  addEventToCreate 
 } from './createToolsSlice';
 import { CreateTitle } from '../style/typography';
 
@@ -169,6 +171,17 @@ function ItemList({ items=null, type, title }) {
       locked: false,
     }
     dispatch(addContextToCreate(newItem));
+  } else if (type === 'events') {
+    newItem = {
+      id: uuidv4(),
+      title: 'New Event',
+      text: 'Event text.',
+      staticActions: [],
+      locked: true,
+      priority: 1,
+      triggers: [],
+    }
+    dispatch(addEventToCreate(newItem));
   }
 
 
@@ -181,6 +194,7 @@ function ItemList({ items=null, type, title }) {
   else if (type === "domains") activeForm =  <DomainForm data={selectedItem} deleteItem={deleteItem} />
   else if (type === "actions") activeForm =  <ActionForm data={selectedItem} deleteItem={deleteItem} />
   else if (type === "contexts") activeForm =  <ContextForm data={selectedItem} deleteItem={deleteItem} />
+  else if (type === "events") activeForm =  <EventForm data={selectedItem} deleteItem={deleteItem} />
 
   if (items) {
     return (

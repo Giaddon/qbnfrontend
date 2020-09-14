@@ -75,7 +75,7 @@ function ContextForm({ data, deleteItem }) {
             <label htmlFor="contextLocked" style={{ display: "block" }}>
               Locked</label> 
             <Field type='checkbox' name="contextLocked" />
-            <ErrorMessage name="qbnCreateQualityLocked" component="div" />
+            <ErrorMessage name="contextLocked" component="div" />
           
            <FormSectionTitle htmlFor="contextActions">Actions</FormSectionTitle>
             <FieldArray name="contextActions">

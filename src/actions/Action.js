@@ -9,6 +9,7 @@ import { showTooltip, hideTooltip } from '../tooltip/tooltipSlice';
 import dynamicBackground from '../assets/backgrounds/whitediamond.png'
 import background from '../assets/backgrounds/groovepaper.png'
 import { neutral, highlight, forbidden, informative, text } from '../style/colors';
+import { setSelectedAction } from '../player/playerSlice';
 
 const ActionDiv = styled.div`
   position: relative;
@@ -96,7 +97,7 @@ function Action({
 
   function clickDismiss(event) {
     event.stopPropagation();
-    console.log("Dismiss discovered action");
+    dispatch(setSelectedAction({id, clickType:"dismiss"}));
   }
 
   return (

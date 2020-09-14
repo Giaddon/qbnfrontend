@@ -9,6 +9,7 @@ export const createToolsSlice = createSlice({
     domains: {},
     contexts: {},
     actions: {},
+    events: {},
   },
   reducers: {
     addQualityToCreate: (state, action) => {
@@ -35,6 +36,10 @@ export const createToolsSlice = createSlice({
       const { id } = action.payload;
       state.contexts[id] = action.payload;
     },
+    addEventToCreate: (state, action) => {
+      const { id } = action.payload;
+      state.events[id] = action.payload;
+    },
     deleteActionFromCreate: (state, action) => {
       const id = action.payload;
       delete state.actions[id];
@@ -56,7 +61,8 @@ export const {
   deleteActionFromCreate,
   deleteSomethingFromCreate,
   setAllCreate,
-  addContextToCreate
+  addContextToCreate,
+  addEventToCreate,
  } = createToolsSlice.actions;
 
 export const selectCreate = state => state.create;

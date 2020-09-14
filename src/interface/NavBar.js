@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 import { toggleSidebar } from '../interface/interfaceSlice';
-import { navbar, navbarAccent } from '../style/colors';
+import { navbar, navbarAccent, navbarHighligt } from '../style/colors';
 import { Title } from '../style/typography';
 
 const NavBarDiv = styled.div`
@@ -31,6 +31,7 @@ const NavbarButton = styled.div`
   color: ${navbarAccent};
   flex: 0 1 auto;
   cursor: pointer;
+  transition: all .2s ease;
   & ~ & {
     margin-left: 10px;
   }
@@ -39,6 +40,10 @@ const NavbarButton = styled.div`
     top: 50%;
     left: 50%;
     transform: translateY(-50%) translateX(-50%);
+  }
+  :hover {
+    border: 2px solid ${navbarHighligt};
+    color: ${navbarHighligt}
   }
 `
 

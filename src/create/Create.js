@@ -9,8 +9,16 @@ import {
   addActionToCreate, 
   selectCreate, 
   setAllCreate,
-  addContextToCreate } from './createToolsSlice';
-import { defaultQualities, defaultDomains, defaultActions, defaultContexts } from './defaults/defaultData'; 
+  addContextToCreate,
+  addEventToCreate,
+ } from './createToolsSlice';
+import { 
+  defaultQualities, 
+  defaultDomains, 
+  defaultActions, 
+  defaultContexts, 
+  defaultEvents 
+} from './defaults/defaultData'; 
 import ItemsList from './ItemList';
 import Navbar from './Navbar';
 
@@ -55,19 +63,21 @@ function Create() {
   const [activeList, setActiveList] = useState({first: null, second: null});
 
   useEffect(function createCheckforDataOnInitialMount() {
-    const {qualities, domains, actions, contexts } = {
+    const {qualities, domains, actions, contexts, events } = {
       qualities: localStorage.getItem('createqualities'), 
       domains: localStorage.getItem('createdomains'),
       actions: localStorage.getItem('createactions'),
       contexts: localStorage.getItem('createcontexts'),
+      events: localStorage.getItem('createevents'),
     }
 
-    if(qualities && domains && actions && contexts) {
+    if(qualities && domains && actions && contexts && events) {
       const createState = {
         qualities: JSON.parse(qualities),
         domains: JSON.parse(domains),
         actions: JSON.parse(actions),
         contexts: JSON.parse(contexts),
+        events: JSON.parse(events),
       }
       dispatch(setAllCreate(createState));
     } else {
@@ -112,6 +122,21 @@ function Create() {
           dispatch(addContextToCreate(context));
         })
       }
+      
+      if (events) {
+        const parsedEvents = JSON.parse(events);
+        Object.values(parsedEvents).forEach(event => {
+          dispatch(addEventToCreate(event));
+        })
+      } else {
+        Object.values(defaultEvents).forEach(event => {
+          dispatch(addEventToCreate(event));
+        })
+      }
+
+
+
+
     }
   },[dispatch])
   
@@ -136,12 +161,19 @@ function Create() {
     if (stringContexts) {
       localStorage.setItem('createcontexts', stringContexts);
     }
+    const stringEvents = JSON.stringify(createData.events);
+    if (stringEvents) {
+      localStorage.setItem('createevents', stringEvents);
+    }
+
   }, [createData])
 
 
   function prepareData() {
     let domains = Object.values(createData.domains).map(domain => ({ ...domain }));
-    let contexts = Object.values(createData.contexts).map(context => ({ ...context }))
+    let contexts = Object.values(createData.contexts).map(context => ({ ...context }));
+    let events = Object.values(createData.events).map(event =>({...event}));
+
     for (let i = 0; i < domains.length; i++) {
       domains[i].staticActions = [...domains[i].staticActions];
       domains[i].dynamicActions = [...domains[i].dynamicActions];
@@ -160,8 +192,18 @@ function Create() {
       }
     }
 
+    for (let i = 0; i < events.length; i++) {
+      events[i].staticActions = [...events[i].staticActions];
+      for (let j= 0; j < events[i].staticActions.length; j++) {  
+        events[i].staticActions[j] = createData.actions[events[i].staticActions[j].id];
+      }
+    }
+
+    
+
     let objectifiedDomains = {};
     let objectifiedContexts = {};
+    let objectifiedEvents = {};
     let objectifiedQualities = {};
 
     domains.forEach(domain => {
@@ -171,6 +213,10 @@ function Create() {
     contexts.forEach(context => {
       objectifiedContexts[context.id] = context;
     }); 
+
+    events.forEach(event => {
+      objectifiedEvents[event.id] = event;
+    });
 
     let qualities = Object.values(createData.qualities).map(quality => ({ ...quality }));
 
@@ -200,26 +246,27 @@ function Create() {
     const stringQualities = JSON.stringify(objectifiedQualities);
     const stringDomains = JSON.stringify(objectifiedDomains);
     const stringContexts = JSON.stringify(objectifiedContexts);
+    const stringEvents = JSON.stringify(objectifiedEvents);
 
-    return { stringQualities, stringDomains, stringContexts }
+    return { stringQualities, stringDomains, stringContexts, stringEvents }
   }
 
   function clickPlay() {
-    const { stringQualities, stringDomains, stringContexts } = prepareData();
+    const { stringQualities, stringDomains, stringContexts, stringEvents } = prepareData();
     const data = '{"source":"storage"}';
     
     localStorage.setItem('data', data);
-    localStorage.setItem('playqualities', stringQualities );
-    localStorage.setItem('playdomains', stringDomains );
-    localStorage.setItem('playcontexts', stringContexts );
+    localStorage.setItem('playqualities', stringQualities);
+    localStorage.setItem('playdomains', stringDomains);
+    localStorage.setItem('playcontexts', stringContexts);
+    localStorage.setItem('playevents', stringEvents);
 
     window.location = '/';
-
   }
 
   function clickExport() {
-    const { stringQualities, stringDomains, stringContexts } = prepareData();
-    const exportedWorld = "const domains = " + stringDomains + "; const qualities = " + stringQualities + "; const contexts = " + stringContexts + "; export { domains, qualities, contexts }";
+    const { stringQualities, stringDomains, stringContexts, stringEvents } = prepareData();
+    const exportedWorld = "const domains = " + stringDomains + "; const qualities = " + stringQualities + "; const events = " + stringEvents + "; const contexts = " + stringContexts + "; export { domains, qualities, contexts, events }";
     
     download(exportedWorld, 'world.js', 'text/plain')
   }
@@ -258,6 +305,13 @@ function Create() {
           ? <ItemsList items={Object.values(createData.contexts)} title="Contexts" type="contexts" /> 
           : null 
         }
+        {activeList.first==="events" && createData.events
+          ? <ItemsList items={Object.values(createData.events)} title="Events" type="events" /> 
+          : null 
+        }
+
+
+
         {activeList.second==="qualities" 
           ? <ItemsList items={Object.values(createData.qualities)} title="Qualities" type="qualities" />  
           : null
@@ -272,6 +326,10 @@ function Create() {
         }
         {activeList.second==="contexts" && createData.contexts
           ? <ItemsList items={Object.values(createData.contexts)} title="Contexts" type="contexts" /> 
+          : null 
+        }
+         {activeList.second==="events" && createData.events
+          ? <ItemsList items={Object.values(createData.events)} title="Events" type="events" /> 
           : null 
         }
       </CreateInterfaceDiv>

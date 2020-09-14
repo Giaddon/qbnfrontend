@@ -8,6 +8,8 @@ export const playerSlice = createSlice({
     qualities: {},
     discoveredActions: {},
     activeDynamic: false,
+    selectedAction: null,
+    clickedSlot: false,
   },
   reducers: {
     setAllQualities: (state, action) => {
@@ -24,6 +26,8 @@ export const playerSlice = createSlice({
       const { domainId, actions } = action.payload;
       state.discoveredActions[domainId] = actions;
     },
+    setSelectedAction: (state, action) => {state.selectedAction = action.payload},
+    toggleClickedSlot: (state) => {state.clickedSlot = !state.clickedSlot},
   }
 });
 
@@ -31,11 +35,15 @@ export const {
   setAllQualities,
   setQuality, 
   removeQuality, 
-  setDiscoveredActionsByDomainId 
+  setDiscoveredActionsByDomainId,
+  setSelectedAction,
+  toggleClickedSlot, 
 } = playerSlice.actions;
 
 export const selectPlayer = state => state.player;
 export const selectQualities = state => state.player.qualities;
 export const selectDiscoveredActions = state => state.player.discoveredActions;
+export const selectSelectedAction = state => state.player.selectedAction;
+export const selectClickedSlot = state => state.player.clickedSlot;
 
 export default playerSlice.reducer;

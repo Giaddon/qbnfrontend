@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { Title, Text } from '../style/typography';
 import {
   selectDomain, 
-  possibleActionDiscovered,
   setActiveContext, 
   setActiveReport,
   clearActiveContext,
@@ -58,22 +57,6 @@ function Stage() {
   const domain = useSelector(selectDomain);
   const qualities = useSelector(selectQualities);
   const discoveredActions = useSelector(selectDiscoveredActions);
-
-  function consumeSelectSlot() {
-    const possibleActions = [...domain.activeDomain.possibleActions];
-    const currentDiscoveredActions = 
-      domain.activeDomain.discoveredActions ? [...domain.activeDomain.discoveredActions] : [];
-    const index = Math.floor(Math.random() * possibleActions.length);
-    const revealedAction = {...possibleActions[index]};
-
-    const remainingPossibleActions = possibleActions.filter(action => action.id !== revealedAction.id);
-    const newDiscoveredActions = [...currentDiscoveredActions, revealedAction]
-    
-    dispatch(setDiscoveredActionsByDomainId({domainId: domain.activeDomain.id, actions: newDiscoveredActions}));
-    dispatch(possibleActionDiscovered({remainingPossibleActions, newDiscoveredActions}))
-    dispatch(hideTooltip());
-
-  }
 
   function applyActionResults(results) {
     let outcomes = [];
@@ -128,7 +111,9 @@ function Stage() {
     
     let selectedAction;
     let selectedDiscovered;
-    if (domain.activeContext) selectedAction = domain.activeContext.availableActions.filter(action => action.id === actionId)[0]
+
+    if (domain.activeEvent) selectedAction = domain.activeEvent.availableActions.filter(action => action.id === actionId)[0]
+    else if (domain.activeContext) selectedAction = domain.activeContext.availableActions.filter(action => action.id === actionId)[0]
     else {
       const inStatic = domain.activeDomain.availableActions.filter(action => action.id === actionId);
       if (inStatic.length === 1) selectedAction = inStatic[0];
@@ -199,6 +184,22 @@ function Stage() {
     )
   }
 
+  if (domain.activeEvent) {
+    return (
+      <DomainDiv>
+        <HeaderDiv>
+          <Title>{domain.activeEvent.title}</Title>
+          <Text>{domain.activeEvent.text}</Text>
+        </HeaderDiv>
+        <ActionList
+          availableActions={domain.activeEvent.availableActions} 
+          unavailableActions={domain.activeEvent.lockedActions}
+          selectAction={consumeSelectAction}
+        />
+      </DomainDiv>
+    )
+  }
+
   if (domain.activeContext) {
     return (
       <DomainDiv>
@@ -209,7 +210,8 @@ function Stage() {
         <ActionList
           availableActions={domain.activeContext.availableActions} 
           unavailableActions={domain.activeContext.lockedActions}
-          selectAction={consumeSelectAction}/>
+          selectAction={consumeSelectAction}
+        />
         <BackButton />
       </DomainDiv>
     )
@@ -230,7 +232,6 @@ function Stage() {
           unavailableActions={domain.activeDomain.lockedActions}
           discoveredActions={domain.activeDomain.discoveredActions}
           slots={calculatedSlots}
-          selectSlot={consumeSelectSlot}
           selectAction={consumeSelectAction}
           possibleActionsCount={domain.activeDomain.possibleActions?.length || 0}
         />

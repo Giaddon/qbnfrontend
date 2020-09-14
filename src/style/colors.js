@@ -13,6 +13,7 @@ const darkgreen = "#056674";
 
 const navbar = "#005086"; // Default: "#005086", used for the navbar
 const navbarAccent = "#318fb5" // Default: "#318fb5" used for navbar accent (i.e. the buttons)
+const navbarHighligt = "#82c4c3";
 
 const text = "#000" // Default: "#000", used for most text
 
@@ -27,4 +28,5 @@ export {
   text,
   navbar,
   navbarAccent,
+  navbarHighligt
 };

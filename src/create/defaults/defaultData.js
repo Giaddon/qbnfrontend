@@ -157,4 +157,24 @@ const defaultContexts = {
   }
 };
 
-export { defaultQualities, defaultDomains, defaultActions, defaultContexts };
+const defaultEvents = {
+  "1": {
+    id: "1",
+    title: "An event!",
+    text: "Events automatically happen when their trigger conditions are met.",
+    staticActions: [{id: "1"}],
+    locked: true,
+    priority: 1,
+    triggers: [
+
+    ],
+  },
+}
+
+export { 
+  defaultQualities, 
+  defaultDomains, 
+  defaultActions, 
+  defaultContexts, 
+  defaultEvents, 
+};

@@ -6,17 +6,26 @@ import {
   selectQualities,
   selectDiscoveredActions, 
   setDiscoveredActionsByDomainId, 
-  setAllQualities 
+  setAllQualities, selectSelectedAction, selectClickedSlot, toggleClickedSlot, setSelectedAction 
 } from '../player/playerSlice';
 import QualitiesAPI from '../utilities/QualitiesAPI';
 import Sidebar from '../interface/Sidebar';
 import NavBar from '../interface/NavBar';
 import Tooltip from '../tooltip/Tooltip';
+import { hideTooltip } from '../tooltip/tooltipSlice';
 import DomainsAPI from '../utilities/DomainsAPI';
 import ContextsAPI from '../utilities/ContextsAPI';
-import { selectDomain, setActiveDomain, setActiveContext, } from '../domain/domainSlice';
+import {
+  selectDomain,
+  setActiveDomain, 
+  setActiveContext, 
+  possibleActionDiscovered, 
+  setEvents, selectEvents, setActiveEvent
+} from '../domain/domainSlice';
 import ActionFunctions from '../utilities/ActionFunctions';
 import Stage from '../domain/Stage';
+import EventsAPI from '../utilities/EventsAPI';
+import EventFunctions from '../utilities/EventFunctions';
 
 const GameDiv = styled.div`
   display: flex;
@@ -31,8 +40,11 @@ function Game() {
   const dispatch = useDispatch();
   const [loaded, setLoaded] = useState(false);
   const qualities = useSelector(selectQualities);
+  const selectedAction = useSelector(selectSelectedAction);
+  const clickedSlot = useSelector(selectClickedSlot);
   const discoveredActions = useSelector(selectDiscoveredActions);
   const domain = useSelector(selectDomain);
+  const events = useSelector(selectEvents);
   const [qualitiesChanged, setQualitiesChanged] = useState(false);
 
   //Get qualities from API (new game) or local storage (continued game)
@@ -43,78 +55,121 @@ function Game() {
     const startingQualities = QualitiesAPI.getStarting();
     dispatch(setAllQualities(startingQualities));
     
+    const events = EventsAPI.getAllEvents();
+    dispatch(setEvents(events));
+
     setLoaded(true);
   }, [dispatch]);
 
-//This effect prevents the next affect when running just when domain state is changed.
-useEffect(() => {
-  setQualitiesChanged(true);
-}, [qualities])
+  //This effect prevents the next effect when running just when domain state is changed.
+  useEffect(() => {
+    setQualitiesChanged(true);
+  }, [qualities])
 
-//This effect runs when qualities change, and decides what to do about it.
-useEffect(function processQualityChange() {
-  if(qualitiesChanged) {
-    
-    // If the player is changing domains.
-    // if(domain.activeDomain && (qualities.domain.value !== domain.activeDomain.id)) { 
-    //   dispatch(setActiveDomain())
-    // }
-
-    // If there's an active context
-    if (domain.activeContext) {
-      // Update actions there.
-      const { availableActions, lockedActions } = 
-      ActionFunctions.selectStaticActions(domain.activeContext.staticActions, qualities);
-    
-      let newContext = ContextsAPI.getContextById(domain.activeContext.id);
-      newContext.availableActions = availableActions;
-      newContext.lockedActions = lockedActions;
+  //This effect runs when qualities change, and decides what to do about it.
+  useEffect(function processQualityChange() {
+    if(qualitiesChanged) {
       
-      dispatch(setActiveContext(newContext));
-    }
-
-    // Always update actions for domain
-    let newDomain = DomainsAPI.getDomainById(qualities.domain.value);
-    const { availableActions, lockedActions } = 
-      ActionFunctions.selectStaticActions(newDomain.staticActions, qualities);
-    
-    if (newDomain.dynamicActions && newDomain.dynamicActions.length > 0) {
-      const { possibleActions } = 
-      ActionFunctions.selectDynamicActions(newDomain.dynamicActions, qualities);
-      newDomain.possibleActions = possibleActions;
-    }
-
-    newDomain.availableActions = availableActions;
-    newDomain.lockedActions = lockedActions;
-    
-    if (discoveredActions[newDomain.id]) {
-      const { possibleActions } = ActionFunctions.selectDynamicActions(discoveredActions[newDomain.id], qualities) 
-      if (possibleActions) {
-        const foundActions = new Set(possibleActions.map(a => a.id));
-        if (newDomain.possibleActions) {
-          newDomain.possibleActions = newDomain.possibleActions.filter(a => !foundActions.has(a.id));
-        }
-        newDomain.discoveredActions = possibleActions;
-        dispatch(setDiscoveredActionsByDomainId({domainId: newDomain.id, actions: possibleActions}));
+      //Check for events triggered by the new quality state.
+      const allEvents = Object.values(events);
+      
+      const triggeredEvent = EventFunctions.evaluateEvents(allEvents, qualities);
+      if (triggeredEvent) {
+        const { availableActions, lockedActions } = 
+        ActionFunctions.selectStaticActions(triggeredEvent.staticActions, qualities);
+        triggeredEvent.lockedActions = lockedActions;
+        triggeredEvent.availableActions = availableActions;
+        dispatch(setActiveEvent(triggeredEvent))
       } else {
-        dispatch(setDiscoveredActionsByDomainId({domainId: newDomain.id, actions: null}));
+        dispatch(setActiveEvent(null));
       }
+
+      // If there's an active context
+      if (domain.activeContext) {
+        // Update actions there.
+        const { availableActions, lockedActions } = 
+        ActionFunctions.selectStaticActions(domain.activeContext.staticActions, qualities);
+      
+        let newContext = ContextsAPI.getContextById(domain.activeContext.id);
+        newContext.availableActions = availableActions;
+        newContext.lockedActions = lockedActions;
+        
+        dispatch(setActiveContext(newContext));
+      }
+
+      // Always update actions for domain
+      let newDomain = DomainsAPI.getDomainById(qualities.domain.value);
+      const { availableActions, lockedActions } = 
+        ActionFunctions.selectStaticActions(newDomain.staticActions, qualities);
+      
+      if (newDomain.dynamicActions && newDomain.dynamicActions.length > 0) {
+        const { possibleActions } = 
+        ActionFunctions.selectDynamicActions(newDomain.dynamicActions, qualities);
+        newDomain.possibleActions = possibleActions;
+      }
+
+      newDomain.availableActions = availableActions;
+      newDomain.lockedActions = lockedActions;
+      
+      if (discoveredActions[newDomain.id]) {
+        const { possibleActions } = ActionFunctions.selectDynamicActions(discoveredActions[newDomain.id], qualities) 
+        if (possibleActions) {
+          const foundActions = new Set(possibleActions.map(a => a.id));
+          if (newDomain.possibleActions) {
+            newDomain.possibleActions = newDomain.possibleActions.filter(a => !foundActions.has(a.id));
+          }
+          newDomain.discoveredActions = possibleActions;
+          dispatch(setDiscoveredActionsByDomainId({domainId: newDomain.id, actions: possibleActions}));
+        } else {
+          dispatch(setDiscoveredActionsByDomainId({domainId: newDomain.id, actions: null}));
+        }
+      }
+      
+      dispatch(setActiveDomain(newDomain));
+      setQualitiesChanged(false);
     }
-    
-    dispatch(setActiveDomain(newDomain));
-    setQualitiesChanged(false);
-  }
 
-}, [qualities, domain.activeContext, domain.activeDomain, qualitiesChanged, discoveredActions, dispatch]);
+  }, [qualities, events, domain.activeContext, domain.activeDomain, qualitiesChanged, discoveredActions, dispatch]);
+
+  useEffect(function consumeSelectSlot() {
+    if (clickedSlot === true) {
+      dispatch(hideTooltip());
+      const possibleActions = [...domain.activeDomain.possibleActions];
+      const currentDiscoveredActions = 
+        domain.activeDomain.discoveredActions ? [...domain.activeDomain.discoveredActions] : [];
+      const index = Math.floor(Math.random() * possibleActions.length);
+      const revealedAction = {...possibleActions[index]};
+
+      const remainingPossibleActions = possibleActions.filter(action => action.id !== revealedAction.id);
+      const newDiscoveredActions = [...currentDiscoveredActions, revealedAction]
+      
+      dispatch(setDiscoveredActionsByDomainId({domainId: domain.activeDomain.id, actions: newDiscoveredActions}));
+      dispatch(possibleActionDiscovered({remainingPossibleActions, newDiscoveredActions}))
+      dispatch(toggleClickedSlot());
+    }
+  }, [dispatch, domain, clickedSlot])
+  
+  useEffect(function consumeSelectAction() {
+    if (selectedAction) {
+      if (selectedAction.clickType === "dismiss") { 
+        const dismissedAction = domain.activeDomain.discoveredActions.filter(a => a.id === selectedAction.id)[0];
+        const newDiscoveredActions = domain.activeDomain.discoveredActions.filter(a => a.id !== selectedAction.id);
+        const remainingPossibleActions = [...domain.activeDomain.possibleActions, dismissedAction] 
+
+        dispatch(setDiscoveredActionsByDomainId({domainId: domain.activeDomain.id, actions: newDiscoveredActions}));
+        dispatch(possibleActionDiscovered({remainingPossibleActions, newDiscoveredActions}));
+        dispatch(setSelectedAction(null));
+      }  
+    }
 
 
-
+  }, [dispatch, domain, selectedAction])
 
   if(loaded) {
     return (
       <GameDiv>
         <Sidebar />
-        <Stage />
+        <Stage selectSlot />
         <NavBar />
         <Tooltip /> 
       </GameDiv>
