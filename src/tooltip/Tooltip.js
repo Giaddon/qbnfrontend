@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-import { TooltipText } from '../typography/typography';
-import { green, darkgreen } from '../typography/colors';
+import { TooltipText } from '../style/typography';
+import { green, darkgreen } from '../style/colors';
 
 
 const TooltipDiv = styled.div.attrs(props => ({

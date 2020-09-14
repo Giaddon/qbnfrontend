@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import QualityBlock from './QualityBlock';
-import { SidebarText, SidebarTitle } from '../typography/typography';
+import { SidebarText, SidebarTitle } from '../style/typography';
 import { selectQualities } from '../player/playerSlice';
 
 const QualityListDiv = styled.div`

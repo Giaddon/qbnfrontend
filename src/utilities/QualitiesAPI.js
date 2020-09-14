@@ -1,7 +1,8 @@
 /** Utility class for the faux API. Will be overhauled if we have a real backend. */
 
 import { qualities } from '../data/world.js';
-import QualityData from '../dataclasses/QualityData';
+import QualityFunctions from './QualityFunctions.js';
+import GameAPI from './GameAPI.js';
 
 class QualitiesAPI {
 
@@ -11,30 +12,24 @@ class QualitiesAPI {
 
   static getStarting() {
     let startingQualities = {};
-    let data = localStorage.getItem("data");
-    if (data) {
-      data = JSON.parse(data);
-      if (data.source==="storage") {
-        const stringQualities = localStorage.getItem("playqualities");
-        const parsedQualities = JSON.parse(stringQualities);
-        Object.values(parsedQualities).forEach(quality => {
-          if (quality.value > 0) {
-            let newQuality = QualityData.processAltText(quality);
-            startingQualities[newQuality.id] = newQuality;
-          }
-        })
-        return startingQualities;
-      }
+    let selectedQualities = {};
+    if (GameAPI.gameDataInLocalStorage) {
+      const stringQualities = localStorage.getItem("playqualities");
+      selectedQualities = JSON.parse(stringQualities);
     } else {
-      Object.values(qualities).forEach(quality => {
-        if (quality.value > 0) {
-          let newQuality = QualityData.processAltText(quality);
-          startingQualities[newQuality.id] = newQuality;
-        }
-      })
-      return startingQualities;
+      selectedQualities = qualities;
     }
+    
+    Object.values(selectedQualities).forEach(quality => {
+      if (quality.value > 0) {
+        let newQuality = QualityFunctions.processAltText(quality);
+        startingQualities[newQuality.id] = newQuality;
+      }
+    })
+      
+    return startingQualities;
   }
+  
 
   static getQualityById(id) {
     let data = localStorage.getItem("data");

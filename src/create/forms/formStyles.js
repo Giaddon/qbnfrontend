@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { green } from '../../typography/colors';
+import { green } from '../../style/colors';
 
 const CreateFormDiv = styled.div`
   flex: 0 1 80%;

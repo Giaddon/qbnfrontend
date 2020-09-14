@@ -18,7 +18,7 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
   body {
-    background-color: #000;
+    background-color: #111;
     font-size:62.5%;
     font-family: sans-serif;
   }

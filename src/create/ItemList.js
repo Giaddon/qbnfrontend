@@ -8,7 +8,7 @@ import QualityForm from './forms/QualityForm';
 import DomainForm from './forms/DomainForm';
 import ActionForm from './forms/ActionForm';
 import ContextForm from './forms/ContextForm';
-import { green } from  '../typography/colors';
+import { green } from  '../style/colors';
 import {
   addQualityToCreate, 
   deleteSomethingFromCreate, 
@@ -16,7 +16,7 @@ import {
   addActionToCreate,
   addContextToCreate, 
 } from './createToolsSlice';
-import { CreateTitle } from '../typography/typography';
+import { CreateTitle } from '../style/typography';
 
 const ItemListDiv = styled.div`
   background-color: white;

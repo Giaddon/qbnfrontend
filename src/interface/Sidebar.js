@@ -6,11 +6,10 @@ import { useSelector } from 'react-redux';
 import QualityList from '../qualities/QualityList';
 
 const SidebarDiv = styled.div`
-  flex: 0 1 25%;
+  flex: 0 1 250px;
   background-color: white;
-  padding: 10px;
+  padding: 10px 10px 60px 10px;
   display: ${props => props.visible ? "block" : "none"};
-  border-right: 1px solid #eee;
 `;
 
 function Sidebar() {

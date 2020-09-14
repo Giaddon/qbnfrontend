@@ -2,8 +2,9 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
-import { Title } from '../typography/typography';
+import { Title } from '../style/typography';
 import { showTooltip, hideTooltip } from '../tooltip/tooltipSlice';
+import background from '../assets/backgrounds/groovepaper.png'
 
 const ActionSlotDiv = styled.div`
   border-top: 1px solid #000;
@@ -14,9 +15,12 @@ const ActionSlotDiv = styled.div`
   margin: 1.5em auto;
   transition: border .2s ease;
   cursor: pointer;
+  background: url(${background});
+  box-shadow: 0px 0px 14px 0px #111;
+  border: 3px solid #fff;
+  border-radius: 2px;
   &:hover {
-    border-top: 1px solid gold;
-    border-bottom: 1px solid gold;
+    border: 3px solid gold;
   }
   p {
     font-size: 3.0em;

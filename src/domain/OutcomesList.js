@@ -4,15 +4,15 @@ import styled from 'styled-components';
 
 import { selectDomain } from './domainSlice';
 import Outcome from './Outcome';
-import { green } from '../typography/colors';
+import { informative } from '../style/colors';
 
 const OutcomesListDiv = styled.div`
-  flex: 0 1 auto;
+  max-width: 700px; 
   padding: 10px;
-  background-color: ${green};
+  background-color: ${informative};
   color: white;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin: 10px auto 10px auto;
+  border-radius: 2px;
 `;
 
 function OutcomesList() {

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Quality from './Quality';
-import { SidebarTitle } from '../typography/typography';
+import { SidebarTitle } from '../style/typography';
 
 const QualityBlockDiv = styled.div`
   & ~ & {

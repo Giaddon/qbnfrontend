@@ -7,18 +7,18 @@ const Title = styled.p`
 const Subtitle = styled.p`
   font-family:'IBMPlexSerif', serif;
   font-size: 1.8em;
-  font-weight: 400;
+  font-weight: 700;
 `
 
 const Text = styled.p`
   font-family:'IBMPlexSerif', serif;
-  font-size: 1.7em;
+  font-size: 1.6em;
   font-weight: 400;
 `
 
 const ActionText = styled.p`
   font-family:'IBMPlexSerif', serif;
-  font-size: 1.4em;
+  font-size: 1.5em;
   font-weight: 400;
 `;
 

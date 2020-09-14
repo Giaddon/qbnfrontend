@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
-import { Title, Text } from '../typography/typography';
+import { Title, Text } from '../style/typography';
 import {
   selectDomain, 
   possibleActionDiscovered,
@@ -23,28 +23,37 @@ import ActionList from '../actions/ActionsList';
 import BackButton from './BackButton';
 import ContinueButton from './ContinueButton';
 import OutcomesList from './OutcomesList';
-import DomainData from '../dataclasses/DirectorFunctions';
 import QualitiesAPI from '../utilities/QualitiesAPI';
-import QualityData from '../dataclasses/QualityData';
+import QualityData from '../utilities/QualityFunctions';
 import ContextsAPI from '../utilities/ContextsAPI';
+import background from '../assets/backgrounds/groovepaper.png'
+import darkBackground from '../assets/backgrounds/brushed_alu_dark.png';
+import ActionFunctions from '../utilities/ActionFunctions';
 
 const DomainDiv = styled.div`
-  padding: 15px;
-  width:100%;
-  background-color: white;
+  flex: 0 1 800px;
+  background: url(${darkBackground});
+  max-width: 800px;
+  padding: 40px 20px 100px 20px;
+  margin: 0 0;
+  height: 100%;
 `
 const HeaderDiv = styled.div`
-  padding: 15px;
-  min-height: 100px;
-  border: 1px solid #000;
-  background-color: inherit;
+  padding: 15px 20px 30px 20px;
+  background-color: white;
+  background: url(${background});
+  box-shadow: 0px 0px 14px 0px #111;
+  border-radius: 2px;
+  min-height: 150px;
+  max-width: 750px;
+  margin: 0 auto;
   p:nth-child(2) {
     margin-top:10px;
   }
   white-space: pre-wrap;
 `
 
-function Domain() {
+function Stage() {
   const dispatch = useDispatch();
   const domain = useSelector(selectDomain);
   const qualities = useSelector(selectQualities);
@@ -62,6 +71,7 @@ function Domain() {
     
     dispatch(setDiscoveredActionsByDomainId({domainId: domain.activeDomain.id, actions: newDiscoveredActions}));
     dispatch(possibleActionDiscovered({remainingPossibleActions, newDiscoveredActions}))
+    dispatch(hideTooltip());
 
   }
 
@@ -147,7 +157,7 @@ function Domain() {
       case "context":
         const selectedContext = ContextsAPI.getContextById(results.context);
         const { availableActions, lockedActions } = 
-          DomainData.selectStaticActions(selectedContext.staticActions, qualities);
+          ActionFunctions.selectStaticActions(selectedContext.staticActions, qualities);
   
         selectedContext.availableActions = availableActions;
         selectedContext.lockedActions = lockedActions;
@@ -238,4 +248,4 @@ function Domain() {
   return null;
 }
 
-export default Domain;
+export default Stage;

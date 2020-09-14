@@ -369,7 +369,7 @@ function NewActionForm({ data, createData }) {
           <Field name="revealType" as="select">
             <option value="always">Always</option>
             <option value="all">When all requirements are met</option>
-            <option value="one">When at least one requirement is met</option>
+            <option value="some">When at least one requirement is met</option>
           </Field>
 
           {values.resultsType==="modify" || values.resultsType==="challenge" ? <div>

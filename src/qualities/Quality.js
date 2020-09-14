@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 import { showTooltip, hideTooltip } from '../tooltip/tooltipSlice';
-import { SidebarSubtitle, SidebarText } from '../typography/typography';
+import { SidebarSubtitle, SidebarText } from '../style/typography';
 
 const QualityDiv = styled.div`
   flex: 1 0 100%;
