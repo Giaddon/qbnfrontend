@@ -25,13 +25,11 @@ import OutcomesList from './OutcomesList';
 import QualitiesAPI from '../utilities/QualitiesAPI';
 import QualityData from '../utilities/QualityFunctions';
 import ContextsAPI from '../utilities/ContextsAPI';
-import background from '../assets/backgrounds/groovepaper.png'
-import darkBackground from '../assets/backgrounds/brushed_alu_dark.png';
+import background from '../assets/backgrounds/groovepaper.png';
 import ActionFunctions from '../utilities/ActionFunctions';
 
 const DomainDiv = styled.div`
   flex: 0 1 800px;
-  background: url(${darkBackground});
   max-width: 800px;
   padding: 40px 20px 100px 20px;
   margin: 0 0;
@@ -171,6 +169,7 @@ function Stage() {
     dispatch(hideTooltip());
   }
 
+
   if (domain.activeReport) {
     return (
       <DomainDiv>
@@ -184,6 +183,7 @@ function Stage() {
     )
   }
 
+  
   if (domain.activeEvent) {
     return (
       <DomainDiv>
@@ -212,7 +212,10 @@ function Stage() {
           unavailableActions={domain.activeContext.lockedActions}
           selectAction={consumeSelectAction}
         />
-        <BackButton />
+        {domain.activeContext.locked 
+          ? null
+          : <BackButton />
+        }
       </DomainDiv>
     )
   }

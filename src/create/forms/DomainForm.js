@@ -38,6 +38,8 @@ function DomainForm({ data, deleteItem }) {
       dynamicActions: values.domainDynamicActions,
       slotsCount: values.domainSlots,
       locked: values.domainLocked || false,
+      availableAtStart: values.availableAtStart || false,
+      discoverable: values.discoverable || false,
     }
     
     dispatch(addDomainToCreate(newDomain));
@@ -58,6 +60,8 @@ function DomainForm({ data, deleteItem }) {
           domainTitle: data.title || '', 
           domainText: data.text || '',
           domainLocked: data.locked || false,
+          availableAtStart: data.availableAtStart || false,
+          discoverable: data.discoverable || false,
           domainSlots: data.slotsCount === 0 ? 0 : 2,
           domainStaticActions: data.staticActions || [
             {id: '1'},
@@ -82,7 +86,7 @@ function DomainForm({ data, deleteItem }) {
          handleSubmit,
          isSubmitting,
         }) => (
-          <Form>
+          <Form autocomplete="off">
             <label htmlFor="domainTitle">Title</label>
             <Field type="text" name="domainTitle" />
             <ErrorMessage name="domainTitle" component="div" />
@@ -93,7 +97,12 @@ function DomainForm({ data, deleteItem }) {
             
             <label htmlFor="domainLocked">Locked</label> 
             <Field type='checkbox' name="domainLocked" />
-            <ErrorMessage name="domainLocked" component="div" />
+
+            <label htmlFor="availableAtStart">Available at start?</label> 
+            <Field name="availableAtStart" type='checkbox'  />
+
+            <label htmlFor="discoverable">Discoverable?</label> 
+            <Field name="discoverable" type='checkbox'  />
             
             <label htmlFor="domainSlots">Available Slots</label> 
             <Field type='number' min="0" name="domainSlots" />

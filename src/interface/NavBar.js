@@ -1,8 +1,8 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import { toggleSidebar } from '../interface/interfaceSlice';
+import { toggleSidebar, setSidebarDisplay, selectInterface } from '../interface/interfaceSlice';
 import { navbar, navbarAccent, navbarHighligt } from '../style/colors';
 import { Title } from '../style/typography';
 
@@ -50,15 +50,27 @@ const NavbarButton = styled.div`
 
 function NavBar() {
   const dispatch = useDispatch();
-  
-  function clickQualities() {
+  const interfaceState = useSelector(selectInterface);
+
+  function clickSidebar() {
     dispatch(toggleSidebar())
+  }
+
+  function clickQualities() {
+    dispatch(setSidebarDisplay('qualities'))
+    if (!interfaceState.sidebar) dispatch(toggleSidebar())
+  }
+
+  function clickTravel() {
+    dispatch(setSidebarDisplay('travel'))
+    if (!interfaceState.sidebar) dispatch(toggleSidebar())
   }
 
   return (
     <NavBarDiv>
-      <NavbarButton onClick={clickQualities}><Title>S</Title></NavbarButton>
-      <NavbarButton><Title>Q</Title></NavbarButton>
+      <NavbarButton onClick={clickSidebar}><Title>S</Title></NavbarButton>
+      <NavbarButton onClick={clickQualities}><Title>Q</Title></NavbarButton>
+      <NavbarButton onClick={clickTravel}><Title>T</Title></NavbarButton>
     </NavBarDiv>
   )
 }

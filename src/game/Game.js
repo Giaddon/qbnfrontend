@@ -5,8 +5,13 @@ import styled from 'styled-components';
 import {
   selectQualities,
   selectDiscoveredActions, 
+  selectDiscoveredDomains,
   setDiscoveredActionsByDomainId, 
-  setAllQualities, selectSelectedAction, selectClickedSlot, toggleClickedSlot, setSelectedAction 
+  setAllQualities, 
+  selectSelectedAction, 
+  selectClickedSlot, 
+  toggleClickedSlot, 
+  setSelectedAction, discoverDomain 
 } from '../player/playerSlice';
 import QualitiesAPI from '../utilities/QualitiesAPI';
 import Sidebar from '../interface/Sidebar';
@@ -26,14 +31,16 @@ import ActionFunctions from '../utilities/ActionFunctions';
 import Stage from '../domain/Stage';
 import EventsAPI from '../utilities/EventsAPI';
 import EventFunctions from '../utilities/EventFunctions';
+import darkBackground from '../assets/backgrounds/brushed_alu_dark.png';
 
 const GameDiv = styled.div`
   display: flex;
   flex-flow: row nowrap;
-  max-width: 1200px;
+  max-width: 1050px;
   justify-content: center;
   align-content: center;
   margin: 0 auto;
+  background: url(${darkBackground});
 `
 
 function Game() {
@@ -43,6 +50,7 @@ function Game() {
   const selectedAction = useSelector(selectSelectedAction);
   const clickedSlot = useSelector(selectClickedSlot);
   const discoveredActions = useSelector(selectDiscoveredActions);
+  const discoveredDomains = useSelector(selectDiscoveredDomains);
   const domain = useSelector(selectDomain);
   const events = useSelector(selectEvents);
   const [qualitiesChanged, setQualitiesChanged] = useState(false);
@@ -55,6 +63,9 @@ function Game() {
     const startingQualities = QualitiesAPI.getStarting();
     dispatch(setAllQualities(startingQualities));
     
+    const startingDomains = DomainsAPI.getStartingDomains();
+    startingDomains.forEach(d => dispatch(discoverDomain({id: d.id, name: d.title})))
+
     const events = EventsAPI.getAllEvents();
     dispatch(setEvents(events));
 
@@ -99,6 +110,14 @@ function Game() {
 
       // Always update actions for domain
       let newDomain = DomainsAPI.getDomainById(qualities.domain.value);
+      
+      //If discoverable, add to player's discovered domains
+      if (newDomain.discoverable) {
+        if (!discoveredDomains[newDomain.id]) {
+          dispatch(discoverDomain({id: newDomain.id, name: newDomain.title}))
+        }
+      }
+
       const { availableActions, lockedActions } = 
         ActionFunctions.selectStaticActions(newDomain.staticActions, qualities);
       
@@ -129,7 +148,15 @@ function Game() {
       setQualitiesChanged(false);
     }
 
-  }, [qualities, events, domain.activeContext, domain.activeDomain, qualitiesChanged, discoveredActions, dispatch]);
+  }, [
+    qualities, 
+    events, 
+    domain.activeContext, 
+    domain.activeDomain, 
+    qualitiesChanged, 
+    discoveredActions, 
+    dispatch,
+    discoveredDomains]);
 
   useEffect(function consumeSelectSlot() {
     if (clickedSlot === true) {
@@ -169,7 +196,7 @@ function Game() {
     return (
       <GameDiv>
         <Sidebar />
-        <Stage selectSlot />
+        <Stage />
         <NavBar />
         <Tooltip /> 
       </GameDiv>

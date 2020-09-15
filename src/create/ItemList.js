@@ -123,6 +123,8 @@ function ItemList({ items=null, type, title }) {
         staticActions: [],
         dynamicActions: [],
         locked: false,
+        discoverable: false,
+        availableAtStart: false,
       }
       dispatch(addDomainToCreate(newItem));
     } else if (type==='actions') {
