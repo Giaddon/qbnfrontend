@@ -36,6 +36,10 @@ export const playerSlice = createSlice({
     },
     setSelectedAction: (state, action) => {state.selectedAction = action.payload},
     toggleClickedSlot: (state) => {state.clickedSlot = !state.clickedSlot},
+    togglePinQuality: (state, action) => {
+      const id = action.payload;
+      state.qualities[id].pinned = state.qualities[id].pinned ? false : true;
+    }
   }
 });
 
@@ -47,7 +51,8 @@ export const {
   setSelectedAction,
   toggleClickedSlot,
   discoverDomain, 
-  setDomainQuality
+  setDomainQuality,
+  togglePinQuality,
 } = playerSlice.actions;
 
 export const selectPlayer = state => state.player;

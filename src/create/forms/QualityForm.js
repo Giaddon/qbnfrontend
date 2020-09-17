@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form, Field, FieldArray, ErrorMessage } from 'formik';
 
-import { addQualityToCreate } from '../createToolsSlice';
+import { addQualityToCreate, selectCreate } from '../createToolsSlice';
 import { CreateFormDiv, FormDividerDiv, FormSectionTitle } from './formStyles';
 
 
@@ -28,11 +28,12 @@ const FormDeleteButton = styled.div`
 
 function QualityForm({ data, deleteItem }) {
   const dispatch = useDispatch();
-  
+  const createData = useSelector(selectCreate);
+
   function submitForm(values) {
-   
-
-
+  
+    const qualityContext = values.contextEnabled ? values.context : null
+  
     const newQuality = {
       id: data.id,
       name: values.qualityName || "Unknown Quality",
@@ -42,6 +43,7 @@ function QualityForm({ data, deleteItem }) {
       value: values.qualityValue || 0,
       pyramid: values.qualityPyramid || false,
       invisible: values.qualityInvisible || false,
+      context: qualityContext || null,
     }
     
     dispatch(addQualityToCreate(newQuality));
@@ -71,6 +73,8 @@ function QualityForm({ data, deleteItem }) {
           qualityCategory: data.category || '',
           qualityPyramid: data.pyramid || false,
           qualityInvisible: data.invisible || false,
+          context: data.context || '',
+          contextEnabled: data.context ? true : false,
         }}
         validate={null}
         onSubmit={(values, actions) => {
@@ -164,6 +168,18 @@ function QualityForm({ data, deleteItem }) {
             <Field type='checkbox' name="qualityInvisible" />
             <ErrorMessage name="qualityInvisible" component="div" />
            
+            <label htmlFor="contextEnabled">Link to context?</label> 
+            <Field name="contextEnabled" type='checkbox' />
+           
+            {values.contextEnabled ? <div>
+            <label htmlFor="context">Linked context:</label>
+            <Field name="context" as="select">
+              {Object.values(createData.contexts).map(context => 
+                <option key={context.id} value={context.id}>{context.title} (id: {context.id})</option>
+              )}
+            </Field>
+          </div> : null}
+
             <button type="submit" disabled={isSubmitting}>Submit</button>
          </Form>
         )}

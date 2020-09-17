@@ -5,8 +5,16 @@ import Quality from './Quality';
 import { SidebarTitle } from '../style/typography';
 
 const QualityBlockDiv = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+`
+
+const QualityContainer = styled.div`
+  background-color: white;
+  padding: 5px;
   & ~ & {
-    margin-top: 2em;
+    margin-top: 2px;
+    border-top: 1px solid #333;
   }
 `
 
@@ -58,20 +66,24 @@ function QualityBlock({ name, qualities }) {
  
   if (qualities) { 
     return (
-      <QualityBlockDiv>
+      <QualityContainer>
         <SidebarTitle>{name}</SidebarTitle>
-        {qualities.map(quality =>
-          <Quality 
-            key={quality.id} 
-            id={quality.id} 
-            name={quality.name}
-            description={quality.displayDescription}
-            tooltip={quality.tooltip}
-            value={quality.displayValue}
-            change={quality.change}
-          />)
-        }
-      </QualityBlockDiv>
+        <QualityBlockDiv>
+          {qualities.map(quality =>
+            <Quality 
+              key={quality.id} 
+              id={quality.id} 
+              name={quality.name}
+              description={quality.displayDescription}
+              tooltip={quality.tooltip}
+              value={quality.displayValue}
+              change={quality.change}
+              pinned={quality.pinned}
+              context={quality.context}
+            />)
+          }
+        </QualityBlockDiv>
+      </QualityContainer>
     );
   }
   return null;

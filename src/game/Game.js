@@ -32,6 +32,8 @@ import Stage from '../domain/Stage';
 import EventsAPI from '../utilities/EventsAPI';
 import EventFunctions from '../utilities/EventFunctions';
 import darkBackground from '../assets/backgrounds/brushed_alu_dark.png';
+import QualityPage from '../qualities/QualityPage';
+import { selectInterface } from '../interface/interfaceSlice';
 
 const GameDiv = styled.div`
   display: flex;
@@ -54,6 +56,7 @@ function Game() {
   const domain = useSelector(selectDomain);
   const events = useSelector(selectEvents);
   const [qualitiesChanged, setQualitiesChanged] = useState(false);
+  const interfaceState = useSelector(selectInterface);
 
   //Get qualities from API (new game) or local storage (continued game)
   useEffect(function startGame() {
@@ -192,11 +195,16 @@ function Game() {
 
   }, [dispatch, domain, selectedAction])
 
+  let mainDisplay;
+
+  if (interfaceState.mainDisplay === 'story') mainDisplay = <Stage />;
+  if (interfaceState.mainDisplay === 'qualities') mainDisplay = <QualityPage />;
+
   if(loaded) {
     return (
       <GameDiv>
         <Sidebar />
-        <Stage />
+        {mainDisplay}
         <NavBar />
         <Tooltip /> 
       </GameDiv>

@@ -5,8 +5,9 @@ import { createSlice } from '@reduxjs/toolkit';
 export const interfaceSlice = createSlice({
   name: 'interface',
   initialState: {
-    sidebar: true,
+    sidebar: false,
     sidebarDisplay: 'qualities',
+    mainDisplay: 'story',
   },
   reducers: {
     toggleSidebar: (state) => {
@@ -15,10 +16,13 @@ export const interfaceSlice = createSlice({
     setSidebarDisplay: (state, action) => {
       state.sidebarDisplay = action.payload;
     },
+    setMainDisplay: (state, action) => {
+      state.mainDisplay = action.payload;
+    },
   },
 });
 
-export const { toggleSidebar, setSidebarDisplay } = interfaceSlice.actions;
+export const { toggleSidebar, setSidebarDisplay, setMainDisplay } = interfaceSlice.actions;
 
 export const selectInterface = state => state.interface;
 

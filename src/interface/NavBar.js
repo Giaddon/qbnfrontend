@@ -2,7 +2,12 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import { toggleSidebar, setSidebarDisplay, selectInterface } from '../interface/interfaceSlice';
+import { 
+  toggleSidebar,
+  setSidebarDisplay,
+  selectInterface,
+  setMainDisplay
+} from '../interface/interfaceSlice';
 import { navbar, navbarAccent, navbarHighligt } from '../style/colors';
 import { Title } from '../style/typography';
 
@@ -24,11 +29,11 @@ const NavBarDiv = styled.div`
 const NavbarButton = styled.div`
   position: relative;
   text-align: center;
-  border: 2px solid ${navbarAccent};
+  border: ${props => props.light ? `2px solid ${navbarHighligt};` : `2px solid ${navbarAccent};`} 
   height: 35px;
+  color: ${props => props.light ? `${navbarHighligt};` : `${navbarAccent};` }
   width: 55px;
   border-radius: 2px;
-  color: ${navbarAccent};
   flex: 0 1 auto;
   cursor: pointer;
   transition: all .2s ease;
@@ -55,22 +60,25 @@ function NavBar() {
   function clickSidebar() {
     dispatch(toggleSidebar())
   }
-
   function clickQualities() {
-    dispatch(setSidebarDisplay('qualities'))
-    if (!interfaceState.sidebar) dispatch(toggleSidebar())
+    if (interfaceState.mainDisplay === 'qualities') dispatch(setMainDisplay('story'));
+    else dispatch(setMainDisplay('qualities'));
   }
 
   function clickTravel() {
-    dispatch(setSidebarDisplay('travel'))
-    if (!interfaceState.sidebar) dispatch(toggleSidebar())
+    if (interfaceState.sidebarDisplay === 'travel') {
+      dispatch(setSidebarDisplay('qualities'));
+    } else {
+      dispatch(setSidebarDisplay('travel'))
+    }
+    if (!interfaceState.sidebar) dispatch(toggleSidebar());
   }
 
   return (
     <NavBarDiv>
-      <NavbarButton onClick={clickSidebar}><Title>S</Title></NavbarButton>
-      <NavbarButton onClick={clickQualities}><Title>Q</Title></NavbarButton>
-      <NavbarButton onClick={clickTravel}><Title>T</Title></NavbarButton>
+      <NavbarButton light={interfaceState.sidebar ? true : false} onClick={clickSidebar}><Title>S</Title></NavbarButton>
+      <NavbarButton light={interfaceState.mainDisplay === 'qualities' ? true : false} onClick={clickQualities}><Title>Q</Title></NavbarButton>
+      <NavbarButton light={interfaceState.sidebarDisplay === 'travel' ? true : false} onClick={clickTravel}><Title>T</Title></NavbarButton>
     </NavBarDiv>
   )
 }

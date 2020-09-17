@@ -17,7 +17,7 @@ function Sidebar() {
   const interfaceState = useSelector(selectInterface);
   let displayedItem = null;
 
-  if (interfaceState.sidebarDisplay === 'qualities') displayedItem = <QualityList />
+  if (interfaceState.sidebarDisplay === 'qualities') displayedItem = <QualityList sidebar={true} />
   else if (interfaceState.sidebarDisplay === 'travel') displayedItem = <Travel />
 
 

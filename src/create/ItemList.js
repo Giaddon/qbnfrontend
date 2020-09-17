@@ -109,6 +109,7 @@ function ItemList({ items=null, type, title }) {
         alts: [],
         value: 0,
         category: '',
+        context: '',
       }
       dispatch(addQualityToCreate(newItem));
     } else if (type==='domains') {

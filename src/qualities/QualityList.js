@@ -5,14 +5,16 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import QualityBlock from './QualityBlock';
-import { SidebarText, SidebarTitle } from '../style/typography';
+import { SidebarSubtitle, SidebarTitle } from '../style/typography';
 import { selectQualities } from '../player/playerSlice';
 
 const QualityListDiv = styled.div`
-  
+  background-color: white;
+  border-radius: 2px;
+  padding: 5px;
 `
 
-function QualityList() {  
+function QualityList({ sidebar=false }) {  
   const [categories, setCategories] = useState([]);  
   const qualities = useSelector(selectQualities);
 
@@ -21,12 +23,23 @@ function QualityList() {
       let categories = {};
       for (let quality of qualitiesArray) {
         if(!quality.invisible) {
-          let category = quality.category || '';   
-          if (categories[category]) {
-            categories[category].push(quality);
-          } else {
-            categories[category] = [quality];
-          }
+          if (sidebar) {
+            if (quality.pinned) {
+              let category = quality.category || '';   
+              if (categories[category]) {
+                categories[category].push(quality);
+              } else {
+                categories[category] = [quality];
+              }
+            }
+          } else { // not in sidebar
+            let category = quality.category || '';   
+            if (categories[category]) {
+              categories[category].push(quality);
+            } else {
+              categories[category] = [quality];
+            }
+          } 
         }
       }
       let reactBlocks = [];
@@ -41,14 +54,16 @@ function QualityList() {
       let displayBlocks = makeReactBlocks(Object.values(qualities));
       setCategories(displayBlocks);
     }
-  }, [qualities])
+  }, [qualities, sidebar])
   
+  const absentText = sidebar ? "No pinned qualities." : "You are a person without qualities."
+
   return (
     <QualityListDiv>
       <SidebarTitle>Qualities</SidebarTitle>
       {categories.length > 0
         ? categories
-        : <SidebarText>You are a person without qualities.</SidebarText>
+        : <SidebarSubtitle>{absentText}</SidebarSubtitle>
       }
     </QualityListDiv>
   );

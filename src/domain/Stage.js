@@ -31,6 +31,7 @@ import ActionFunctions from '../utilities/ActionFunctions';
 const DomainDiv = styled.div`
   flex: 0 1 800px;
   max-width: 800px;
+  min-height: 400px;
   padding: 40px 20px 100px 20px;
   margin: 0 0;
   height: 100%;
