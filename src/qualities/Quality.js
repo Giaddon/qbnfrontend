@@ -69,7 +69,7 @@ function Quality({
 
   function clickQuality() {
     if (context) {
-      if (!domain.activeDomain.locked && !domain.activeReport && !domain.activeContext?.locked) {
+      if (!domain.activeDomain.locked && !domain.activeReport && !domain.activeEvent && !domain.activeContext?.locked) {
         const selectedContext = ContextsAPI.getContextById(context);
         const { availableActions, lockedActions } = 
           ActionFunctions.selectStaticActions(selectedContext.staticActions, qualities);
