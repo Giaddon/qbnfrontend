@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 import {SidebarTitle } from '../style/typography';
-import { clearActiveContext, clearActiveDynamic } from '../domain/domainSlice';
+import { clearActiveContext, clearActiveDynamic, setCamera } from '../redux/domainSlice';
 import { forbidden, highlight } from '../style/colors';
 
 const BackButtonDiv = styled.div`
@@ -33,6 +33,7 @@ function BackButton() {
     });
     dispatch(clearActiveDynamic());
     dispatch(clearActiveContext());
+    dispatch(setCamera("domain"));
   }
 
   return (

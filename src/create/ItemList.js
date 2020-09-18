@@ -96,7 +96,7 @@ function ItemList({ items=null, type, title }) {
 
   function addNew() {
     let newItem;
-    if (type==="qualities") {
+    if (type === "qualities") {
       newItem = {
         id: uuidv4(),
         name: 'New Quality',
@@ -110,6 +110,8 @@ function ItemList({ items=null, type, title }) {
         value: 0,
         category: '',
         context: '',
+        creatorPinned: false,
+        invisible: false,
       }
       dispatch(addQualityToCreate(newItem));
     } else if (type==='domains') {

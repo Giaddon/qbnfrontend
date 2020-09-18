@@ -5,7 +5,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import tooltipReducer from '../tooltip/tooltipSlice';
 import interfaceReducer from '../interface/interfaceSlice';
-import domainReducer from '../domain/domainSlice';
+import domainReducer from './domainSlice';
 import createReducer from '../create/createToolsSlice';
 import playerReducer from '../player/playerSlice';
 

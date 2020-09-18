@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux'; 
 import styled from 'styled-components';
-import { selectDomain } from '../domain/domainSlice';
+import { selectDomain } from '../redux/domainSlice';
 
 import { selectDiscoveredDomains } from '../player/playerSlice';
 import { SidebarSubtitle, SidebarTitle } from '../style/typography';

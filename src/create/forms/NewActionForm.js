@@ -34,6 +34,7 @@ function NewActionForm({ data, createData }) {
     failureText: data.results?.failure?.report?.text || "Failure text.",
     luck: data.challenge?.luck || false,
     reqs: data.reqs || [],
+    fixed: data.fixed || false,
   }
 
   function submitForm(values) {
@@ -41,6 +42,7 @@ function NewActionForm({ data, createData }) {
       id: data.id,
       title: values.title,
       text: values.text,
+      fixed: values.fixed,
       reveal: {
         type: values.revealType,
       },
@@ -376,6 +378,9 @@ function NewActionForm({ data, createData }) {
             <label htmlFor="remain">Remain in context?</label>
             <Field type="checkbox" name="remain" />
           </div> : null}
+
+          <label htmlFor="fixed">Fixed?</label>
+          <Field name="fixed" type="checkbox" />
           
           <button type="submit" disabled={isSubmitting}>
             Submit

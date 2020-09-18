@@ -1,9 +1,9 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { SidebarTitle } from '../style/typography';
-import { clearActiveReport } from '../domain/domainSlice';
+import { clearActiveReport, selectDomain, setCamera } from '../redux/domainSlice';
 import { informative, informativeAccent, highlight } from '../style/colors';
 
 const ContinueButtonDiv = styled.div`
@@ -27,9 +27,14 @@ const ContinueButtonDiv = styled.div`
 
 function ContinueButton() {
   const dispatch = useDispatch();
-  
+  const domain = useSelector(selectDomain);
+
   function clickContinue() {
     dispatch(clearActiveReport());
+    if (domain.activeEvent) dispatch(setCamera("event"));
+    else if (domain.activeContext) dispatch(setCamera("context"));
+    else dispatch(setCamera("domain"));
+    
   }
 
   return (

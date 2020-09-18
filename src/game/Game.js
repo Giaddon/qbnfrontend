@@ -25,8 +25,8 @@ import {
   setActiveDomain, 
   setActiveContext, 
   possibleActionDiscovered, 
-  setEvents, selectEvents, setActiveEvent
-} from '../domain/domainSlice';
+  setEvents, selectEvents, setActiveEvent, setCamera
+} from '../redux/domainSlice';
 import ActionFunctions from '../utilities/ActionFunctions';
 import Stage from '../domain/Stage';
 import EventsAPI from '../utilities/EventsAPI';
@@ -95,6 +95,8 @@ function Game() {
         triggeredEvent.lockedActions = lockedActions;
         triggeredEvent.availableActions = availableActions;
         dispatch(setActiveEvent(triggeredEvent))
+        if (domain.activeReport) dispatch(setCamera("report"));
+        else dispatch(setCamera("event"));
       } else {
         dispatch(setActiveEvent(null));
       }
@@ -156,7 +158,8 @@ function Game() {
     qualities, 
     events, 
     domain.activeContext, 
-    domain.activeDomain, 
+    domain.activeDomain,
+    domain.activeReport, 
     qualitiesChanged, 
     discoveredActions, 
     dispatch,

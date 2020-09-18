@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import { selectDomain } from './domainSlice';
+import { selectDomain } from '../redux/domainSlice';
 import Outcome from './Outcome';
 import { informative } from '../style/colors';
 

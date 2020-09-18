@@ -11,6 +11,7 @@ export const domainSlice = createSlice({
     activeEvent: null,
     events: {},
     activeDynamic: null,
+    camera: "domain",
   },
   reducers: {
     setActiveDomain: (state, action) => {state.activeDomain = action.payload;},
@@ -27,6 +28,7 @@ export const domainSlice = createSlice({
     clearActiveDynamic: state => {state.activeDynamic = null},
     setEvents: (state, action) => {state.events = action.payload},
     setActiveEvent: (state, action) => {state.activeEvent = action.payload},
+    setCamera: (state, action) => {state.camera = action.payload},
   },
 });
 
@@ -41,6 +43,7 @@ export const {
   clearActiveDynamic,
   setEvents,
   setActiveEvent,
+  setCamera,
 } = domainSlice.actions;
 
 export const selectDomain = state => state.domain;

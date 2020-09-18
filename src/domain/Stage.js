@@ -9,7 +9,8 @@ import {
   setActiveReport,
   clearActiveContext,
   setActiveDynamicToId,
-} from './domainSlice';
+  setCamera
+} from '../redux/domainSlice';
 import {
   setQuality, 
   selectQualities, 
@@ -55,51 +56,6 @@ function Stage() {
   const qualities = useSelector(selectQualities);
   const discoveredActions = useSelector(selectDiscoveredActions);
 
-  // function applyActionResults(results) {
-  //   let outcomes = [];
-
-  //   for (let change of results.changes) {
-  //     const { id, value } = change;
-  //     let copiedQuality = qualities[id] ? {...qualities[id]} : QualitiesAPI.getQualityById(id);
-  //     let outcome = '';
-  //     if(!copiedQuality.value) { 
-  //       copiedQuality.value = 0;
-  //     } 
-  //     if (change.type==="adjust") {
-  //       copiedQuality.value += value;
-  //       if (!copiedQuality.invisible) outcome = `${copiedQuality.name} ${value > 0 ? "increased" : "decreased"} by ${value}.`
-  //     } else if (change.type==="set") { 
-  //       copiedQuality.value = value;
-  //       if (!copiedQuality.invisible) outcome = `${copiedQuality.name} is now ${value}.`;
-  //     } else if (change.type==="range") { 
-  //       const result = Math.floor(Math.random() * (change.max+1 - value) + value);
-  //       copiedQuality.value = result;
-  //       if (!copiedQuality.invisible) outcome = `${copiedQuality.name} is now ${result}.`;
-  //     } else if (change.type==="percent") { 
-  //       copiedQuality.value = Math.ceil(copiedQuality.value + (copiedQuality.value * (value/100)));
-  //       if (!copiedQuality.invisible) outcome = `${copiedQuality.name} ${value > 0 ? "increased" : "decreased"} by ${value} percent.`;
-  //     } 
-  //     if (copiedQuality.value === 0) {
-  //       if (!copiedQuality.invisible) outcome = `You have lost all ${copiedQuality.name}!`;
-  //       dispatch(removeQuality(id));
-  //     } 
-    
-  //     else {
-  //       const quality = QualityData.processAltText(copiedQuality);
-  //       dispatch(setQuality({id, quality}));
-  //     }        
-  //     outcomes.push(outcome);
-  //   }// end of change loop  
-  //   if(!results.hide) {
-  //     const newReport = { ...results.report, outcomes }
-  //     dispatch(setActiveReport(newReport));
-  //   }
-
-  //   if(!results.remain) {
-  //     dispatch(clearActiveContext());
-  //   }
-  // }
-
   function consumeSelectAction(actionId) {
     window.scrollTo({
       top: 0,
@@ -130,7 +86,7 @@ function Stage() {
 
     // All actions have results, so we grab them and process them based on type.
     const results = selectedAction.results;
-    const discoveredId = domain.activeDynamic || selectedDiscovered;
+    const discoveredId = selectedDiscovered || domain.activeDynamic;
     let resultsToProcess;
     let reportToProcess;
     switch (results.type) {
@@ -143,6 +99,7 @@ function Stage() {
         selectedContext.availableActions = availableActions;
         selectedContext.lockedActions = lockedActions;
         dispatch(setActiveContext(selectedContext));
+        dispatch(setCamera("context"));
         break;
       
       // For modify, we see if the there is a stored dynamic action so we can clear it,
@@ -188,6 +145,7 @@ function Stage() {
       if(!results.hide) {
         const newReport = {...reportToProcess, outcomes }
         dispatch(setActiveReport(newReport));
+        dispatch(setCamera("report"));
       }
 
       if(!results.remain) {
@@ -199,7 +157,7 @@ function Stage() {
     dispatch(hideTooltip());
   }
 
-  if (domain.activeReport) {
+  if (domain.camera === "report") {
     return (
       <DomainDiv>
         <HeaderDiv>
@@ -212,7 +170,7 @@ function Stage() {
     )
   }
 
-  if (domain.activeEvent) {
+  if (domain.camera === "event") {
     return (
       <DomainDiv>
         <HeaderDiv>
@@ -228,7 +186,7 @@ function Stage() {
     )
   }
 
-  if (domain.activeContext) {
+  if (domain.camera === "context") {
     return (
       <DomainDiv>
         <HeaderDiv>
@@ -248,7 +206,7 @@ function Stage() {
     )
   }
 
-  if (domain.activeDomain) {
+  if (domain.activeDomain && domain.camera === "domain") {
     const calculatedSlots = Math.min((domain.activeDomain.possibleActions?.length || 0),(domain.activeDomain.slotsCount - (domain.activeDomain.discoveredActions?.length || 0)));
     return (
       <DomainDiv>

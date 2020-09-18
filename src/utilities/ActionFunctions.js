@@ -135,14 +135,35 @@ class ActionFunctions {
 
     for (let change of results.changes) {
       const { id, value } = change;
-      let copiedQuality = qualities[id] ? {...qualities[id]} : QualitiesAPI.getQualityById(id);
+      let copiedQuality;
+      let playerPinned;
+      if (qualities[id]) {
+        copiedQuality = {...qualities[id]};
+        playerPinned = qualities[id].pinned;
+      } else {
+        copiedQuality = QualitiesAPI.getQualityById(id);
+      }
+
       let outcome = '';
       if(!copiedQuality.value) { 
         copiedQuality.value = 0;
       } 
       if (change.type === "adjust") {
-        copiedQuality.value += value;
-        if (!copiedQuality.invisible) outcome = `${copiedQuality.name} ${value > 0 ? "increased" : "decreased"} by ${Math.abs(value)}.`
+        if (copiedQuality.pyramid) { //if this quality is the pyramid type.
+          let target = copiedQuality.value < 50 ? copiedQuality.value + 1 : 50;
+          let totalChange = copiedQuality.change + value;
+          
+          while (totalChange >= target) {
+            totalChange -= target;
+            copiedQuality.value += 1;
+            if (target < 50 ) target += 1;
+          }
+          copiedQuality.change = totalChange;
+          if (!copiedQuality.invisible) outcome = `${copiedQuality.name} ${value > 0 ? "increased" : "decreased"} by ${Math.abs(value)} change points. Your level is ${copiedQuality.value}.`
+        } else {
+          copiedQuality.value += value;
+          if (!copiedQuality.invisible) outcome = `${copiedQuality.name} ${value > 0 ? "increased" : "decreased"} by ${Math.abs(value)}.`
+        }
       } else if (change.type === "set") { 
         copiedQuality.value = value;
         if (!copiedQuality.invisible) outcome = `${copiedQuality.name} is now ${value}.`;
@@ -159,6 +180,13 @@ class ActionFunctions {
       } else {
         copiedQuality = QualityFunctions.processAltText(copiedQuality);
       }
+
+      if (playerPinned === undefined) {
+        copiedQuality.pinned = copiedQuality.creatorPinned;
+      } else {
+        copiedQuality.pinned = playerPinned;
+      }
+
       modifiedQualities.push(copiedQuality);        
       outcomes.push(outcome);
     }// end of change loop  

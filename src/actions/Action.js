@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 
 import { Subtitle, ActionText } from '../style/typography';
 import { showTooltip, hideTooltip } from '../tooltip/tooltipSlice';
-import dynamicBackground from '../assets/backgrounds/whitediamond.png'
+import dynamicBackground from '../assets/backgrounds/subtle_white_feathers.png'
 import background from '../assets/backgrounds/groovepaper.png'
 import { neutral, highlight, forbidden, informative, text } from '../style/colors';
 import { setSelectedAction } from '../player/playerSlice';
@@ -21,7 +21,7 @@ const ActionDiv = styled.div`
   border-radius: 2px;
   color: ${text};
   box-shadow: 0px 0px 14px 0px #111;
-  border: 3px solid #fff;
+  border: 3px solid ${props => props.discovered? 'coral;' : 'white;'};
   padding: 1.5em 1.0em 4.5em 1.0em;
   margin: 1.4em auto;
   cursor: ${props => props.disabled ? "default" : "pointer"};
@@ -86,6 +86,7 @@ function Action({
   domainId=null,
   odds=null,
   selectAction,
+  fixed=false,
   }) {
   const dispatch = useDispatch();
 
@@ -108,8 +109,12 @@ function Action({
     >
       <Subtitle>{title}</Subtitle>
       <ActionText>{text}</ActionText>
-      {discovered 
-          ? <DismissActionButton onClick={clickDismiss}>
+      {discovered && !fixed
+          ? <DismissActionButton 
+              onClick={clickDismiss}
+              onMouseMove={(e) => dispatch(showTooltip({text:"Dismiss this action.", x: e.pageX, y: e.pageY}))}
+              onMouseLeave={() => dispatch(hideTooltip())}
+            >
               <Subtitle>X</Subtitle>
             </DismissActionButton>
           : null

@@ -41,11 +41,13 @@ function QualityForm({ data, deleteItem }) {
       alts: values.qualityAlts,
       category: values.qualityCategory || null,
       value: values.qualityValue || 0,
-      pyramid: values.qualityPyramid || false,
+      pyramid: values.pyramid || false,
       invisible: values.qualityInvisible || false,
       context: qualityContext || null,
+      creatorPinned: values.creatorPinned,
+      change: values.pyramid ? 0 : null,
     }
-    
+
     dispatch(addQualityToCreate(newQuality));
 
   }
@@ -71,10 +73,11 @@ function QualityForm({ data, deleteItem }) {
           ],
           qualityAlts: data.alts || [],
           qualityCategory: data.category || '',
-          qualityPyramid: data.pyramid || false,
+          pyramid: data.pyramid || false,
           qualityInvisible: data.invisible || false,
           context: data.context || '',
           contextEnabled: data.context ? true : false,
+          creatorPinned: data.creatorPinned || false,
         }}
         validate={null}
         onSubmit={(values, actions) => {
@@ -160,14 +163,15 @@ function QualityForm({ data, deleteItem }) {
             <Field type="text" name="qualityCategory" />
             <ErrorMessage name="qualityCategory" component="div" />
             
-            <label htmlFor="qualityPyramid">Pyramid Type</label> 
-            <Field type='checkbox' name="qualityPyramid" />
-            <ErrorMessage name="qualityPyramid" component="div" />
+            <label htmlFor="pyramid">Pyramid Type</label> 
+            <Field type='checkbox' name="pyramid" />
             
             <label htmlFor="qualityInvisible">Invisible</label> 
             <Field type='checkbox' name="qualityInvisible" />
-            <ErrorMessage name="qualityInvisible" component="div" />
            
+            <label htmlFor="creatorPinned">Start pinned?</label> 
+            <Field type='checkbox' name="creatorPinned" />
+
             <label htmlFor="contextEnabled">Link to context?</label> 
             <Field name="contextEnabled" type='checkbox' />
            
@@ -180,7 +184,7 @@ function QualityForm({ data, deleteItem }) {
             </Field>
           </div> : null}
 
-            <button type="submit" disabled={isSubmitting}>Submit</button>
+            <button type="submit" disabled={isSubmitting}>Save</button>
          </Form>
         )}
       </Formik>

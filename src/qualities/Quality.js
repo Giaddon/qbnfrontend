@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { showTooltip, hideTooltip } from '../tooltip/tooltipSlice';
 import { SidebarSubtitle, SidebarText } from '../style/typography';
 import { togglePinQuality } from '../player/playerSlice';
-import { selectDomain, setActiveContext } from '../domain/domainSlice';
+import { selectDomain, setActiveContext } from '../redux/domainSlice';
 import ContextsAPI from '../utilities/ContextsAPI';
 import ActionFunctions from '../utilities/ActionFunctions';
 import { selectQualities } from '../player/playerSlice';
@@ -85,7 +85,7 @@ function Quality({
 
   return (
     <QualityDiv context={context} onClick={clickQuality}
-      onMouseMove={(e) => dispatch(showTooltip({text:`${name} | ${value}.${change || change===0 ? `\n${change} change points. ${value < 50 ? (value + 1) - change : 50 - change} needed for level ${(value + 1)}.` : ""}`, x: e.pageX, y: e.pageY}))}
+      onMouseMove={(e) => dispatch(showTooltip({text:`${name} | ${value}.${change || change === 0 ? `\n${change} change points. ${value < 50 ? (value + 1) - change : 50 - change} needed for level ${(value + 1)}.` : ""}`, x: e.pageX, y: e.pageY}))}
       onMouseLeave={() => dispatch(hideTooltip())}
     >
       <SidebarSubtitle>{name} &bull; {value}</SidebarSubtitle>

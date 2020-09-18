@@ -23,6 +23,7 @@ class QualitiesAPI {
     Object.values(selectedQualities).forEach(quality => {
       if (quality.value > 0) {
         let newQuality = QualityFunctions.processAltText(quality);
+        newQuality.pinned = newQuality.creatorPinned;
         startingQualities[newQuality.id] = newQuality;
       }
     })

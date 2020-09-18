@@ -43,10 +43,11 @@ function ActionList({
             results={results}
             selectAction={selectAction} 
             odds={odds}
+            
           />)
       }
       {discoveredActions.map(
-        ({id, type, title, text, tooltip, results, odds}) =>
+        ({id, type, title, text, tooltip, results, odds, fixed}) =>
           <Action 
             key={id} 
             type={type}
@@ -58,6 +59,7 @@ function ActionList({
             odds={odds}
             selectAction={selectAction}
             discovered
+            fixed={fixed}
           />)
       }
       {displayedSlots}

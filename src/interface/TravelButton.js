@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'; 
 import styled from 'styled-components';
-import { clearActiveContext, clearActiveDynamic, selectDomain } from '../domain/domainSlice';
+import { clearActiveContext, clearActiveDynamic, selectDomain } from '../redux/domainSlice';
 
 import { setDomainQuality } from '../player/playerSlice';
 import { SidebarTitle } from '../style/typography';
