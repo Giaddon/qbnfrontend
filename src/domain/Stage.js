@@ -68,9 +68,11 @@ function Stage() {
     // We get the action ID, we want to find the full data in state. 
     // Since actions live in domains, contexts, and events, we see which is active and search the availableAction array to find the action.
     // Events -> contexts -> domains (order of precedence)
-    if (domain.activeEvent) {
+    
+    
+    if (domain.camera === "event") {
       selectedAction = domain.activeEvent.availableActions.filter(a => a.id === actionId)[0];
-    } else if (domain.activeContext) {
+    } else if (domain.camera === "context") {
       selectedAction = domain.activeContext.availableActions.filter(action => action.id === actionId)[0]
     } else { 
       // If the action is in a domain, we want to see if it is static or dynamic. 
