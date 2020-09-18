@@ -22,8 +22,6 @@ import ActionList from '../actions/ActionsList';
 import BackButton from './BackButton';
 import ContinueButton from './ContinueButton';
 import OutcomesList from './OutcomesList';
-import QualitiesAPI from '../utilities/QualitiesAPI';
-import QualityData from '../utilities/QualityFunctions';
 import ContextsAPI from '../utilities/ContextsAPI';
 import background from '../assets/backgrounds/groovepaper.png';
 import ActionFunctions from '../utilities/ActionFunctions';
@@ -57,50 +55,50 @@ function Stage() {
   const qualities = useSelector(selectQualities);
   const discoveredActions = useSelector(selectDiscoveredActions);
 
-  function applyActionResults(results) {
-    let outcomes = [];
+  // function applyActionResults(results) {
+  //   let outcomes = [];
 
-    for (let change of results.changes) {
-      const { id, value } = change;
-      let copiedQuality = qualities[id] ? {...qualities[id]} : QualitiesAPI.getQualityById(id);
-      let outcome = '';
-      if(!copiedQuality.value) { 
-        copiedQuality.value = 0;
-      } 
-      if (change.type==="adjust") {
-        copiedQuality.value += value;
-        if (!copiedQuality.invisible) outcome = `${copiedQuality.name} ${value > 0 ? "increased" : "decreased"} by ${value}.`
-      } else if (change.type==="set") { 
-        copiedQuality.value = value;
-        if (!copiedQuality.invisible) outcome = `${copiedQuality.name} is now ${value}.`;
-      } else if (change.type==="range") { 
-        const result = Math.floor(Math.random() * (change.max+1 - value) + value);
-        copiedQuality.value = result;
-        if (!copiedQuality.invisible) outcome = `${copiedQuality.name} is now ${result}.`;
-      } else if (change.type==="percent") { 
-        copiedQuality.value = Math.ceil(copiedQuality.value + (copiedQuality.value * (value/100)));
-        if (!copiedQuality.invisible) outcome = `${copiedQuality.name} ${value > 0 ? "increased" : "decreased"} by ${value} percent.`;
-      } 
-      if (copiedQuality.value === 0) {
-        if (!copiedQuality.invisible) outcome = `You have lost all ${copiedQuality.name}!`;
-        dispatch(removeQuality(id));
-      } 
+  //   for (let change of results.changes) {
+  //     const { id, value } = change;
+  //     let copiedQuality = qualities[id] ? {...qualities[id]} : QualitiesAPI.getQualityById(id);
+  //     let outcome = '';
+  //     if(!copiedQuality.value) { 
+  //       copiedQuality.value = 0;
+  //     } 
+  //     if (change.type==="adjust") {
+  //       copiedQuality.value += value;
+  //       if (!copiedQuality.invisible) outcome = `${copiedQuality.name} ${value > 0 ? "increased" : "decreased"} by ${value}.`
+  //     } else if (change.type==="set") { 
+  //       copiedQuality.value = value;
+  //       if (!copiedQuality.invisible) outcome = `${copiedQuality.name} is now ${value}.`;
+  //     } else if (change.type==="range") { 
+  //       const result = Math.floor(Math.random() * (change.max+1 - value) + value);
+  //       copiedQuality.value = result;
+  //       if (!copiedQuality.invisible) outcome = `${copiedQuality.name} is now ${result}.`;
+  //     } else if (change.type==="percent") { 
+  //       copiedQuality.value = Math.ceil(copiedQuality.value + (copiedQuality.value * (value/100)));
+  //       if (!copiedQuality.invisible) outcome = `${copiedQuality.name} ${value > 0 ? "increased" : "decreased"} by ${value} percent.`;
+  //     } 
+  //     if (copiedQuality.value === 0) {
+  //       if (!copiedQuality.invisible) outcome = `You have lost all ${copiedQuality.name}!`;
+  //       dispatch(removeQuality(id));
+  //     } 
     
-      else {
-        const quality = QualityData.processAltText(copiedQuality);
-        dispatch(setQuality({id, quality}));
-      }        
-      outcomes.push(outcome);
-    }// end of change loop  
-    if(!results.hide) {
-      const newReport = { ...results.report, outcomes }
-      dispatch(setActiveReport(newReport));
-    }
+  //     else {
+  //       const quality = QualityData.processAltText(copiedQuality);
+  //       dispatch(setQuality({id, quality}));
+  //     }        
+  //     outcomes.push(outcome);
+  //   }// end of change loop  
+  //   if(!results.hide) {
+  //     const newReport = { ...results.report, outcomes }
+  //     dispatch(setActiveReport(newReport));
+  //   }
 
-    if(!results.remain) {
-      dispatch(clearActiveContext());
-    }
-  }
+  //   if(!results.remain) {
+  //     dispatch(clearActiveContext());
+  //   }
+  // }
 
   function consumeSelectAction(actionId) {
     window.scrollTo({
@@ -111,9 +109,16 @@ function Stage() {
     let selectedAction;
     let selectedDiscovered;
 
-    if (domain.activeEvent) selectedAction = domain.activeEvent.availableActions.filter(action => action.id === actionId)[0]
-    else if (domain.activeContext) selectedAction = domain.activeContext.availableActions.filter(action => action.id === actionId)[0]
-    else {
+    // We get the action ID, we want to find the full data in state. 
+    // Since actions live in domains, contexts, and events, we see which is active and search the availableAction array to find the action.
+    // Events -> contexts -> domains (order of precedence)
+    if (domain.activeEvent) {
+      selectedAction = domain.activeEvent.availableActions.filter(a => a.id === actionId)[0];
+    } else if (domain.activeContext) {
+      selectedAction = domain.activeContext.availableActions.filter(action => action.id === actionId)[0]
+    } else { 
+      // If the action is in a domain, we want to see if it is static or dynamic. 
+      // if dynamic, we want to grab the ID so we can clear the action later.
       const inStatic = domain.activeDomain.availableActions.filter(action => action.id === actionId);
       if (inStatic.length === 1) selectedAction = inStatic[0];
       else {
@@ -122,54 +127,77 @@ function Stage() {
         selectedDiscovered = selectedAction.id;
       } 
     }
-    const results = selectedAction.results;
-    
-    switch (results.type) {
-      case "modify":  
-        if (domain.activeDynamic) {
-          const newDiscoveredActions = discoveredActions[domain.activeDomain.id].filter(a => a.id !== (domain.activeDynamic));
-          dispatch(setDiscoveredActionsByDomainId({domainId: domain.activeDomain.id, actions: newDiscoveredActions}));
-        }
-        else if (selectedDiscovered) {
-          const newDiscoveredActions = discoveredActions[domain.activeDomain.id].filter(a => a.id !== (selectedDiscovered));
-          dispatch(setDiscoveredActionsByDomainId({domainId: domain.activeDomain.id, actions: newDiscoveredActions}));
-        }
-      
-        applyActionResults(selectedAction.results);
-        break;
 
+    // All actions have results, so we grab them and process them based on type.
+    const results = selectedAction.results;
+    const discoveredId = domain.activeDynamic || selectedDiscovered;
+    let resultsToProcess;
+    let reportToProcess;
+    switch (results.type) {
+      // For context, we find the context, process the actions, then set it as the new active context.
       case "context":
         const selectedContext = ContextsAPI.getContextById(results.context);
         const { availableActions, lockedActions } = 
           ActionFunctions.selectStaticActions(selectedContext.staticActions, qualities);
-  
+        
         selectedContext.availableActions = availableActions;
         selectedContext.lockedActions = lockedActions;
         dispatch(setActiveContext(selectedContext));
         break;
-
-      case "challenge":
-        if (domain.activeDynamic) {
-          const newDiscoveredActions = discoveredActions[domain.activeDomain.id].filter(a => (a.id !== (domain.activeDynamic || selectedAction.id)));
+      
+      // For modify, we see if the there is a stored dynamic action so we can clear it,
+      // then apply each result.
+      case "modify":  
+        if (discoveredId) {
+          const newDiscoveredActions = discoveredActions[domain.activeDomain.id].filter(a => a.id !== (discoveredId));
           dispatch(setDiscoveredActionsByDomainId({domainId: domain.activeDomain.id, actions: newDiscoveredActions}));
         }
-        else if (selectedDiscovered) {
-          const newDiscoveredActions = discoveredActions[domain.activeDomain.id].filter(a => a.id !== (selectedDiscovered));
+        resultsToProcess = results;
+        reportToProcess = results.report;
+        break;
+
+      case "challenge":
+        if (discoveredId) {
+          const newDiscoveredActions = discoveredActions[domain.activeDomain.id].filter(a => (a.id !== discoveredId));
           dispatch(setDiscoveredActionsByDomainId({domainId: domain.activeDomain.id, actions: newDiscoveredActions}));
         }
 
         const outcome = Math.floor(Math.random() * 101); 
         console.log(`Challenge: ${selectedAction.odds} vs ${outcome}`);
-        if (selectedAction.odds > outcome ) applyActionResults(selectedAction.results.success);
-        else applyActionResults(selectedAction.results.failure);
-        
+        if (selectedAction.odds > outcome ) {
+          resultsToProcess = results.success;
+          reportToProcess = results.success.report;
+        } else {
+          resultsToProcess = results.failure;
+          reportToProcess = results.failure.report;
+        }   
         break;
+
       default:
         console.log("Action type unknown.");
     }
+
+    if (resultsToProcess) {
+      const { outcomes, modifiedQualities } = ActionFunctions.processActionResults(resultsToProcess, qualities);
+
+      for (let quality of modifiedQualities) {
+        if (quality.value === 0) dispatch(removeQuality(quality.id)); 
+        else dispatch(setQuality({id: quality.id, quality}));
+      }
+    
+      if(!results.hide) {
+        const newReport = {...reportToProcess, outcomes }
+        dispatch(setActiveReport(newReport));
+      }
+
+      if(!results.remain) {
+        dispatch(clearActiveContext());
+      }
+    }
+
+   
     dispatch(hideTooltip());
   }
-
 
   if (domain.activeReport) {
     return (
@@ -184,7 +212,6 @@ function Stage() {
     )
   }
 
-  
   if (domain.activeEvent) {
     return (
       <DomainDiv>
@@ -220,8 +247,6 @@ function Stage() {
       </DomainDiv>
     )
   }
-
-  
 
   if (domain.activeDomain) {
     const calculatedSlots = Math.min((domain.activeDomain.possibleActions?.length || 0),(domain.activeDomain.slotsCount - (domain.activeDomain.discoveredActions?.length || 0)));

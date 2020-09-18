@@ -39,6 +39,7 @@ const GameDiv = styled.div`
   display: flex;
   flex-flow: row nowrap;
   max-width: 1050px;
+  min-height: 100vh;
   justify-content: center;
   align-content: center;
   margin: 0 auto;

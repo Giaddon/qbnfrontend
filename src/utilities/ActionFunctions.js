@@ -1,5 +1,6 @@
 
 import QualitiesAPI from './QualitiesAPI';
+import QualityFunctions from './QualityFunctions';
 
 class ActionFunctions {
 
@@ -86,7 +87,6 @@ class ActionFunctions {
     else return { type: 'h'};
   }
 
-
   static calculateChallenge(originalAction, qualities) {
     let action = {...originalAction}
     let oddsDescription = "";
@@ -129,6 +129,43 @@ class ActionFunctions {
     else return {type: 'h'};
   }
   
+  static processActionResults(results, qualities) {
+    let outcomes = [];
+    let modifiedQualities = [];
+
+    for (let change of results.changes) {
+      const { id, value } = change;
+      let copiedQuality = qualities[id] ? {...qualities[id]} : QualitiesAPI.getQualityById(id);
+      let outcome = '';
+      if(!copiedQuality.value) { 
+        copiedQuality.value = 0;
+      } 
+      if (change.type === "adjust") {
+        copiedQuality.value += value;
+        if (!copiedQuality.invisible) outcome = `${copiedQuality.name} ${value > 0 ? "increased" : "decreased"} by ${Math.abs(value)}.`
+      } else if (change.type === "set") { 
+        copiedQuality.value = value;
+        if (!copiedQuality.invisible) outcome = `${copiedQuality.name} is now ${value}.`;
+      } else if (change.type === "range") { 
+        const result = Math.floor(Math.random() * (change.max+1 - value) + value);
+        copiedQuality.value = result;
+        if (!copiedQuality.invisible) outcome = `${copiedQuality.name} is now ${result}.`;
+      } else if (change.type === "percent") { 
+        copiedQuality.value = Math.ceil(copiedQuality.value + (copiedQuality.value * (value/100)));
+        if (!copiedQuality.invisible) outcome = `${copiedQuality.name} ${value > 0 ? "increased" : "decreased"} by ${value} percent.`;
+      } 
+      if (copiedQuality.value === 0 && qualities[copiedQuality.id]) {
+        if (!copiedQuality.invisible) outcome = `You have lost all ${copiedQuality.name}!`;
+      } else {
+        copiedQuality = QualityFunctions.processAltText(copiedQuality);
+      }
+      modifiedQualities.push(copiedQuality);        
+      outcomes.push(outcome);
+    }// end of change loop  
+  
+    return { outcomes, modifiedQualities };
+  }
+
 }
 
 export default ActionFunctions;

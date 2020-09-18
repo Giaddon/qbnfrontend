@@ -11,7 +11,7 @@ import { selectQualities } from '../player/playerSlice';
 const QualityListDiv = styled.div`
   background-color: white;
   border-radius: 2px;
-  padding: 5px;
+  padding: ${props => props.sidebar ? '5px;' : '10px;'};
 `
 
 function QualityList({ sidebar=false }) {  
@@ -59,7 +59,7 @@ function QualityList({ sidebar=false }) {
   const absentText = sidebar ? "No pinned qualities." : "You are a person without qualities."
 
   return (
-    <QualityListDiv>
+    <QualityListDiv sidebar={sidebar}>
       <SidebarTitle>Qualities</SidebarTitle>
       {categories.length > 0
         ? categories

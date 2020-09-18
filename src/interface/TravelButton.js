@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'; 
 import styled from 'styled-components';
-import { selectDomain } from '../domain/domainSlice';
+import { clearActiveContext, clearActiveDynamic, selectDomain } from '../domain/domainSlice';
 
 import { setDomainQuality } from '../player/playerSlice';
 import { SidebarTitle } from '../style/typography';
@@ -26,6 +26,8 @@ function TravelButton({ id, name }) {
       let domain = QualitiesAPI.getQualityById('domain');
       domain.value = id;
       const newDomain = QualityFunctions.processAltText(domain);
+      dispatch(clearActiveDynamic());
+      dispatch(clearActiveContext());
       dispatch(setDomainQuality(newDomain));
     }
   }
