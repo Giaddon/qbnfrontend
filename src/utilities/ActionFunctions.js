@@ -142,6 +142,7 @@ class ActionFunctions {
         playerPinned = qualities[id].pinned;
       } else {
         copiedQuality = QualitiesAPI.getQualityById(id);
+        copiedQuality.value = 0;
       }
 
       let outcome = '';
@@ -175,7 +176,7 @@ class ActionFunctions {
         copiedQuality.value = Math.ceil(copiedQuality.value + (copiedQuality.value * (value/100)));
         if (!copiedQuality.invisible) outcome = `${copiedQuality.name} ${value > 0 ? "increased" : "decreased"} by ${value} percent.`;
       } 
-      if (copiedQuality.value === 0 && qualities[copiedQuality.id]) {
+      if (copiedQuality.value <= 0 && qualities[copiedQuality.id]) {
         if (!copiedQuality.invisible) outcome = `You have lost all ${copiedQuality.name}!`;
       } else {
         copiedQuality = QualityFunctions.processAltText(copiedQuality);

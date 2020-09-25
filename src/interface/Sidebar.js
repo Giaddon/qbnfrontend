@@ -7,9 +7,9 @@ import QualityList from '../qualities/QualityList';
 import Travel from './Travel';
 
 const SidebarDiv = styled.div`
-  flex: 0 1 250px;
+  flex: 0 1 275px;
   background-color: white;
-  padding: 10px 10px 60px 10px;
+  padding: 0px 0px 60px 0px;
   display: ${props => props.visible ? "block" : "none"};
 `;
 

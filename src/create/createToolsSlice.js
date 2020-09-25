@@ -49,6 +49,15 @@ export const createToolsSlice = createSlice({
       delete state[type][id];
     },
     setAllCreate: (state, action) => action.payload,
+    addActionToParent: (state, action) => {
+      const { newAction, parentType, parentId } = action.payload;
+      state[parentType][parentId].actions.push(newAction);
+    },
+    deleteActionFromParent: (state, action) => {
+      const { actionId, parentType, parentId } = action.payload;
+      state[parentType][parentId].actions = 
+        state[parentType][parentId].actions.filter(a => a.id !== actionId);  
+    },
   },
 });
 
@@ -63,6 +72,8 @@ export const {
   setAllCreate,
   addContextToCreate,
   addEventToCreate,
+  addActionToParent,
+  deleteActionFromParent,
  } = createToolsSlice.actions;
 
 export const selectCreate = state => state.create;

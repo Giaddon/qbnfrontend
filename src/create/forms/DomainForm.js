@@ -1,41 +1,51 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Formik, Form, Field, FieldArray, ErrorMessage } from 'formik';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 
 import { addDomainToCreate, selectCreate } from '../createToolsSlice';
-import { CreateFormDiv, FormDividerDiv, FormSectionTitle, FormArrayDiv, FormArrayElementDiv } from './formStyles';
-
-const FormDeleteButton = styled.div`
-  position: relative;
-  height: 30px;
-  color: white;
-  margin: auto;
-  max-width: 200px;
-  background-color: tomato;
-  margin-top:10px;
-  cursor:pointer;
-  border-radius: 3px;
-  p {
-    width: 100%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateY(-50%) translateX(-50%);
-  }
-`
+import { 
+  CreateFormDiv, 
+  FormDividerDiv, 
+  FormSectionTitle, 
+  FormArrayDiv, 
+  FormArrayElementDiv,
+  FormDeleteButton 
+} from './formStyles';
 
 function DomainForm({ data, deleteItem }) {
   const dispatch = useDispatch();
+  const [changed, setChanged] = useState(false);
+  const [staticActions, setStaticActions] = useState([]);
+  const [dynamicActions, setDynamicActions] = useState([]);
   const createData = useSelector(selectCreate);
+
+  useEffect(function gatherMyActions() {
+    if (data) {
+      let gatheredStaticActions = [];
+      let gatheredDynamicActions = [];
+
+      for (let action of data.actions) {
+        if (createData.actions[action.id]) {
+          const {id, title, dynamic} = createData.actions[action.id];
+          if (!dynamic) {
+            gatheredStaticActions.push({id, title});
+            
+          } else {
+            gatheredDynamicActions.push({id, title});
+          }
+        }
+      } //end for loop
+      setStaticActions(gatheredStaticActions);
+      setDynamicActions(gatheredDynamicActions);   
+    }
+  }, [data, createData]);
 
   function submitForm(values) {
     const newDomain = {
       id: data.id,
       title: values.domainTitle,
       text: values.domainText,
-      staticActions: values.domainStaticActions,
-      dynamicActions: values.domainDynamicActions,
+      actions: data.actions,
       slotsCount: values.domainSlots,
       locked: values.domainLocked || false,
       availableAtStart: values.availableAtStart || false,
@@ -43,17 +53,20 @@ function DomainForm({ data, deleteItem }) {
     }
     
     dispatch(addDomainToCreate(newDomain));
-
   }
 
-  function deleteQuality() {
+  function markChanged() {
+    setChanged(true);
+  }
+
+  function deleteDomain() {
     deleteItem(data.id);
   }
 
   if (!data) return null;
   
   return(
-    <CreateFormDiv>
+    <CreateFormDiv changed={changed}>
       <p>ID: {data.id}</p>
       <Formik
         initialValues={{
@@ -73,6 +86,7 @@ function DomainForm({ data, deleteItem }) {
           setTimeout(() => {
             submitForm(values)
             actions.setSubmitting(false);
+            setChanged(false);
           }, 400);
         }}
         enableReinitialize={true}
@@ -86,7 +100,7 @@ function DomainForm({ data, deleteItem }) {
          handleSubmit,
          isSubmitting,
         }) => (
-          <Form autocomplete="off">
+          <Form autoComplete="off" onChange={() => markChanged()}>
             <label htmlFor="domainTitle">Title</label>
             <Field type="text" name="domainTitle" />
             <ErrorMessage name="domainTitle" component="div" />
@@ -95,80 +109,58 @@ function DomainForm({ data, deleteItem }) {
             <Field as="textarea" name="domainText" />
             <ErrorMessage name="domainText" component="div" />
             
-            <label htmlFor="domainLocked">Locked</label> 
-            <Field type='checkbox' name="domainLocked" />
+            <FormArrayDiv>
 
-            <label htmlFor="availableAtStart">Available at start?</label> 
-            <Field name="availableAtStart" type='checkbox'  />
-
-            <label htmlFor="discoverable">Discoverable?</label> 
-            <Field name="discoverable" type='checkbox'  />
+              <FormArrayElementDiv>
+                <label htmlFor="domainLocked">Locked</label> 
+                <Field type='checkbox' name="domainLocked" />
+              </FormArrayElementDiv>
+              
+              <FormArrayElementDiv>
+                <label htmlFor="availableAtStart">Available at start</label> 
+                <Field name="availableAtStart" type='checkbox'  />
+              </FormArrayElementDiv>
+              
+              <FormArrayElementDiv>
+                <label htmlFor="discoverable">Discoverable</label> 
+                <Field name="discoverable" type='checkbox'  />
+              </FormArrayElementDiv>
+            
+            </FormArrayDiv>
             
             <label htmlFor="domainSlots">Available Slots</label> 
             <Field type='number' min="0" name="domainSlots" />
             <ErrorMessage name="domainSlots" component="div" />
 
-            <FormSectionTitle htmlFor="domainStaticActions">Static Actions</FormSectionTitle>
-            <FieldArray name="domainStaticActions">
-              {({ insert, remove, push }) => (
-                <FormDividerDiv>
-                  <FormArrayDiv>
-                  {values.domainStaticActions.length > 0 &&
-                    values.domainStaticActions.map((actions, index) => (
-                      <FormArrayElementDiv key={index}>
-                        <label htmlFor={`domainStaticActions.${index}.id`}>Action</label>
-                        <Field name={`domainStaticActions.${index}.id`} as="select">
-                          {Object.values(createData.actions).map(action =>
-                            <option key={action.id} value={action.id}>{action.title} (id: {action.id})</option>
-                          )}
-                        </Field>
-                        <button type="button" onClick={() => remove(index)}>
-                          Remove Action
-                        </button>
-                      </FormArrayElementDiv>
-                  ))}
-                  </FormArrayDiv>
-                  <button type="button" onClick={() => push({id: '1'})}>
-                    Add an Action
-                  </button>
-                </FormDividerDiv>
-              )}
-            </FieldArray>
+            <FormSectionTitle>Static Actions</FormSectionTitle>    
+            <FormDividerDiv>
+              <FormArrayDiv>
+                {staticActions.length > 0 && staticActions.map(a => (
+                  <FormArrayElementDiv key={a.id}>
+                    <p>{a.title}</p>
+                  </FormArrayElementDiv>
+                ))}
+              </FormArrayDiv>
+            </FormDividerDiv>
 
-            <FormSectionTitle htmlFor="domainDynamicActions">Dynamic Actions</FormSectionTitle>
-            <FieldArray name="domainDynamicActions">
-              {({ insert, remove, push }) => (
-                <FormDividerDiv>
-                  <FormArrayDiv>
-                  {values.domainDynamicActions.length > 0 &&
-                    values.domainDynamicActions.map((actions, index) => (
-                      <FormArrayElementDiv key={index}>
-                        <label htmlFor={`domainDynamicActions.${index}.id`}>Action</label>
-                        <Field name={`domainDynamicActions.${index}.id`} as="select">
-                          {Object.values(createData.actions).map(action =>
-                            <option key={action.id} value={action.id}>{action.title} (id: {action.id})</option>
-                          )}
-                        </Field>
-                        <button type="button" onClick={() => remove(index)}>
-                          Remove Action
-                        </button>
-                      </FormArrayElementDiv>
-                    ))}
-                  </FormArrayDiv>  
-                  <button type="button" onClick={() => push({ id: ''})}>
-                    Add an Action
-                  </button>
-                </FormDividerDiv>
-              )}
-            </FieldArray>
+            <FormSectionTitle>Dynamic Actions</FormSectionTitle>    
+            <FormDividerDiv>
+              <FormArrayDiv>
+                {dynamicActions.length > 0 && dynamicActions.map(a => (
+                  <FormArrayElementDiv key={a.id}>
+                    <p>{a.title}</p>
+                  </FormArrayElementDiv>
+                ))}
+              </FormArrayDiv>
+            </FormDividerDiv>
 
             <button type="submit" disabled={isSubmitting}>
-              Submit
+              Save
             </button>
          </Form>
         )}
       </Formik>
-        {data.id === 1 ? null : <FormDeleteButton onClick={deleteQuality}><p>Delete Domain</p></FormDeleteButton>}   
+        {data.id === 1 ? null : <FormDeleteButton onClick={deleteDomain}><p>Delete Domain</p></FormDeleteButton>}   
     </CreateFormDiv>
   )
 }

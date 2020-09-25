@@ -5,7 +5,6 @@ class EventFunctions {
 
   static evaluateEvents(originalEvents, qualities) {
     let possibleEvents = [];
-
     for (let originalEvent of originalEvents) {
       let event = {...originalEvent}
       for (let trigger of event.triggers) {

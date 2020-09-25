@@ -140,7 +140,7 @@ function Stage() {
       const { outcomes, modifiedQualities } = ActionFunctions.processActionResults(resultsToProcess, qualities);
 
       for (let quality of modifiedQualities) {
-        if (quality.value === 0) dispatch(removeQuality(quality.id)); 
+        if (quality.value <= 0) dispatch(removeQuality(quality.id)); 
         else dispatch(setQuality({id: quality.id, quality}));
       }
     

@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form, Field, FieldArray, ErrorMessage } from 'formik';
 
 import { addQualityToCreate, selectCreate } from '../createToolsSlice';
-import { CreateFormDiv, FormDividerDiv, FormSectionTitle } from './formStyles';
+import { CreateFormDiv, FormArrayDiv, FormArrayElementDiv, FormDividerDiv, FormSectionTitle } from './formStyles';
 
 
 const FormDeleteButton = styled.div`
@@ -29,6 +29,7 @@ const FormDeleteButton = styled.div`
 function QualityForm({ data, deleteItem }) {
   const dispatch = useDispatch();
   const createData = useSelector(selectCreate);
+  const [changed, setChanged] = useState(false);
 
   function submitForm(values) {
   
@@ -52,6 +53,10 @@ function QualityForm({ data, deleteItem }) {
 
   }
 
+  function markChanged() {
+    setChanged(true);
+  }
+
   function deleteQuality() {
     deleteItem(data.id);
   }
@@ -59,7 +64,7 @@ function QualityForm({ data, deleteItem }) {
   if (!data) return null;
   
   return(
-    <CreateFormDiv>
+    <CreateFormDiv changed={changed}>
       <p>ID: {data.id}</p>
       <Formik
         initialValues={{
@@ -81,8 +86,11 @@ function QualityForm({ data, deleteItem }) {
         }}
         validate={null}
         onSubmit={(values, actions) => {
-          submitForm(values)
-          actions.setSubmitting(false)
+          setTimeout(() => {
+            submitForm(values)
+            actions.setSubmitting(false);
+            setChanged(false);
+          }, 400);
         }}
         enableReinitialize={true}
       >
@@ -95,7 +103,7 @@ function QualityForm({ data, deleteItem }) {
          handleSubmit,
          isSubmitting,
         }) => (
-          <Form>
+          <Form autoComplete="off" onChange={() => markChanged()}>
             <label htmlFor="qualityName">Name</label>
             <Field type="text" name="qualityName" />
             <ErrorMessage name="qualityName" component="div" />
@@ -163,17 +171,27 @@ function QualityForm({ data, deleteItem }) {
             <Field type="text" name="qualityCategory" />
             <ErrorMessage name="qualityCategory" component="div" />
             
-            <label htmlFor="pyramid">Pyramid Type</label> 
-            <Field type='checkbox' name="pyramid" />
-            
-            <label htmlFor="qualityInvisible">Invisible</label> 
-            <Field type='checkbox' name="qualityInvisible" />
-           
-            <label htmlFor="creatorPinned">Start pinned?</label> 
-            <Field type='checkbox' name="creatorPinned" />
+            <FormArrayDiv>
+              <FormArrayElementDiv>
+                <label htmlFor="pyramid">Pyramid Type</label> 
+                <Field type='checkbox' name="pyramid" />
+              </FormArrayElementDiv>
+              
+              <FormArrayElementDiv>
+                <label htmlFor="qualityInvisible">Invisible</label> 
+                <Field type='checkbox' name="qualityInvisible" />
+              </FormArrayElementDiv>
 
-            <label htmlFor="contextEnabled">Link to context?</label> 
-            <Field name="contextEnabled" type='checkbox' />
+              <FormArrayElementDiv>
+                <label htmlFor="creatorPinned">Start pinned</label> 
+                <Field type='checkbox' name="creatorPinned" />
+              </FormArrayElementDiv>
+              
+              <FormArrayElementDiv>
+                <label htmlFor="contextEnabled">Link to context</label> 
+                <Field name="contextEnabled" type='checkbox' />
+              </FormArrayElementDiv>
+            </FormArrayDiv>
            
             {values.contextEnabled ? <div>
             <label htmlFor="context">Linked context:</label>

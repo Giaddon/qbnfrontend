@@ -38,7 +38,7 @@ import { selectInterface } from '../interface/interfaceSlice';
 const GameDiv = styled.div`
   display: flex;
   flex-flow: row nowrap;
-  max-width: 1050px;
+  max-width: 1075px;
   min-height: 100vh;
   justify-content: center;
   align-content: center;

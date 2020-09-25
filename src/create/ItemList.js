@@ -6,7 +6,6 @@ import { v4 as uuidv4 } from 'uuid';
 import Item from './Item';
 import QualityForm from './forms/QualityForm';
 import DomainForm from './forms/DomainForm';
-import ActionForm from './forms/ActionForm';
 import EventForm from './forms/EventForm';
 import ContextForm from './forms/ContextForm';
 import { green } from  '../style/colors';
@@ -14,9 +13,8 @@ import {
   addQualityToCreate, 
   deleteSomethingFromCreate, 
   addDomainToCreate, 
-  addActionToCreate,
   addContextToCreate, 
-  addEventToCreate 
+  addEventToCreate,  
 } from './createToolsSlice';
 import { CreateTitle } from '../style/typography';
 
@@ -26,10 +24,6 @@ const ItemListDiv = styled.div`
   padding: 15px;
   border-radius: 3px;
   font-size: 1.2em;
-  flex: 1 1 70%;
-  & ~ & {
-  margin-left: 10px;
-  }
 `
 
 const ItemsContainer = styled.div`
@@ -77,18 +71,23 @@ function ItemList({ items=null, type, title }) {
   }
 
   function deleteItem(itemId) {
-    dispatch(deleteSomethingFromCreate({id: itemId, type}));
     setSelectedItem(null);
+    if (type !== "qualities") {
+      for (let action of selectedItem.actions) {
+        dispatch(deleteSomethingFromCreate({id: action.id, type: "actions"}));
+      }
+    } 
+    dispatch(deleteSomethingFromCreate({id: itemId, type}));
   }
-  
+
   function liveFilter(evt) {
     setFilterField(evt.target.value);
     let filterResults = [];
 
-    if (type==="qualities"){
+    if (type === "qualities"){
       filterResults = items.filter(item => item.name.toLowerCase().includes(filterField.toLowerCase()))
     }
-    else if (type==="domains" || type==="actions") {
+    else if (type === "domains" || type === "contexts" || type === "events") {
       filterResults = items.filter(item => item.title.toLowerCase().includes(filterField.toLowerCase()))
     }
     setFilteredItems(filterResults)
@@ -114,7 +113,8 @@ function ItemList({ items=null, type, title }) {
         invisible: false,
       }
       dispatch(addQualityToCreate(newItem));
-    } else if (type==='domains') {
+
+    } else if (type === 'domains') {
       let nextId = 2;
       items.forEach(domain => {
         if (domain.id >= nextId) nextId = domain.id + 1;
@@ -123,81 +123,57 @@ function ItemList({ items=null, type, title }) {
         id: nextId,
         title: 'New Domain',
         text: 'Domain text.',
-        staticActions: [],
-        dynamicActions: [],
+        actions: [],
         locked: false,
         discoverable: false,
         availableAtStart: false,
       }
       dispatch(addDomainToCreate(newItem));
-    } else if (type==='actions') {
-      newItem = {
-        id: uuidv4(),
-        title: 'New Action',
-        text: 'Action text',
-        results: {
-          remain: false,
-          context: "1",
-          type: "modify",
-          luck: false,
-          hide: false,
-          changes: [],
-          report: {
-            title: "Report Title",
-            text: "Report text."
-          },
-          success: {
-            changes: [],
-            report: {
-              title: "Success Report Title",
-              text: "Success report text."
-            },
-          },
-          failure: {
-            changes: [],
-            report: {
-              title: "Failure Report Title",
-              text: "Failure report text."
-            },
-          },
-        },
-        reveal: {
-          type: "all",
-        },
-        reqs: [],
-      }
-      dispatch(addActionToCreate(newItem));
-    } else if (type==='contexts') {
+
+    } else if (type === 'contexts') {
     newItem = {
       id: uuidv4(),
       title: 'New Context',
       text: 'Context text.',
-      staticActions: [],
+      actions: [],
       locked: false,
     }
     dispatch(addContextToCreate(newItem));
+
   } else if (type === 'events') {
     newItem = {
       id: uuidv4(),
       title: 'New Event',
       text: 'Event text.',
-      staticActions: [],
+      actions: [],
       locked: true,
       priority: 1,
       triggers: [],
     }
     dispatch(addEventToCreate(newItem));
   }
-
-
     setSelectedItem(newItem);
   }
 
-  const displayedItems = filterField.length > 2 ? filteredItems.map(item => <Item key={item.id} data={item} type={type} select={selectItem} />) : items.map(item => <Item key={item.id} data={item} select={selectItem} type={type} />)
+  const displayedItems = filterField.length > 2 
+    ? filteredItems.map(item => 
+      <Item 
+        key={item.id} 
+        data={item} 
+        type={type} 
+        select={selectItem} 
+        active={selectedItem && selectedItem.id === item.id ? true : false} 
+      />) 
+    : items.map(item => 
+      <Item 
+        key={item.id} 
+        data={item} 
+        select={selectItem} type={type} 
+        active={selectedItem && selectedItem.id === item.id ? true : false} 
+      />)
   let activeForm;
   if (type === "qualities") activeForm =  <QualityForm data={selectedItem} deleteItem={deleteItem} />
   else if (type === "domains") activeForm =  <DomainForm data={selectedItem} deleteItem={deleteItem} />
-  else if (type === "actions") activeForm =  <ActionForm data={selectedItem} deleteItem={deleteItem} />
   else if (type === "contexts") activeForm =  <ContextForm data={selectedItem} deleteItem={deleteItem} />
   else if (type === "events") activeForm =  <EventForm data={selectedItem} deleteItem={deleteItem} />
 

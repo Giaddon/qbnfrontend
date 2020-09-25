@@ -1,12 +1,19 @@
 import styled from "styled-components";
 
-import { green } from '../../style/colors';
+import { forbidden, green, informative } from '../../style/colors';
 
 const CreateFormDiv = styled.div`
-  flex: 0 1 80%;
-  border: 1px solid #111;
+  flex: 0 1 600px;
+  border: 2px solid ${props => props.changed ? `${forbidden};` : `${informative};` };
   padding: 10px;
+  background-color: white;
   text-align: center;
+  transition: border .3s ease;
+  
+  form {
+    position: relative;
+  }
+  
   label {
     display: block;
     font-family: "Alata", sans-serif;
@@ -104,6 +111,12 @@ const FormSectionTitle = styled.label`
   font-size: 1.4em;
 `
 
+const SubmitButtonDiv = styled.div`
+  position: fixed;
+  top: 10px;
+  left: 10px;
+`
+
 export {
   CreateFormDiv,
   FormDividerDiv,
@@ -111,4 +124,5 @@ export {
   FormSectionTitle,
   FormArrayDiv,
   FormArrayElementDiv,
+  SubmitButtonDiv
  };

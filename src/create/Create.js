@@ -21,46 +21,38 @@ import {
 } from './defaults/defaultData'; 
 import ItemsList from './ItemList';
 import Navbar from './Navbar';
+import ActionList from './ActionList';
+import DataFunctions from './DataFunctions';
 
 const CreateDiv = styled.div`
   margin: 0 auto;
   text-align: center;
-  color: white;
+  color: black;
   font-family: "IBMPlexSerif", serif;
   font-size: 1.2em;
-  padding: 0px 10px;
   max-width: 1920px;
-`
-
-const DownloadButton = styled.div`
-  font-family: "Alata", sans-serif;
-  font-size: 1.4em;
-  margin: 5px auto;
-  color: white;
-  max-width: 300px;
-  background-color: skyblue;
-  padding: 5px 25px;
-  border: 1px solid #000;
-  border-radius:3px;
-  cursor: pointer;
-  transition: background .2s ease;
-`
-
-const CreateTitle = styled.p`
-  font-family: 'Alata', sans-serif;
-  font-size: 4em;
-  letter-spacing: 0.1em;
+  background-color: white;
+  height: 100vh;
+  overflow: hidden; 
 `
 
 const CreateInterfaceDiv = styled.div`
-display: flex;
+  display: flex;
   flex-flow: row nowrap;
+  overflow: hidden;
+`
+const SideDiv = styled.div`
+  flex: 1 1 50%;
+  overflow-y: scroll;
+  height: 100vh;
+  padding-bottom: 70px;
+  max-width: 960px;
 `
 
 function Create() {
   const dispatch = useDispatch();
   const createData = useSelector(selectCreate);
-  const [activeList, setActiveList] = useState({first: null, second: null});
+  const [activeList, setActiveList] = useState({left: null, right: null});
 
   useEffect(function createCheckforDataOnInitialMount() {
     const {qualities, domains, actions, contexts, events } = {
@@ -134,9 +126,6 @@ function Create() {
         })
       }
 
-
-
-
     }
   },[dispatch])
   
@@ -168,91 +157,8 @@ function Create() {
 
   }, [createData])
 
-
-  function prepareData() {
-    let domains = Object.values(createData.domains).map(domain => ({ ...domain }));
-    let contexts = Object.values(createData.contexts).map(context => ({ ...context }));
-    let events = Object.values(createData.events).map(event =>({...event}));
-
-    for (let i = 0; i < domains.length; i++) {
-      domains[i].staticActions = [...domains[i].staticActions];
-      domains[i].dynamicActions = [...domains[i].dynamicActions];
-      for (let j = 0; j < domains[i].staticActions.length; j++) {  
-        domains[i].staticActions[j] = createData.actions[domains[i].staticActions[j].id];
-      }
-      for (let k = 0; k < domains[i].dynamicActions.length; k++) {  
-        domains[i].dynamicActions[k] = createData.actions[domains[i].dynamicActions[k].id];
-      }
-    }
-
-    for (let i = 0; i < contexts.length; i++) {
-      contexts[i].staticActions = [...contexts[i].staticActions];
-      for (let j= 0; j < contexts[i].staticActions.length; j++) {  
-        contexts[i].staticActions[j] = createData.actions[contexts[i].staticActions[j].id];
-      }
-    }
-
-    for (let i = 0; i < events.length; i++) {
-      events[i].staticActions = [...events[i].staticActions];
-      for (let j= 0; j < events[i].staticActions.length; j++) {  
-        events[i].staticActions[j] = createData.actions[events[i].staticActions[j].id];
-      }
-    }
-
-    
-
-    let objectifiedDomains = {};
-    let objectifiedContexts = {};
-    let objectifiedEvents = {};
-    let objectifiedQualities = {};
-
-    domains.forEach(domain => {
-      objectifiedDomains[domain.id] = domain;
-    }); 
-
-    contexts.forEach(context => {
-      objectifiedContexts[context.id] = context;
-    }); 
-
-    events.forEach(event => {
-      objectifiedEvents[event.id] = event;
-    });
-
-    let qualities = Object.values(createData.qualities).map(quality => ({ ...quality }));
-
-    for (let quality of qualities) {
-      let processedDescriptions = {};
-      if (quality.descriptions.length > 0) {
-        quality.descriptions.forEach(d => {
-          processedDescriptions[d.value] = d.description
-        });
-      } else {
-        processedDescriptions = {1: ''};
-      }  
-      let processedAlts = {}
-      if (quality.alts && quality.alts.length > 0) {
-        quality.alts.forEach(a => {
-          processedAlts[a.value] = a.alt;
-        }) 
-      } else {
-        processedAlts = null;
-      }
-      quality.descriptions = processedDescriptions;
-      quality.alts = processedAlts;
-      objectifiedQualities[quality.id] = quality;
-    }
-
-
-    const stringQualities = JSON.stringify(objectifiedQualities);
-    const stringDomains = JSON.stringify(objectifiedDomains);
-    const stringContexts = JSON.stringify(objectifiedContexts);
-    const stringEvents = JSON.stringify(objectifiedEvents);
-
-    return { stringQualities, stringDomains, stringContexts, stringEvents }
-  }
-
   function clickPlay() {
-    const { stringQualities, stringDomains, stringContexts, stringEvents } = prepareData();
+    const { stringQualities, stringDomains, stringContexts, stringEvents } = DataFunctions.prepareData(createData);
     const data = '{"source":"storage"}';
     
     localStorage.setItem('data', data);
@@ -265,73 +171,69 @@ function Create() {
   }
 
   function clickExport() {
-    const { stringQualities, stringDomains, stringContexts, stringEvents } = prepareData();
+    const { stringQualities, stringDomains, stringContexts, stringEvents } = DataFunctions.prepareData(createData);
     const exportedWorld = "const domains = " + stringDomains + "; const qualities = " + stringQualities + "; const events = " + stringEvents + "; const contexts = " + stringContexts + "; export { domains, qualities, contexts, events }";
     
     download(exportedWorld, 'world.js', 'text/plain')
   }
 
-  function setList(list){
-    if (activeList.first===list) setActiveList({...activeList, first:null});
-    else setActiveList({...activeList, first:list});
-  }
-
-  function setSecondList(list){
-    if (activeList.second===list) setActiveList({...activeList, second:null});
-    else setActiveList({...activeList, second:list});
+  function setList({side, type}){
+    if (activeList[side] !== type) {
+      setActiveList({...activeList, [side]: type});
+    }
+    else {
+      setActiveList({...activeList, [side]: null});
+    }
   }
 
   return (
     <CreateDiv>
-      <Navbar setList={setList} />
-      <Navbar setList={setSecondList} reverse={true} />
-      <CreateTitle>CREATE</CreateTitle>
-      <DownloadButton onClick={clickExport}><p>Download World</p></DownloadButton>
-      <DownloadButton onClick={clickPlay}><p>Play World</p></DownloadButton>
+      <Navbar setList={setList} clickExport={clickExport} clickPlay={clickPlay} />
       <CreateInterfaceDiv>
-        {activeList.first==="qualities" 
-          ? <ItemsList items={Object.values(createData.qualities)} title="Qualities" type="qualities" />  
-          : null
-        }
-        {activeList.first==="domains" 
-          ? <ItemsList items={Object.values(createData.domains)} title="Domains" type="domains" /> 
-          : null 
-        }
-        {activeList.first==="actions" 
-          ? <ItemsList items={Object.values(createData.actions)} title="Actions" type="actions" /> 
-          : null 
-        }
-        {activeList.first==="contexts" && createData.contexts
-          ? <ItemsList items={Object.values(createData.contexts)} title="Contexts" type="contexts" /> 
-          : null 
-        }
-        {activeList.first==="events" && createData.events
-          ? <ItemsList items={Object.values(createData.events)} title="Events" type="events" /> 
-          : null 
-        }
-
-
-
-        {activeList.second==="qualities" 
-          ? <ItemsList items={Object.values(createData.qualities)} title="Qualities" type="qualities" />  
-          : null
-        }
-        {activeList.second==="domains" 
-          ? <ItemsList items={Object.values(createData.domains)} title="Domains" type="domains" /> 
-          : null 
-        }
-        {activeList.second==="actions" 
-          ? <ItemsList items={Object.values(createData.actions)} title="Actions" type="actions" /> 
-          : null 
-        }
-        {activeList.second==="contexts" && createData.contexts
-          ? <ItemsList items={Object.values(createData.contexts)} title="Contexts" type="contexts" /> 
-          : null 
-        }
-         {activeList.second==="events" && createData.events
-          ? <ItemsList items={Object.values(createData.events)} title="Events" type="events" /> 
-          : null 
-        }
+        <SideDiv>
+          {activeList.left==="Qualities" 
+            ? <ItemsList items={Object.values(createData.qualities)} title="Qualities" type="qualities" />  
+            : null
+          }
+          {activeList.left==="Domains" 
+            ? <ItemsList items={Object.values(createData.domains)} title="Domains" type="domains" /> 
+            : null 
+          }
+          {activeList.left==="Actions" 
+            ? <ActionList items={Object.values(createData.actions)} /> 
+            : null 
+          }
+          {activeList.left==="Contexts" && createData.contexts
+            ? <ItemsList items={Object.values(createData.contexts)} title="Contexts" type="contexts" /> 
+            : null 
+          }
+          {activeList.left==="Events" && createData.events
+            ? <ItemsList items={Object.values(createData.events)} title="Events" type="events" /> 
+            : null 
+          }
+        </SideDiv>
+        <SideDiv>
+          {activeList.right==="Qualities" 
+            ? <ItemsList items={Object.values(createData.qualities)} title="Qualities" type="qualities" />  
+            : null
+          }
+          {activeList.right==="Domains" 
+            ? <ItemsList items={Object.values(createData.domains)} title="Domains" type="domains" /> 
+            : null 
+          }
+          {activeList.right==="Actions" 
+            ? <ActionList items={Object.values(createData.actions)} /> 
+            : null 
+          }
+          {activeList.right==="Contexts" && createData.contexts
+            ? <ItemsList items={Object.values(createData.contexts)} title="Contexts" type="contexts" /> 
+            : null 
+          }
+          {activeList.right==="Events" && createData.events
+            ? <ItemsList items={Object.values(createData.events)} title="Events" type="events" /> 
+            : null 
+          }
+        </SideDiv>
       </CreateInterfaceDiv>
     </CreateDiv>
   )

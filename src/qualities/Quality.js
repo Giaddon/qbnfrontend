@@ -16,7 +16,7 @@ import { highlight } from '../style/colors';
 
 const QualityDiv = styled.div`
   position: relative;
-  flex: 0 1 200px;
+  flex: 0 1 250px;
   border: 1px solid black;
   border-radius: 2px;
   padding: 10px;

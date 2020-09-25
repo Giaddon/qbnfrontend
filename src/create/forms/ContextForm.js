@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Formik, Form, Field, FieldArray, ErrorMessage } from 'formik';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 
 import { addContextToCreate, selectCreate } from '../createToolsSlice';
 import { 
@@ -14,14 +14,30 @@ import {
 
 function ContextForm({ data, deleteItem }) {
   const dispatch = useDispatch();
+  const [changed, setChanged] = useState(false);
+  const [staticActions, setStaticActions] = useState([]);
   const createData = useSelector(selectCreate);
+
+  useEffect(function gatherMyActions() {
+    if (data) {
+      let gatheredStaticActions = [];
+
+      for (let action of data.actions) {
+        if (createData.actions[action.id]) {
+          const {id, title} = createData.actions[action.id];     
+          gatheredStaticActions.push({id, title});
+        }
+      } //end for loop
+      setStaticActions(gatheredStaticActions);
+    }
+  }, [data, createData]);
 
   function submitForm(values) {
     const newContext = {
       id: data.id,
       title: values.contextTitle,
       text: values.contextText,
-      staticActions: values.contextActions,
+      actions: data.actions,
       locked: values.contextLocked || false,
     }
     
@@ -29,27 +45,32 @@ function ContextForm({ data, deleteItem }) {
 
   }
 
-  function deleteQuality() {
+  function markChanged() {
+    setChanged(true);
+  }
+
+  function deleteContext() {
     deleteItem(data.id);
   }
 
   if (!data) return null;
   
   return(
-    <CreateFormDiv>
+    <CreateFormDiv changed={changed}>
       <p>ID: {data.id}</p>
       <Formik
         initialValues={{
           contextTitle: data.title || 'New Context Title', 
           contextText: data.text || 'New Context Text',
           contextLocked: data.locked || false,
-          contextActions: data.staticActions || [],
+          contextActions: data.actions || [],
         }}
         validate={null}
         onSubmit={(values, actions) => {
           setTimeout(() => {
             submitForm(values)
             actions.setSubmitting(false);
+            setChanged(false);
           }, 400);
         }}
         enableReinitialize={true}
@@ -63,7 +84,7 @@ function ContextForm({ data, deleteItem }) {
          handleSubmit,
          isSubmitting,
         }) => (
-          <Form>
+          <Form autoComplete="off" onChange={() => markChanged()}>
             <label htmlFor="contextTitle">Title</label>
             <Field type="text" name="contextTitle" />
             <ErrorMessage name="contextTitle" component="div" />
@@ -72,44 +93,25 @@ function ContextForm({ data, deleteItem }) {
             <Field as="textarea" name="contextText" />
             <ErrorMessage name="contextText" component="div" />
             
-            <label htmlFor="contextLocked" style={{ display: "block" }}>
-              Locked</label> 
+            <label htmlFor="contextLocked">Locked</label> 
             <Field type='checkbox' name="contextLocked" />
             <ErrorMessage name="contextLocked" component="div" />
           
-           <FormSectionTitle htmlFor="contextActions">Actions</FormSectionTitle>
-            <FieldArray name="contextActions">
-              {({ insert, remove, push }) => (
-                <FormDividerDiv>
-                  <FormArrayDiv>
-                    {values.contextActions.length > 0 &&
-                      values.contextActions.map((actions, index) => (
-                        <FormArrayElementDiv key={index}>
-                          <label htmlFor={`contextActions.${index}.id`}>Action</label>
-                          <Field name={`contextActions.${index}.id`} as="select">
-                            {Object.values(createData.actions).map(action =>
-                              <option key={action.id} value={action.id}>{action.title} (id: {action.id})</option>
-                            )}
-                          </Field>
-                          <button type="button" onClick={() => remove(index)}>
-                            Remove Action
-                          </button>
-                        </FormArrayElementDiv>
-                      ))}
-                    </FormArrayDiv>
-                    <button type="button" onClick={() => push({id: '1'})}>
-                      Add an Action
-                    </button>
-                  </FormDividerDiv>
-                )}
-              </FieldArray>
-            <button type="submit" disabled={isSubmitting}>
-              Submit
-            </button>
+            <FormSectionTitle htmlFor="contextActions">Actions</FormSectionTitle>
+            <FormDividerDiv>
+              <FormArrayDiv>
+                {staticActions.length > 0 && staticActions.map(a => (
+                  <FormArrayElementDiv key={a.id}>
+                    <p>{a.title}</p>
+                  </FormArrayElementDiv>
+                ))}
+              </FormArrayDiv>
+            </FormDividerDiv>
+            <button type="submit" disabled={isSubmitting}>Save</button>
          </Form>
         )}
       </Formik>
-        {data.id === 1 ? null : <FormDeleteButton onClick={deleteQuality}><p>Delete Context</p></FormDeleteButton>}   
+      <FormDeleteButton onClick={deleteContext}><p>Delete Context</p></FormDeleteButton>
     </CreateFormDiv>
   )
 }
