@@ -16,11 +16,11 @@ function NewActionForm({ data, createData, deleteItem, parentType, parentId }) {
   const [changed, setChanged] = useState(false);
   
   const initialValues = {
-    title: data.title || "Action Title", //all
-    text: data.text || "Action text.", //all
-    revealType: data.reveal?.type || "all", //all
-    remain: data.results?.remain || false, //challenge, modify 
-    resultsType: data.results?.type || "modify", //all
+    title: data.title || "Action Title",
+    text: (data.text || data.text === "") ? data.text : "Action text.", 
+    revealType: data.reveal?.type || "all", 
+    remain: data.results?.remain || false, 
+    resultsType: data.results?.type || "modify",
     context: data.results?.context || Object.values(createData.contexts).length > 0 ? Object.values(createData.contexts)[0].id : "",
     changes: data.results?.changes || [],
     challengeQuality: data.challenge?.qualityId || "1" ,
@@ -47,6 +47,7 @@ function NewActionForm({ data, createData, deleteItem, parentType, parentId }) {
       text: values.text,
       fixed: values.fixed,
       dynamic: parentType === "domains" ? values.dynamic : false,
+      reqs: values.reqs,
       reveal: {
         type: values.revealType,
       },
@@ -57,7 +58,6 @@ function NewActionForm({ data, createData, deleteItem, parentType, parentId }) {
   
     switch (values.resultsType) {
       case "modify":
-        newAction.reqs = values.reqs;
         newAction.results.changes = values.changes; 
         newAction.results.remain = values.remain;
         newAction.results.report = {
@@ -69,7 +69,6 @@ function NewActionForm({ data, createData, deleteItem, parentType, parentId }) {
 
       case "context":
         newAction.results.context = values.context;
-        newAction.reqs = values.reqs
         break;
       
       case "challenge":
@@ -349,7 +348,6 @@ function NewActionForm({ data, createData, deleteItem, parentType, parentId }) {
 
             </div> : null}
 
-            {values.resultsType === "modify" || values.resultsType === "context" ? <div>
               <FormSectionTitle htmlFor="reqs">Quality Requirements</FormSectionTitle>
               <FieldArray name="reqs">
                 {({ insert, remove, push }) => (
@@ -357,18 +355,48 @@ function NewActionForm({ data, createData, deleteItem, parentType, parentId }) {
                     <FormArrayDiv>
                       {values.reqs.map((req, index) => (
                         <FormArrayElementDiv key={index}>  
-                          <label htmlFor={`reqs.${index}.qualityId`}>Quality</label>
-                          <Field name={`reqs.${index}.qualityId`} as="select">
-                          {Object.values(createData.qualities).map(quality =>
-                            <option key={quality.id} value={quality.id}>{quality.name}</option>
-                          )}
-                          </Field>
+                          <label htmlFor={`reqs.${index}.comparison`}>Comparison</label>
+                          <Field name={`reqs.${index}.comparison`} type="checkbox" />
 
-                        <label htmlFor={`reqs.${index}.min`}>Min</label>
-                        <Field name={`reqs.${index}.min`} type="number" min="0" />
+                          {values.reqs[index].comparison
+                            ? <div>
+                              <label htmlFor={`reqs.${index}.firstQualityId`}>Quality</label>
+                              <Field name={`reqs.${index}.firstQualityId`} as="select">
+                              {Object.values(createData.qualities).map(quality =>
+                                <option key={quality.id} value={quality.id}>{quality.name}</option>
+                              )}
+                              </Field>
 
-                        <label htmlFor={`reqs.${index}.max`}>Max</label>
-                        <Field name={`reqs.${index}.max`} type="number" />
+                              <label htmlFor={`reqs.${index}.comparisonType`}>Is</label>
+                              <Field name={`reqs.${index}.comparisonType`} as="select">
+                                <option value=">">Greater than</option>
+                                <option value=">=">Greater than or equal</option>
+                                <option value="=">Equal to</option>
+                              </Field>
+
+                              <label htmlFor={`reqs.${index}.secondQualityId`}>Quality</label>
+                              <Field name={`reqs.${index}.secondQualityId`} as="select">
+                              {Object.values(createData.qualities).map(quality =>
+                                <option key={quality.id} value={quality.id}>{quality.name}</option>
+                              )}
+                              </Field>
+
+                            </div>
+                            : <div>
+                              <label htmlFor={`reqs.${index}.qualityId`}>Quality</label>
+                              <Field name={`reqs.${index}.qualityId`} as="select">
+                              {Object.values(createData.qualities).map(quality =>
+                                <option key={quality.id} value={quality.id}>{quality.name}</option>
+                              )}
+                              </Field>
+
+                              <label htmlFor={`reqs.${index}.min`}>Min</label>
+                              <Field name={`reqs.${index}.min`} type="number" min="0" />
+
+                              <label htmlFor={`reqs.${index}.max`}>Max</label>
+                              <Field name={`reqs.${index}.max`} type="number" />
+                            </div>
+                          }
 
                         <button type="button" onClick={() => remove(index)} >
                           Remove Requirement
@@ -376,13 +404,20 @@ function NewActionForm({ data, createData, deleteItem, parentType, parentId }) {
                       </FormArrayElementDiv>  
                     ))}
                     </FormArrayDiv>
-                    <button type="button" onClick={() => push({ qualityId:'domain', min: 0, max: null })}>
+                    <button type="button" onClick={() => push({ 
+                      qualityId:'domain', 
+                      min: 0, 
+                      max: null,
+                      comparison: false,
+                      firstQualityId: 'domain',
+                      secondQualityId: 'domain',
+                      comparisonType: "=",
+                    })}>
                       Add a Requirement
                     </button>
                   </FormDividerDiv>
                 )}
               </FieldArray>
-            </div> : null }
           
             <label htmlFor="revealType">Reveal Type</label>
             <Field name="revealType" as="select">

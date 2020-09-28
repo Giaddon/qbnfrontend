@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import NavbarButton from './NavbarButton';
 
-const NavbarDiv=styled.div`
+const NavbarDiv = styled.div`
   position: fixed;
   bottom: 0px;
   flex-flow: row nowrap;
@@ -15,6 +15,7 @@ const NavbarDiv=styled.div`
   display: flex;
   z-index: 10;
   width: 100%;
+  max-width: 1920px;
 
   p {
     pointer-events: none;

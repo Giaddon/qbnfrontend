@@ -20,6 +20,7 @@ const TooltipDiv = styled.div.attrs(props => ({
   padding: .5em;
   pointer-events:none;
   white-space: pre-wrap;
+  transform: translatey(-100%);
 `;
 
 function Tooltip({text, visible, x, y }) {

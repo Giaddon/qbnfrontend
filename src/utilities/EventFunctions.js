@@ -2,7 +2,6 @@
 
 class EventFunctions {
 
-
   static evaluateEvents(originalEvents, qualities) {
     let possibleEvents = [];
     for (let originalEvent of originalEvents) {
@@ -11,15 +10,20 @@ class EventFunctions {
         const min = trigger.min || 0;
         const max = trigger.max || (trigger.max === 0 ? 0 : Infinity);
         const playerValue = qualities[trigger.qualityId] ? qualities[trigger.qualityId].value : 0;
-        if (min <= playerValue && playerValue <= max) {
-          
-        } else {
-          event.noMatch = true;
-        }
+        const fQValue = qualities[trigger.firstQualityId] ? qualities[trigger.firstQualityId].value : 0;
+        const sQValue = qualities[trigger.secondQualityId] ? qualities[trigger.secondQualityId].value : 0;
+        
+        if (trigger.comparison) { //quality v quality comparison
+          if (trigger.comparisonType === "=") {
+            if (!(fQValue === sQValue)) event.noMatch = true;  
+          } else if (trigger.comparisonType === ">=") {
+            if (!(fQValue >= sQValue)) event.noMatch = true;
+          } else if (trigger.comparisonType === ">") {
+            if (!(fQValue > sQValue)) event.noMatch = true;
+          }
+        }  else if (!(min <= playerValue && playerValue <= max)) event.noMatch = true;
       } // end trigger loop
-      if (!event.noMatch) {
-        possibleEvents.push(event);
-      }
+      if (!event.noMatch) possibleEvents.push(event);
     } // end event loop
     //find the highest priority event
     let lowest = Infinity;

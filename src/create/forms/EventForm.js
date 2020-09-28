@@ -120,18 +120,46 @@ function EventForm({ data, deleteItem }) {
                     {values.eventTriggers.length > 0 &&
                       values.eventTriggers.map((trigger, index) => (
                         <FormArrayElementDiv key={index}>  
-                          <label htmlFor={`eventTriggers.${index}.qualityId`}>Quality</label>
-                          <Field name={`eventTriggers.${index}.qualityId`} as="select">
-                            {Object.values(createData.qualities).map(quality =>
-                              <option key={quality.id} value={quality.id}>{quality.name}</option>
-                            )}
-                          </Field>
+                          <label htmlFor={`eventTriggers.${index}.comparison`}>Comparison</label>
+                            <Field name={`eventTriggers.${index}.comparison`} type="checkbox" />
+                            {values.eventTriggers[index].comparison 
+                              ? <div>
+                                <label htmlFor={`eventTriggers.${index}.firstQualityId`}>Quality</label>
+                                <Field name={`eventTriggers.${index}.firstQualityId`} as="select">
+                                {Object.values(createData.qualities).map(quality =>
+                                  <option key={quality.id} value={quality.id}>{quality.name}</option>
+                                )}
+                                </Field>
 
-                      <label htmlFor={`eventTriggers.${index}.min`}>Min</label>
-                      <Field name={`eventTriggers.${index}.min`} type="number" min="0" />
+                                <label htmlFor={`eventTriggers.${index}.comparisonType`}>Is</label>
+                                <Field name={`eventTriggers.${index}.comparisonType`} as="select">
+                                  <option value=">">Greater than</option>
+                                  <option value=">=">Greater than or equal</option>
+                                  <option value="=">Equal to</option>
+                                </Field>
 
-                      <label htmlFor={`eventTriggers.${index}.max`}>Max</label>
-                      <Field name={`eventTriggers.${index}.max`} type="number" min="0" />
+                                <label htmlFor={`eventTriggers.${index}.secondQualityId`}>Quality</label>
+                                <Field name={`eventTriggers.${index}.secondQualityId`} as="select">
+                                {Object.values(createData.qualities).map(quality =>
+                                  <option key={quality.id} value={quality.id}>{quality.name}</option>
+                                )}
+                                </Field>
+                              </div>
+                              : <div>
+                                <label htmlFor={`eventTriggers.${index}.qualityId`}>Quality</label>
+                                <Field name={`eventTriggers.${index}.qualityId`} as="select">
+                                  {Object.values(createData.qualities).map(quality =>
+                                    <option key={quality.id} value={quality.id}>{quality.name}</option>
+                                  )}
+                                </Field>
+                              
+                                <label htmlFor={`eventTriggers.${index}.min`}>Min</label>
+                                <Field name={`eventTriggers.${index}.min`} type="number" min="0" />
+
+                                <label htmlFor={`eventTriggers.${index}.max`}>Max</label>
+                                <Field name={`eventTriggers.${index}.max`} type="number" min="0" />
+                              </div>
+                            }
 
                       <button type="button" onClick={() => remove(index)} >
                         Remove Trigger
@@ -139,7 +167,15 @@ function EventForm({ data, deleteItem }) {
                     </FormArrayElementDiv>  
                   ))}
                   </FormArrayDiv>
-                  <button type="button" onClick={() => push({ qualityId:'domain', min: 0, max: '' })}>
+                  <button type="button" onClick={() => push({ 
+                    qualityId:'domain', 
+                    min: 0, 
+                    max: '',
+                    comparison: false,
+                    comparisonType: "=",
+                    firstQualityId: "domain",
+                    secondQualityId: "domain", 
+                  })}>
                     Add a Trigger
                   </button>
                 </FormDividerDiv>

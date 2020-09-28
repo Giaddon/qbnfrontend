@@ -15,7 +15,7 @@ export const tooltipSlice = createSlice({
       const {text, x, y} = action.payload;
       state.text = text;
       state.x = (x+10).toString()+"px";
-      state.y = (y+10).toString()+"px";
+      state.y = (y).toString()+"px";
       state.visible = true;
     },
     hideTooltip: (state, action) => {
