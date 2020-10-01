@@ -37,7 +37,7 @@ const DownloadButton = styled.div`
   margin: 10px;
 `
 
-function Navbar({ setList, clickExport, clickPlay }) {
+function Navbar({ setList, clickPlay }) {
   const [highlights, setHighlights] = useState({left: null, right: null});
 
   function changeHighlights({side, type}) {
@@ -81,7 +81,6 @@ function Navbar({ setList, clickExport, clickPlay }) {
         highlights={highlights}
         changeHighlights={changeHighlights}
       />
-      <DownloadButton onClick={clickExport}><p>Download World</p></DownloadButton>
     </NavbarDiv>
   )
 }

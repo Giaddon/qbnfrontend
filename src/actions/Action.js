@@ -99,6 +99,7 @@ function Action({
   function clickDismiss(event) {
     event.stopPropagation();
     dispatch(setSelectedAction({id, clickType:"dismiss"}));
+    dispatch(hideTooltip());
   }
 
   return (

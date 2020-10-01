@@ -7,6 +7,7 @@ import { Route, BrowserRouter } from 'react-router-dom';
 
 import Game from './game/Game';
 import Create from './create/Create';
+import Data from './datapage/Data';
 
 function App() {
   return (
@@ -17,6 +18,9 @@ function App() {
         </Route>
         <Route exact path="/create">
           <Create />
+        </Route>
+        <Route exact path="/data">
+          <Data />
         </Route>
       </BrowserRouter>
     </div>

@@ -6,15 +6,15 @@ import GameAPI from './GameAPI.js';
 
 class QualitiesAPI {
 
-  static getAll() {
-    return qualities;
-  }
-
   static getStarting() {
     let startingQualities = {};
     let selectedQualities = {};
-    if (GameAPI.gameDataInLocalStorage()) {
+    const source = GameAPI.gameDataInLocalStorage()
+    if (source === "preview") {
       const stringQualities = localStorage.getItem("playqualities");
+      selectedQualities = JSON.parse(stringQualities);
+    } else if (source === "uploaded") {
+      const stringQualities = localStorage.getItem("uploadqualities");
       selectedQualities = JSON.parse(stringQualities);
     } else {
       selectedQualities = qualities;
@@ -31,20 +31,21 @@ class QualitiesAPI {
     return startingQualities;
   }
   
-
   static getQualityById(id) {
-    let data = localStorage.getItem("data");
-    if (data) {
-      data = JSON.parse(data);
-      if (data && data.source==="storage") {
-        const stringQualities = localStorage.getItem("playqualities");
-        const parsedQualities = JSON.parse(stringQualities);
-        return {...parsedQualities[id]};
-      }
+    const source = GameAPI.gameDataInLocalStorage()
+    if (source === "preview") {
+      const stringQualities = localStorage.getItem("playqualities");
+      const parsedQualities = JSON.parse(stringQualities);
+      return {...parsedQualities[id]};
+    } else if (source === "uploaded") {
+      const stringQualities = localStorage.getItem("uploadqualities");
+      const parsedQualities = JSON.parse(stringQualities);
+      return {...parsedQualities[id]};
     } else {
       return {...qualities[id]};
     }
   }
+
 }
 
 export default QualitiesAPI;

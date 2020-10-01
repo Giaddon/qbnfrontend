@@ -1,11 +1,13 @@
 
 class DataFunctions {
   static prepareActions(actionContainers, createData) {
-
+    if (actionContainers.length === 0) return actionContainers;
+    
     for (let i = 0; i < actionContainers.length; i++) {
       let staticActions = [];
       let dynamicActions = [];
-      for (let j = 0; j < actionContainers[i].actions.length; j++) {  
+      let limit = actionContainers[i].actions ? actionContainers[i].actions.length : 0
+      for (let j = 0; j < limit; j++) {  
         if (createData.actions[actionContainers[i].actions[j].id].dynamic) {
           dynamicActions.push(createData.actions[actionContainers[i].actions[j].id])
         } else {
@@ -75,6 +77,33 @@ class DataFunctions {
     const stringEvents = JSON.stringify(objectifiedEvents);
 
     return { stringQualities, stringDomains, stringContexts, stringEvents }
+  }
+
+  static getCreateDataFromStorage() {
+    let domains, contexts, events, qualities, actions;
+    
+    const stringDomains = localStorage.getItem("createdomains");
+    if (stringDomains) domains = JSON.parse(stringDomains);
+    
+    const stringContexts = localStorage.getItem("createcontexts");
+    if (stringContexts) contexts = JSON.parse(stringContexts);
+
+    const stringEvents = localStorage.getItem("createevents");
+    if (stringEvents) events = JSON.parse(stringEvents);
+
+    const stringActions = localStorage.getItem("createactions");
+    if (stringActions) actions = JSON.parse(stringActions);
+
+    const stringQualities = localStorage.getItem("createqualities");
+    if (stringQualities) qualities = JSON.parse(stringQualities);
+
+    return {
+      domains, 
+      contexts: contexts || {}, 
+      events: events || {}, 
+      qualities, 
+      actions: actions || {}
+    }
   }
 
 }

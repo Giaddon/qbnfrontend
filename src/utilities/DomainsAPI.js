@@ -11,8 +11,12 @@ class DomainsAPI {
   static getStartingDomains() {
     let startingDomains = [];
     let allDomains;
-    if (GameAPI.gameDataInLocalStorage()) {
+    let source = GameAPI.gameDataInLocalStorage()
+    if (source === "preview") {
       const stringDomains = localStorage.getItem("playdomains");
+      allDomains = JSON.parse(stringDomains);
+    } else if (source === "uploaded") {
+      const stringDomains = localStorage.getItem("uploaddomains");
       allDomains = JSON.parse(stringDomains);
     } else {
       allDomains = domains;
@@ -23,12 +27,17 @@ class DomainsAPI {
     return startingDomains;
   }
 
-
   static getDomainById(id) {
-    if (GameAPI.gameDataInLocalStorage()) {
+    const source = GameAPI.gameDataInLocalStorage();
+
+    if (source === "preview") {
         const stringDomains = localStorage.getItem("playdomains");
         const parsedDomains = JSON.parse(stringDomains);
         return {...parsedDomains[id]};
+    } else if (source === "uploaded") {
+      const stringDomains = localStorage.getItem("uploaddomains");
+      const parsedDomains = JSON.parse(stringDomains);
+      return {...parsedDomains[id]};
     } else {
       return {...domains[id]};
     }

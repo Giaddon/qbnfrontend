@@ -95,7 +95,6 @@ function ContextForm({ data, deleteItem }) {
             
             <label htmlFor="contextLocked">Locked</label> 
             <Field type='checkbox' name="contextLocked" />
-            <ErrorMessage name="contextLocked" component="div" />
           
             <FormSectionTitle htmlFor="contextActions">Actions</FormSectionTitle>
             <FormDividerDiv>

@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { Title } from '../style/typography';
 import { showTooltip, hideTooltip } from '../tooltip/tooltipSlice';
 import background from '../assets/backgrounds/groovepaper.png'
-import { toggleClickedSlot } from '../player/playerSlice';
 
 const ActionSlotDiv = styled.div`
   border-top: 1px solid #000;
@@ -28,11 +27,11 @@ const ActionSlotDiv = styled.div`
   }
 `
 
-function ActionSlot({ selectSlot, tooltip="Select to discover a new action." }) {
+function ActionSlot({selectSlot, tooltip="Select to discover a new action." }) {
   const dispatch = useDispatch();
 
   function clickSlot() {
-    dispatch(toggleClickedSlot());
+    selectSlot();
   }
   
   return (

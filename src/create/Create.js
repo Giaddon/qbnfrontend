@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import download from 'downloadjs';
 
 import { 
   addQualityToCreate, 
@@ -159,7 +158,15 @@ function Create() {
 
   function clickPlay() {
     const { stringQualities, stringDomains, stringContexts, stringEvents } = DataFunctions.prepareData(createData);
-    const data = '{"source":"storage"}';
+    const stringData = localStorage.getItem("data");
+    let data;
+    if (stringData) {
+      data = JSON.parse(stringData);
+      data = {...data, source: "preview"};
+      data = JSON.stringify(data);
+    } else {
+      data = '{"source":"preview"}';
+    }
     
     localStorage.setItem('data', data);
     localStorage.setItem('playqualities', stringQualities);
@@ -168,13 +175,6 @@ function Create() {
     localStorage.setItem('playevents', stringEvents);
 
     window.location = '/';
-  }
-
-  function clickExport() {
-    const { stringQualities, stringDomains, stringContexts, stringEvents } = DataFunctions.prepareData(createData);
-    const exportedWorld = "const domains = " + stringDomains + "; const qualities = " + stringQualities + "; const events = " + stringEvents + "; const contexts = " + stringContexts + "; export { domains, qualities, contexts, events }";
-    
-    download(exportedWorld, 'world.js', 'text/plain')
   }
 
   function setList({side, type}){
@@ -188,7 +188,7 @@ function Create() {
 
   return (
     <CreateDiv>
-      <Navbar setList={setList} clickExport={clickExport} clickPlay={clickPlay} />
+      <Navbar setList={setList} clickPlay={clickPlay} />
       <CreateInterfaceDiv>
         <SideDiv>
           {activeList.left==="Qualities" 

@@ -4,9 +4,15 @@ import { events } from '../data/world.js';
 import GameAPI from './GameAPI.js';
 
 class EventsAPI {
+  
   static getAllEvents() {
-    if (GameAPI.gameDataInLocalStorage()) {
+    const source = GameAPI.gameDataInLocalStorage()
+    if (source === "preview") {
       const stringEvents = localStorage.getItem("playevents");
+      const parsedEvents = JSON.parse(stringEvents);
+      return {...parsedEvents}
+    } else if (source === "uploaded") {
+      const stringEvents = localStorage.getItem("uploadedevents");
       const parsedEvents = JSON.parse(stringEvents);
       return {...parsedEvents}
     } else {
@@ -14,11 +20,16 @@ class EventsAPI {
     }
   }
   static getEventById(eventId) {
-    if (GameAPI.gameDataInLocalStorage()) {
+    const source = GameAPI.gameDataInLocalStorage()
+    if (source === "preview") {
       const stringEvents = localStorage.getItem("playevents");
       const parsedEvents = JSON.parse(stringEvents);
       return {...parsedEvents[eventId]}
-      }  else {
+    } else if (source === "uploaded") {
+      const stringEvents = localStorage.getItem("uploadedevents");
+      const parsedEvents = JSON.parse(stringEvents);
+      return {...parsedEvents[eventId]}
+    } else {
       return {...events[eventId]};
     }
   }

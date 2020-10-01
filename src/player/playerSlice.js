@@ -13,6 +13,7 @@ export const playerSlice = createSlice({
     clickedSlot: false,
   },
   reducers: {
+    setPlayer: (state, action) => action.payload,
     setAllQualities: (state, action) => {
       state.qualities = action.payload;
     },
@@ -53,6 +54,7 @@ export const {
   discoverDomain, 
   setDomainQuality,
   togglePinQuality,
+  setPlayer,
 } = playerSlice.actions;
 
 export const selectPlayer = state => state.player;

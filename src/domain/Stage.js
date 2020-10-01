@@ -9,7 +9,8 @@ import {
   setActiveReport,
   clearActiveContext,
   setActiveDynamicToId,
-  setCamera
+  setCamera,
+  possibleActionDiscovered,
 } from '../redux/domainSlice';
 import {
   setQuality, 
@@ -55,6 +56,21 @@ function Stage() {
   const domain = useSelector(selectDomain);
   const qualities = useSelector(selectQualities);
   const discoveredActions = useSelector(selectDiscoveredActions);
+
+  function consumeSelectSlot() {
+      dispatch(hideTooltip());
+      const possibleActions = [...domain.activeDomain.possibleActions];
+      const currentDiscoveredActions = 
+        domain.activeDomain.discoveredActions ? [...domain.activeDomain.discoveredActions] : [];
+      const index = Math.floor(Math.random() * possibleActions.length);
+      const revealedAction = {...possibleActions[index]};
+
+      const remainingPossibleActions = possibleActions.filter(action => action.id !== revealedAction.id);
+      const newDiscoveredActions = [...currentDiscoveredActions, revealedAction]
+      
+      dispatch(setDiscoveredActionsByDomainId({domainId: domain.activeDomain.id, actions: newDiscoveredActions}));
+      dispatch(possibleActionDiscovered({remainingPossibleActions, newDiscoveredActions}))
+  }
 
   function consumeSelectAction(actionId) {
     window.scrollTo({
@@ -222,6 +238,7 @@ function Stage() {
           discoveredActions={domain.activeDomain.discoveredActions}
           slots={calculatedSlots}
           selectAction={consumeSelectAction}
+          selectSlot={consumeSelectSlot}
           possibleActionsCount={domain.activeDomain.possibleActions?.length || 0}
         />
       </DomainDiv>

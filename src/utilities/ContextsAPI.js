@@ -4,15 +4,18 @@ import { contexts } from '../data/world.js';
 import GameAPI from './GameAPI.js';
 
 class ContextsAPI {
-  static getAll() {
-    return contexts;
-  }
+
   static getContextById(contextId) {
-    if (GameAPI.gameDataInLocalStorage()) {
+    const source = GameAPI.gameDataInLocalStorage()
+    if (source === "preview") {
       const stringContexts = localStorage.getItem("playcontexts");
       const parsedContexts = JSON.parse(stringContexts);
       return {...parsedContexts[contextId]}
-      }  else {
+    } else if (source === "uploaded") {
+      const stringContexts = localStorage.getItem("uploadcontexts");
+      const parsedContexts = JSON.parse(stringContexts);
+      return {...parsedContexts[contextId]}
+      } else {
       return {...contexts[contextId]};
     }
   }

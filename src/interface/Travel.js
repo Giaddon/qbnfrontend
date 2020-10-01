@@ -9,6 +9,7 @@ import TravelButton from './TravelButton';
 
 const TravelDiv = styled.div`
   text-align: center;
+  padding: 12px;
 `
 
 

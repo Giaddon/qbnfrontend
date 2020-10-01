@@ -9,15 +9,12 @@ import {
   setDiscoveredActionsByDomainId, 
   setAllQualities, 
   selectSelectedAction, 
-  selectClickedSlot, 
-  toggleClickedSlot, 
-  setSelectedAction, discoverDomain 
+  setSelectedAction, discoverDomain, selectPlayer, setPlayer 
 } from '../player/playerSlice';
 import QualitiesAPI from '../utilities/QualitiesAPI';
 import Sidebar from '../interface/Sidebar';
 import NavBar from '../interface/NavBar';
 import Tooltip from '../tooltip/Tooltip';
-import { hideTooltip } from '../tooltip/tooltipSlice';
 import DomainsAPI from '../utilities/DomainsAPI';
 import ContextsAPI from '../utilities/ContextsAPI';
 import {
@@ -34,6 +31,7 @@ import EventFunctions from '../utilities/EventFunctions';
 import darkBackground from '../assets/backgrounds/brushed_alu_dark.png';
 import QualityPage from '../qualities/QualityPage';
 import { selectInterface } from '../interface/interfaceSlice';
+import GameAPI from '../utilities/GameAPI';
 
 const GameDiv = styled.div`
   display: flex;
@@ -51,28 +49,41 @@ function Game() {
   const [loaded, setLoaded] = useState(false);
   const qualities = useSelector(selectQualities);
   const selectedAction = useSelector(selectSelectedAction);
-  const clickedSlot = useSelector(selectClickedSlot);
   const discoveredActions = useSelector(selectDiscoveredActions);
   const discoveredDomains = useSelector(selectDiscoveredDomains);
   const domain = useSelector(selectDomain);
   const events = useSelector(selectEvents);
+  const playerData = useSelector(selectPlayer);
   const [qualitiesChanged, setQualitiesChanged] = useState(false);
   const interfaceState = useSelector(selectInterface);
 
   //Get qualities from API (new game) or local storage (continued game)
   useEffect(function startGame() {
-    //const gameData = GameAPI.loadGame();
-    //if (gameData) dispatch(setQualities(gameData));
-    //else {
-    const startingQualities = QualitiesAPI.getStarting();
-    dispatch(setAllQualities(startingQualities));
+    const gameData = GameAPI.loadGame();
+    if (gameData) {
+      dispatch(setPlayer(gameData));
+    } 
+    else {
+      const startingQualities = QualitiesAPI.getStarting();
+      dispatch(setAllQualities(startingQualities));
     
-    const startingDomains = DomainsAPI.getStartingDomains();
-    startingDomains.forEach(d => dispatch(discoverDomain({id: d.id, name: d.title})))
+      const startingDomains = DomainsAPI.getStartingDomains();
+      startingDomains.forEach(d => dispatch(discoverDomain({id: d.id, name: d.title})))
 
+      let data = localStorage.getItem("data")
+      if (data) {
+        data = JSON.parse(data);
+        data.autosave = data.autosave === false ? false : true;
+        data = JSON.stringify(data);
+        localStorage.setItem("data", data);
+      } else {
+        data = {source: "server", autosave: true}
+        data = JSON.stringify(data);
+        localStorage.setItem("data", data);
+      }
+    }
     const events = EventsAPI.getAllEvents();
     dispatch(setEvents(events));
-
     setLoaded(true);
   }, [dispatch]);
 
@@ -163,25 +174,13 @@ function Game() {
     qualitiesChanged, 
     discoveredActions, 
     dispatch,
-    discoveredDomains]);
+    discoveredDomains,
+    playerData]);
 
-  useEffect(function consumeSelectSlot() {
-    if (clickedSlot === true) {
-      dispatch(hideTooltip());
-      const possibleActions = [...domain.activeDomain.possibleActions];
-      const currentDiscoveredActions = 
-        domain.activeDomain.discoveredActions ? [...domain.activeDomain.discoveredActions] : [];
-      const index = Math.floor(Math.random() * possibleActions.length);
-      const revealedAction = {...possibleActions[index]};
+  useEffect(function autosave() {
+      GameAPI.saveGame(playerData);
 
-      const remainingPossibleActions = possibleActions.filter(action => action.id !== revealedAction.id);
-      const newDiscoveredActions = [...currentDiscoveredActions, revealedAction]
-      
-      dispatch(setDiscoveredActionsByDomainId({domainId: domain.activeDomain.id, actions: newDiscoveredActions}));
-      dispatch(possibleActionDiscovered({remainingPossibleActions, newDiscoveredActions}))
-      dispatch(toggleClickedSlot());
-    }
-  }, [dispatch, domain, clickedSlot])
+  }, [playerData])
   
   useEffect(function consumeSelectAction() {
     if (selectedAction) {
