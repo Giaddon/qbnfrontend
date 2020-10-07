@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import QualityBlock from './QualityBlock';
 import { SidebarSubtitle, SidebarTitle } from '../style/typography';
-import { selectQualities } from '../player/playerSlice';
+import { selectQualities } from '../redux/playerSlice';
 
 const QualityListDiv = styled.div`
   background-color: white;

@@ -7,7 +7,7 @@ import tooltipReducer from '../tooltip/tooltipSlice';
 import interfaceReducer from '../interface/interfaceSlice';
 import domainReducer from './domainSlice';
 import createReducer from '../create/createToolsSlice';
-import playerReducer from '../player/playerSlice';
+import playerReducer from './playerSlice';
 
 export default configureStore({
   reducer: {

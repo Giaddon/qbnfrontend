@@ -1,6 +1,6 @@
 /** Utility class for the faux API. Will be overhauled if we have a real backend. */
 
-import { qualities } from '../data/world.js';
+import { qualities } from '../world/world.js';
 import QualityFunctions from './QualityFunctions.js';
 import GameAPI from './GameAPI.js';
 

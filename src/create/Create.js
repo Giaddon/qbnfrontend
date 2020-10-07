@@ -174,7 +174,7 @@ function Create() {
     localStorage.setItem('playcontexts', stringContexts);
     localStorage.setItem('playevents', stringEvents);
 
-    window.location = '/';
+    window.location = '/play';
   }
 
   function setList({side, type}){

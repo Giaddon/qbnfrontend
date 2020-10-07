@@ -5,15 +5,15 @@
 import React from 'react';
 import { Route, BrowserRouter } from 'react-router-dom';
 
-import Game from './game/Game';
+import Game from './play/Game';
 import Create from './create/Create';
-import Data from './datapage/Data';
+import Data from './data/Data';
 
 function App() {
   return (
     <div>
       <BrowserRouter>
-        <Route exact path="/">
+        <Route exact path="/play">
           <Game />
         </Route>
         <Route exact path="/create">

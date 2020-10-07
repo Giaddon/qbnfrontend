@@ -10,7 +10,7 @@ import {
   setAllQualities, 
   selectSelectedAction, 
   setSelectedAction, discoverDomain, selectPlayer, setPlayer 
-} from '../player/playerSlice';
+} from '../redux/playerSlice';
 import QualitiesAPI from '../utilities/QualitiesAPI';
 import Sidebar from '../interface/Sidebar';
 import NavBar from '../interface/NavBar';
@@ -25,10 +25,10 @@ import {
   setEvents, selectEvents, setActiveEvent, setCamera
 } from '../redux/domainSlice';
 import ActionFunctions from '../utilities/ActionFunctions';
-import Stage from '../domain/Stage';
+import Stage from './stage/Stage';
 import EventsAPI from '../utilities/EventsAPI';
 import EventFunctions from '../utilities/EventFunctions';
-import darkBackground from '../assets/backgrounds/brushed_alu_dark.png';
+import darkBackground from '../assets/backgrounds/stagebackground.png';
 import QualityPage from '../qualities/QualityPage';
 import { selectInterface } from '../interface/interfaceSlice';
 import GameAPI from '../utilities/GameAPI';

@@ -2,9 +2,9 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
-import {SidebarTitle } from '../style/typography';
-import { clearActiveContext, clearActiveDynamic, setCamera } from '../redux/domainSlice';
-import { forbidden, highlight } from '../style/colors';
+import {SidebarTitle } from '../../style/typography';
+import { clearActiveContext, clearActiveDynamic, setCamera } from '../../redux/domainSlice';
+import { forbidden, highlight } from '../../style/colors';
 
 const BackButtonDiv = styled.div`
   background-color: ${forbidden};

@@ -9,7 +9,7 @@ import store from './redux/store';
 import { Provider } from 'react-redux';
 import { createGlobalStyle } from 'styled-components'
 
-import "./fonts.css"
+import "./style/fonts.css"
 
 const GlobalStyle = createGlobalStyle`
   * {

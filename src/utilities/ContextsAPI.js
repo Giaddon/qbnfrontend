@@ -1,6 +1,6 @@
 /** Utility class for the faux API. Will be overhauled when we have a real backend. */
 
-import { contexts } from '../data/world.js';
+import { contexts } from '../world/world.js';
 import GameAPI from './GameAPI.js';
 
 class ContextsAPI {

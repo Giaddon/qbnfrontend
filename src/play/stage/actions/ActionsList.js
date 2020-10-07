@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 
 import Action from "./Action";
-import { SidebarTitle } from '../style/typography';
+import { SidebarTitle } from '../../../style/typography';
 import ActionSlot from './ActionSlot';
 
 const ActionListDiv = styled.div`

@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
-import { Title, Text } from '../style/typography';
+import { Title, Text } from '../../style/typography';
 import {
   selectDomain, 
   setActiveContext, 
@@ -11,22 +11,22 @@ import {
   setActiveDynamicToId,
   setCamera,
   possibleActionDiscovered,
-} from '../redux/domainSlice';
+} from '../../redux/domainSlice';
 import {
   setQuality, 
   selectQualities, 
   removeQuality, 
   setDiscoveredActionsByDomainId,
   selectDiscoveredActions,
-} from '../player/playerSlice';
-import { hideTooltip } from '../tooltip/tooltipSlice';
-import ActionList from '../actions/ActionsList';
+} from '../../redux/playerSlice';
+import { hideTooltip } from '../../tooltip/tooltipSlice';
+import ActionList from './actions/ActionsList';
 import BackButton from './BackButton';
 import ContinueButton from './ContinueButton';
 import OutcomesList from './OutcomesList';
-import ContextsAPI from '../utilities/ContextsAPI';
-import background from '../assets/backgrounds/groovepaper.png';
-import ActionFunctions from '../utilities/ActionFunctions';
+import ContextsAPI from '../../utilities/ContextsAPI';
+import background from '../../assets/backgrounds/actionbackground.png';
+import ActionFunctions from '../../utilities/ActionFunctions';
 
 const DomainDiv = styled.div`
   flex: 0 1 800px;

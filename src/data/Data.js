@@ -57,15 +57,22 @@ function Data() {
   const [previewReady, setPreviewReady] = useState(false);
   const [uploadReady, setUploadReady] = useState(false);
   const [createReady, setCreateReady] = useState(false);
+  const [serverSaveReady, setServerSaveReady] = useState(false);
+  const [previewSaveReady, setPreviewSaveReady] = useState(false);
+  const [uploadSaveReady, setUploadSaveReady] = useState(false);
 
   useEffect(function prepareStateOnMount() {  
     const stringLocalData = localStorage.getItem("data");
     const stringPlayDomains = localStorage.getItem("playdomains");
     const stringPlayQualities = localStorage.getItem("playqualities");
     const stringUploadDomains = localStorage.getItem("uploaddomains");
-    const stringUploadQualities = localStorage.getItem("uploadqualities")
-    const stringCreateQualities = localStorage.getItem("createqualities")
-    const stringCreateDomains = localStorage.getItem("createdomains")
+    const stringUploadQualities = localStorage.getItem("uploadqualities");
+    const stringCreateQualities = localStorage.getItem("createqualities");
+    const stringCreateDomains = localStorage.getItem("createdomains");
+    const stringServerSave = localStorage.getItem("serversave");
+    const stringUploadSave = localStorage.getItem("uploadsave");
+    const stringPreviewSave = localStorage.getItem("previewsave");
+
 
     function gatherDataFromStorageToPopulateForms() {
       const localData = JSON.parse(stringLocalData);
@@ -81,6 +88,10 @@ function Data() {
     if (stringPlayDomains && stringPlayQualities) setPreviewReady(true);
     if (stringUploadDomains && stringUploadQualities) setUploadReady(true);
     if (stringCreateDomains && stringCreateQualities) setCreateReady(true);
+
+    if (stringServerSave) setServerSaveReady(true);
+    if (stringPreviewSave) setPreviewSaveReady(true);
+    if (stringUploadSave) setServerSaveReady(true);
 
   }, []);
 
@@ -137,18 +148,52 @@ function Data() {
     }
   }
 
-  // function uploadCreate(evt) {
-  //   const newWorld = evt.target.files[0];
-  //   if (newWorld) {
-  //     const reader = new FileReader();
-  //     reader.onload = (e) => parseAndStoreUploadedData(e.target.result);
-  //     reader.readAsText(newWorld)
-  //   }
+  function deleteServerSave() {
+    if (serverSaveReady) {
+      if (window.confirm("Warning: this will permanently erase your saved game.")) {
+        localStorage.removeItem("serversave");
+        setServerSaveReady(false);
+      }
+    }
+  }
 
-  //   function parseAndStoreUploadedData(world) {
-      
-  //   }
-  // }
+  function deletePreviewSave() {
+    if (previewSaveReady) {
+      if (window.confirm("Warning: this will permanently erase your saved game.")) {
+        localStorage.removeItem("previewsave");
+        setPreviewSaveReady(false);
+      }
+    }
+  }
+
+  function deleteUploadSave() {
+    if (uploadSaveReady) {
+      if (window.confirm("Warning: this will permanently erase your saved game.")) {
+        localStorage.removeItem("uploadsave");
+        setUploadSaveReady(false);
+      }
+    }
+  }
+
+  function uploadCreate(evt) {
+    if (window.confirm("Warning: this will permanently replace the creation tools data.")) {  
+      const newWorld = evt.target.files[0];
+      if (newWorld) {
+        const reader = new FileReader();
+        reader.onload = (e) => parseAndStoreUploadedData(e.target.result);
+        reader.readAsText(newWorld)
+      }
+    }
+
+    function parseAndStoreUploadedData(world) {
+      const {qualities, domains, events, contexts, actions} = JSON.parse(world);
+      localStorage.setItem("createqualities", JSON.stringify(qualities));
+      localStorage.setItem("createdomains", JSON.stringify(domains));
+      localStorage.setItem("createcontexts", JSON.stringify(contexts));
+      localStorage.setItem("createevents", JSON.stringify(events));
+      localStorage.setItem("createactions", JSON.stringify(actions));
+    }
+  }
 
   function uploadWorld(evt) {
     const newWorld = evt.target.files[0];
@@ -205,6 +250,14 @@ function Data() {
     
   }
 
+  function createExport() {
+    const createData = DataFunctions.getCreateDataFromStorage();
+    const exportedWorld = JSON.stringify(createData);
+
+    download(exportedWorld, "world-for-create.js", "text/plain");
+    
+  }
+
   return (
     <DataDiv>
       <Title>Data Management</Title>
@@ -237,6 +290,23 @@ function Data() {
           </form>
         </RadioGroup>  
       </div>
+      <SectionDiv>
+        <SectionCellDiv>
+          <DataButton onClick={deleteServerSave} disabled={!serverSaveReady} delete>
+            <SidebarText>Delete Server Save</SidebarText>
+          </DataButton>
+        </SectionCellDiv>
+        <SectionCellDiv>
+          <DataButton onClick={deletePreviewSave} disabled={!previewSaveReady} delete>
+            <SidebarText>Delete Preview Save</SidebarText>
+          </DataButton>
+        </SectionCellDiv>
+        <SectionCellDiv>
+          <DataButton onClick={deleteUploadSave} disabled={!uploadSaveReady} delete>
+            <SidebarText>Delete Upload Save</SidebarText>
+          </DataButton>
+        </SectionCellDiv>
+      </SectionDiv>
       <div>
         <Title>World Source</Title>
         <RadioGroup>
@@ -286,28 +356,31 @@ function Data() {
         <DataButton onClick={worldExport} disabled={!createReady}>
           <SidebarText>Export World for Upload</SidebarText>
         </DataButton>
+        <DataButton onClick={createExport} disabled={!createReady}>
+          <SidebarText>Export World for Creation Tools</SidebarText>
+        </DataButton>
       </SectionCellDiv>
       <SectionCellDiv>
         <Title>Delete Data</Title>
-        <DataButton onClick={deleteCreate} disabled={!createReady} delete={true}>
+        <DataButton onClick={deleteCreate} disabled={!createReady} delete>
           <SidebarText>Delete Creation Tools Data</SidebarText>
         </DataButton>
-        <DataButton onClick={deletePreview} disabled={!previewReady} delete={true}>
+        <DataButton onClick={deletePreview} disabled={!previewReady} delete>
           <SidebarText>Delete Preview Data</SidebarText>
         </DataButton>
-        <DataButton onClick={deleteUpload} disabled={!uploadReady} delete={true}>
+        <DataButton onClick={deleteUpload} disabled={!uploadReady} delete>
           <SidebarText>Delete Uploaded World Data</SidebarText>
         </DataButton>
       </SectionCellDiv>
       <SectionCellDiv>
         <Title>Upload Data</Title>
-        {/* <div>
-          <label htmlFor="uploadCreate">Upload World for Creation Tools</label>
-          <input type="file" name="uploadCreate" onChange={uploadCreate} />
-        </div> */}
         <div>
           <label htmlFor="uploadWorld">Upload World to Play</label>
           <input type="file" name="uploadWorld" onChange={uploadWorld} />
+        </div>
+        <div>
+          <label htmlFor="uploadCreate">Upload World for Creation Tools</label>
+          <input type="file" name="uploadCreate" onChange={uploadCreate} />
         </div>
       </SectionCellDiv>
       </SectionDiv>

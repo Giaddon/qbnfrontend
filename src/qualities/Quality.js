@@ -6,11 +6,11 @@ import styled from 'styled-components';
 
 import { showTooltip, hideTooltip } from '../tooltip/tooltipSlice';
 import { SidebarSubtitle, SidebarText } from '../style/typography';
-import { togglePinQuality } from '../player/playerSlice';
+import { togglePinQuality } from '../redux/playerSlice';
 import { selectDomain, setActiveContext } from '../redux/domainSlice';
 import ContextsAPI from '../utilities/ContextsAPI';
 import ActionFunctions from '../utilities/ActionFunctions';
-import { selectQualities } from '../player/playerSlice';
+import { selectQualities } from '../redux/playerSlice';
 import { setMainDisplay } from '../interface/interfaceSlice';
 import { highlight } from '../style/colors';
 

@@ -7,9 +7,9 @@ import {
   setSidebarDisplay,
   selectInterface,
   setMainDisplay
-} from '../interface/interfaceSlice';
-import { navbar, navbarAccent, navbarHighligt } from '../style/colors';
-import { Title } from '../style/typography';
+} from '../../redux/interfaceSlice';
+import { navbar, navbarAccent, navbarHighligt } from '../../style/colors';
+import { Title } from '../../style/typography';
 
 const NavBarDiv = styled.div`
   position: fixed;

@@ -2,9 +2,9 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import { SidebarTitle } from '../style/typography';
-import { clearActiveReport, selectDomain, setCamera } from '../redux/domainSlice';
-import { informative, informativeAccent, highlight } from '../style/colors';
+import { SidebarTitle } from '../../style/typography';
+import { clearActiveReport, selectDomain, setCamera } from '../../redux/domainSlice';
+import { informative, informativeAccent, highlight } from '../../style/colors';
 
 const ContinueButtonDiv = styled.div`
   background-color: ${informative};

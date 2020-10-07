@@ -2,9 +2,9 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
-import { Title } from '../style/typography';
-import { showTooltip, hideTooltip } from '../tooltip/tooltipSlice';
-import background from '../assets/backgrounds/groovepaper.png'
+import { Title } from '../../../style/typography';
+import { showTooltip, hideTooltip } from '../../../tooltip/tooltipSlice';
+import background from '../../../assets/backgrounds/discoveredbackground.png'
 
 const ActionSlotDiv = styled.div`
   border-top: 1px solid #000;

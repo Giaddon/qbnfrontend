@@ -1,6 +1,6 @@
 /** Utility class for the faux API. Will be overhauled when we have a real backend. */
 
-import { domains } from '../data/world.js';
+import { domains } from '../world/world.js';
 import GameAPI from './GameAPI';
 
 class DomainsAPI {

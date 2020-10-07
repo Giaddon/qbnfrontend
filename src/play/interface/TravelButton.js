@@ -1,12 +1,12 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'; 
 import styled from 'styled-components';
-import { clearActiveContext, clearActiveDynamic, selectDomain } from '../redux/domainSlice';
 
-import { setDomainQuality } from '../player/playerSlice';
-import { SidebarTitle } from '../style/typography';
-import QualityFunctions from '../utilities/QualityFunctions';
-import QualitiesAPI from '../utilities/QualitiesAPI';
+import { clearActiveContext, clearActiveDynamic, selectDomain } from '../../redux/domainSlice';
+import { setDomainQuality } from '../../redux/playerSlice';
+import { SidebarTitle } from '../../style/typography';
+import QualityFunctions from '../../utilities/QualityFunctions';
+import QualitiesAPI from '../../utilities/QualitiesAPI';
 
 const TravelButtonDiv = styled.div`
 border-radius: 2px;

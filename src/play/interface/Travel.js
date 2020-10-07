@@ -1,17 +1,16 @@
 import React from 'react';
 import { useSelector } from 'react-redux'; 
 import styled from 'styled-components';
-import { selectDomain } from '../redux/domainSlice';
 
-import { selectDiscoveredDomains } from '../player/playerSlice';
-import { SidebarSubtitle, SidebarTitle } from '../style/typography';
+import { selectDomain } from '../../redux/domainSlice';
+import { selectDiscoveredDomains } from '../../redux/playerSlice';
+import { SidebarSubtitle, SidebarTitle } from '../../style/typography';
 import TravelButton from './TravelButton';
 
 const TravelDiv = styled.div`
   text-align: center;
   padding: 12px;
 `
-
 
 function Travel() {
   const domains = useSelector(selectDiscoveredDomains);

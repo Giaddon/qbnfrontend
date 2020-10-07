@@ -2,9 +2,9 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import { selectDomain } from '../redux/domainSlice';
+import { selectDomain } from '../../redux/domainSlice';
 import Outcome from './Outcome';
-import { informative } from '../style/colors';
+import { informative } from '../../style/colors';
 
 const OutcomesListDiv = styled.div`
   max-width: 700px; 

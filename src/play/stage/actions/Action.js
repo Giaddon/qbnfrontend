@@ -4,12 +4,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 
-import { Subtitle, ActionText } from '../style/typography';
-import { showTooltip, hideTooltip } from '../tooltip/tooltipSlice';
-import dynamicBackground from '../assets/backgrounds/subtle_white_feathers.png'
-import background from '../assets/backgrounds/groovepaper.png'
-import { neutral, highlight, forbidden, informative, text } from '../style/colors';
-import { setSelectedAction } from '../player/playerSlice';
+import { Subtitle, ActionText } from '../../../style/typography';
+import { showTooltip, hideTooltip } from '../../../tooltip/tooltipSlice';
+import dynamicBackground from '../../../assets/backgrounds/discoveredbackground.png'
+import background from '../../../assets/backgrounds/actionbackground.png'
+import { neutral, highlight, forbidden, informative, text } from '../../../style/colors';
+import { setSelectedAction } from '../../../redux/playerSlice';
 
 const ActionDiv = styled.div`
   position: relative;
@@ -21,7 +21,7 @@ const ActionDiv = styled.div`
   border-radius: 2px;
   color: ${text};
   box-shadow: 0px 0px 14px 0px #111;
-  border: 3px solid ${props => props.discovered? 'coral;' : 'white;'};
+  border: 3px solid ${props => props.discovered? '#9ab3f5;' : 'white;'};
   padding: 1.5em 1.0em 4.5em 1.0em;
   margin: 1.4em auto;
   cursor: ${props => props.disabled ? "default" : "pointer"};

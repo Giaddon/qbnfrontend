@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { SidebarText } from '../style/typography';
+import { SidebarText } from '../../style/typography';
 
 const OutcomeDiv = styled.div`
   &~& {

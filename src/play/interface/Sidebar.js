@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-
-import { selectInterface } from '../interface/interfaceSlice';
 import { useSelector } from 'react-redux';
-import QualityList from '../qualities/QualityList';
+
+import { selectInterface } from '../../redux/interfaceSlice';
+import QualityList from '../../qualities/QualityList';
 import Travel from './Travel';
 
 const SidebarDiv = styled.div`

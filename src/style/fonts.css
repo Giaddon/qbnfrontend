@@ -1,0 +1,9 @@
+@font-face {
+  font-family: 'Title';
+  src: local('Alata'), url(../assets/fonts/Alata.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Standard';
+  src: local('IBMPlexSerif'), url(../assets/fonts/IBMPlexSerif-Regular.ttf) format('truetype');
+}
