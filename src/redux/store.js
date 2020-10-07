@@ -4,7 +4,7 @@
 
 import { configureStore } from '@reduxjs/toolkit';
 import tooltipReducer from '../tooltip/tooltipSlice';
-import interfaceReducer from '../interface/interfaceSlice';
+import interfaceReducer from './interfaceSlice';
 import domainReducer from './domainSlice';
 import createReducer from '../create/createToolsSlice';
 import playerReducer from './playerSlice';

@@ -11,7 +11,7 @@ import { selectDomain, setActiveContext } from '../redux/domainSlice';
 import ContextsAPI from '../utilities/ContextsAPI';
 import ActionFunctions from '../utilities/ActionFunctions';
 import { selectQualities } from '../redux/playerSlice';
-import { setMainDisplay } from '../interface/interfaceSlice';
+import { setMainDisplay } from '../redux/interfaceSlice';
 import { highlight } from '../style/colors';
 
 const QualityDiv = styled.div`

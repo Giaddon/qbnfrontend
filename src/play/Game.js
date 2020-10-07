@@ -12,8 +12,8 @@ import {
   setSelectedAction, discoverDomain, selectPlayer, setPlayer 
 } from '../redux/playerSlice';
 import QualitiesAPI from '../utilities/QualitiesAPI';
-import Sidebar from '../interface/Sidebar';
-import NavBar from '../interface/NavBar';
+import Sidebar from './interface/Sidebar';
+import NavBar from './interface/NavBar';
 import Tooltip from '../tooltip/Tooltip';
 import DomainsAPI from '../utilities/DomainsAPI';
 import ContextsAPI from '../utilities/ContextsAPI';
@@ -30,7 +30,7 @@ import EventsAPI from '../utilities/EventsAPI';
 import EventFunctions from '../utilities/EventFunctions';
 import darkBackground from '../assets/backgrounds/stagebackground.png';
 import QualityPage from '../qualities/QualityPage';
-import { selectInterface } from '../interface/interfaceSlice';
+import { selectInterface } from '../redux/interfaceSlice';
 import GameAPI from '../utilities/GameAPI';
 
 const GameDiv = styled.div`
