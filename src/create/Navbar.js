@@ -23,7 +23,7 @@ const NavbarDiv = styled.div`
 `
 
 const DownloadButton = styled.div`
-  font-family: "Alata", sans-serif;
+  font-family: "Title", sans-serif;
   font-size: 1.4em;
   color: white;
   max-width: 300px;

@@ -16,14 +16,14 @@ const CreateFormDiv = styled.div`
   
   label {
     display: block;
-    font-family: "Alata", sans-serif;
+    font-family: "Title", sans-serif;
     margin: 8px 0px 4px 0px;
   }
 
   input {
     padding: 5px;
     max-width: 230px;
-    font-family: "IBMPlexSerif", serif
+    font-family: "Standard", serif
   }
   input[type=number] {
     width: 70px;
@@ -33,13 +33,13 @@ const CreateFormDiv = styled.div`
     padding: 5px;
     width: 300px;
     height: 100px;
-    font-family: "IBMPlexSerif", serif
+    font-family: "Standard", serif
   }
 
   select {
     padding: 5px;
     max-width: 230px;
-    font-family: "IBMPlexSerif", serif
+    font-family: "Standard", serif
   }
 
   button {
