@@ -79,6 +79,7 @@ function Action({
   id="Unknown Id",
   title="Unidentified Action", 
   text="Unknown text", 
+  oddsDescription = "",
   tooltip="Unknown tooltip.",
   disabled=false,
   discovered=false,
@@ -110,6 +111,15 @@ function Action({
     >
       <Subtitle>{title}</Subtitle>
       <ActionText>{text}</ActionText>
+      {oddsDescription 
+        ? <div>
+          <br />
+          <hr />
+          <br />
+          <ActionText>{oddsDescription}</ActionText>
+        </div>
+        : null
+      }
       {discovered && !fixed
           ? <DismissActionButton 
               onClick={clickDismiss}

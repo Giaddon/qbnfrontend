@@ -124,8 +124,11 @@ function Stage() {
       // then apply each result.
       case "modify":  
         if (discoveredId) {
-          const newDiscoveredActions = discoveredActions[domain.activeDomain.id].filter(a => a.id !== (discoveredId));
-          dispatch(setDiscoveredActionsByDomainId({domainId: domain.activeDomain.id, actions: newDiscoveredActions}));
+          const discoveredActionsPool = discoveredActions[domain.activeDomain.id];
+          if (discoveredActionsPool) {
+            const newDiscoveredActions = discoveredActionsPool.filter(a => a.id !== (discoveredId));
+            dispatch(setDiscoveredActionsByDomainId({domainId: domain.activeDomain.id, actions: newDiscoveredActions}));
+          }
         }
         resultsToProcess = results;
         reportToProcess = results.report;
@@ -133,8 +136,11 @@ function Stage() {
 
       case "challenge":
         if (discoveredId) {
-          const newDiscoveredActions = discoveredActions[domain.activeDomain.id].filter(a => (a.id !== discoveredId));
-          dispatch(setDiscoveredActionsByDomainId({domainId: domain.activeDomain.id, actions: newDiscoveredActions}));
+          const discoveredActionsPool = discoveredActions[domain.activeDomain.id];
+          if (discoveredActionsPool) {
+            const newDiscoveredActions = discoveredActionsPool.filter(a => (a.id !== discoveredId));
+            dispatch(setDiscoveredActionsByDomainId({domainId: domain.activeDomain.id, actions: newDiscoveredActions}));
+          }
         }
 
         const outcome = Math.floor(Math.random() * 101); 

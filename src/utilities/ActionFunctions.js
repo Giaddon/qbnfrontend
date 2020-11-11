@@ -33,12 +33,12 @@ class ActionFunctions {
   static selectDynamicActions(actions, qualities) {
     let possibleActions = [];
     for (let originalAction of actions) {
-      if (originalAction.results.type==="challenge") {
+      if (originalAction.results.type === "challenge") {
         const { type, action } = ActionFunctions.calculateChallenge(originalAction, qualities);
-        if (type==='a') possibleActions.push(action);
+        if (type === 'a') possibleActions.push(action);
       } else {
         const { type, action } = ActionFunctions.prepareAction(originalAction, qualities);
-        if (type==='a') possibleActions.push(action);
+        if (type === 'a') possibleActions.push(action);
       } 
     } 
     return { possibleActions }
@@ -158,10 +158,10 @@ class ActionFunctions {
     let qualityValue = qualities[qualityId]?.value || 0;
     if (originalAction.challenge.luck) {
       odds = difficulty;
-      oddsDescription = `\n\nThis challenge is pure luck. There is a ${difficulty}% chance it will go in your favor.`
+      oddsDescription = `This challenge is pure luck. There is a ${difficulty}% chance it will go in your favor.`
     } else if (qualityValue < difficulty) {
       passed = false;
-      oddsDescription = `\n\nThis is a ${quality.name} challenge.\nYou need ${quality.name} of ${difficulty} to make an attempt (you have ${qualityValue}).`
+      oddsDescription = `This is a ${quality.name} challenge.\nYou need ${quality.name} of ${difficulty} to make an attempt (you have ${qualityValue}).`
     } else {
       odds = 50;
       let attempts = qualityValue;
@@ -172,11 +172,11 @@ class ActionFunctions {
         attempts -= 1;
       } 
       if (odds >= 100) odds = 100;
-      oddsDescription = `\n\nThis is a ${quality.name} challenge.\nYour ${quality.name} of ${qualityValue} gives you a ${odds}% chance of passing the challenge.`   
+      oddsDescription = `This is a ${quality.name} challenge.\nYour ${quality.name} of ${qualityValue} gives you a ${odds}% chance of passing the challenge.`   
     }
 
     action.odds = odds;
-    action.text += oddsDescription;
+    action.oddsDescription = oddsDescription;
 
     if (passed) return {action, type:'a'};
     if (!passed && action.reveal.type === 'always') return {action, type:'l'};

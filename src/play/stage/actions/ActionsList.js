@@ -32,13 +32,14 @@ function ActionList({
   return (
     <ActionListDiv>
       {availableActions.map(
-        ({id, type, title, text, tooltip, results, odds}) =>
+        ({id, type, title, text, oddsDescription, tooltip, results, odds}) =>
           <Action 
             key={id} 
             type={type}
             id={id} 
             title={title} 
-            text={text} 
+            text={text}
+            oddsDescription={oddsDescription} 
             tooltip={tooltip}
             results={results}
             selectAction={selectAction} 
@@ -47,13 +48,14 @@ function ActionList({
           />)
       }
       {discoveredActions.map(
-        ({id, type, title, text, tooltip, results, odds, fixed}) =>
+        ({id, type, title, text, oddsDescription, tooltip, results, odds, fixed}) =>
           <Action 
             key={id} 
             type={type}
             id={id} 
             title={title} 
             text={text} 
+            oddsDescription={oddsDescription}
             tooltip={tooltip}
             results={results} 
             odds={odds}
@@ -70,13 +72,14 @@ function ActionList({
       {unavailableActions && unavailableActions.length > 0
         ? <div>
           {unavailableActions.map(
-          ({id, type, title, text, tooltip, results}) =>
+          ({id, type, title, text, oddsDescription, tooltip, results}) =>
             <Action 
               key={id} 
               id={id}
               type={type} 
               title={title} 
-              text={text} 
+              text={text}
+              oddsDescription={oddsDescription} 
               tooltip={tooltip}
               disabled
             />)
